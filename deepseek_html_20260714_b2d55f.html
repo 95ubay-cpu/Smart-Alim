@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartAlim.com | Papkalar</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background: #f0f5fb;
+            min-height: 100vh;
+            padding: 25px;
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 36px;
+            padding: 30px 35px 25px;
+            box-shadow: 0 20px 60px rgba(0, 20, 40, 0.06);
+        }
+
+        /* header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            border-bottom: 2px solid #eaf1fa;
+            padding-bottom: 18px;
+            margin-bottom: 28px;
+        }
+
+        .logo h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #0a2647;
+        }
+        .logo h1 i { color: #1f6dc6; margin-right: 10px; }
+        .logo span { font-weight: 400; color: #59758e; font-size: 15px; margin-left: 5px; }
+
+        .menu-toggle {
+            display: none;
+            font-size: 24px;
+            background: #e8f0fa;
+            padding: 8px 18px;
+            border-radius: 60px;
+            cursor: pointer;
+            color: #1a3e62;
+        }
+
+        .navbar {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+        .navbar a {
+            text-decoration: none;
+            padding: 9px 22px;
+            border-radius: 60px;
+            font-weight: 500;
+            color: #1f3e5e;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.2s;
+        }
+        .navbar a i { color: #3f6f9b; }
+        .navbar a:hover { background: #e3edf8; }
+        .navbar a.active {
+            background: #0a2647;
+            color: white;
+            box-shadow: 0 8px 18px rgba(10,38,71,0.12);
+        }
+        .navbar a.active i { color: white; }
+
+        /* asosiy qism: PAPKA (folder) */
+        .papka-section {
+            margin-bottom: 30px;
+        }
+
+        .papka-section-title {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+        .papka-section-title i {
+            font-size: 30px;
+            color: #1a3e62;
+            background: #e3edf8;
+            padding: 12px;
+            border-radius: 18px;
+        }
+        .papka-section-title h2 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #0a2647;
+        }
+        .papka-section-title span {
+            background: #d2e2f2;
+            padding: 3px 14px;
+            border-radius: 60px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #1a3e62;
+        }
+
+        /* PAPKA — asosiy folder ko'rinishi */
+        .papka-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .papka-item {
+            background: #f9fcff;
+            border-radius: 28px;
+            border: 1px solid #e2edf9;
+            padding: 20px 22px 24px;
+            transition: 0.25s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+            display: flex;
+            flex-direction: column;
+        }
+        .papka-item:hover {
+            transform: translateY(-4px);
+            border-color: #b3cee8;
+            box-shadow: 0 18px 40px rgba(0, 30, 60, 0.06);
+        }
+
+        .papka-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 10px;
+        }
+        .papka-header .folder-icon {
+            font-size: 34px;
+            color: #f3b33d;
+            width: 56px;
+            height: 56px;
+            background: #fef3e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 18px;
+        }
+        .papka-header h3 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #0a2647;
+        }
+        .papka-header h3 small {
+            display: block;
+            font-weight: 400;
+            font-size: 14px;
+            color: #4f7292;
+        }
+
+        .papka-content {
+            margin: 12px 0 10px 0;
+            padding-left: 6px;
+        }
+        .papka-content ul {
+            list-style: none;
+        }
+        .papka-content ul li {
+            padding: 9px 0 9px 10px;
+            border-bottom: 1px solid #e8f0f9;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 15px;
+            color: #1f3e5e;
+        }
+        .papka-content ul li:last-child { border-bottom: none; }
+        .papka-content ul li i {
+            width: 22px;
+            color: #3f7cb0;
+        }
+        .papka-content ul li .count {
+            margin-left: auto;
+            background: #dfebf6;
+            padding: 1px 14px;
+            border-radius: 40px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #1a3e62;
+        }
+        .papka-content ul li .tag {
+            background: #dce8f5;
+            padding: 2px 14px;
+            border-radius: 40px;
+            font-size: 12px;
+            color: #1a3e62;
+            font-weight: 500;
+            margin-left: 6px;
+        }
+
+        .papka-footer {
+            margin-top: 16px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .btn-folder {
+            background: white;
+            border: 1px solid #bdd2e8;
+            padding: 6px 18px;
+            border-radius: 60px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #1a3e62;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: 0.2s;
+            cursor: default;
+        }
+        .btn-folder i { color: #3f6f9b; }
+        .btn-folder:hover { background: #e3edf8; border-color: #8fb4d4; }
+
+        .btn-primary-folder {
+            background: #0a2647;
+            color: white;
+            border: none;
+            padding: 6px 20px;
+            border-radius: 60px;
+            font-weight: 500;
+            font-size: 13px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: default;
+        }
+
+        /* EXTRA: qisqa ro'yxatlar */
+        .extra-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid #e3edf7;
+        }
+        .extra-col {
+            flex: 1 1 180px;
+        }
+        .extra-col h4 {
+            font-size: 15px;
+            color: #0a2647;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .extra-col ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px 20px;
+        }
+        .extra-col ul li {
+            font-size: 14px;
+            color: #1f3e5e;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .extra-col ul li i { color: #2d6da0; font-size: 12px; }
+
+        .footer-note {
+            margin-top: 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            font-size: 14px;
+            color: #4f7292;
+            border-top: 1px solid #e3edf7;
+            padding-top: 20px;
+        }
+        .footer-note i { color: #1f6dc6; margin-right: 4px; }
+
+        @media (max-width: 800px) {
+            .container { padding: 18px 16px; }
+            .menu-toggle { display: block; }
+            .navbar {
+                display: none;
+                width: 100%;
+                flex-direction: column;
+                background: #f9fcff;
+                margin-top: 16px;
+                border-radius: 24px;
+                padding: 6px 0;
+                border: 1px solid #d7e4f2;
+            }
+            .navbar.open { display: flex; }
+            .navbar a { border-bottom: 1px solid #e7eff9; border-radius: 0; padding: 12px 18px; }
+            .navbar a:last-child { border-bottom: 0; }
+
+            .papka-grid { grid-template-columns: 1fr; }
+            .extra-row { flex-direction: column; gap: 10px; }
+        }
+
+        @media (max-width: 480px) {
+            .logo h1 { font-size: 22px; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- HEADER -->
+    <div class="header">
+        <div class="logo">
+            <h1><i class="fas fa-folder-open"></i> smartalim<span>.com</span></h1>
+        </div>
+        <div class="menu-toggle" id="menuToggle">
+            <i class="fas fa-bars"></i> Menyu
+        </div>
+        <div class="navbar" id="navbarMenu">
+            <a href="#" class="active"><i class="fas fa-home"></i> Bosh</a>
+            <a href="#"><i class="fas fa-university"></i> Universitetlar</a>
+            <a href="#"><i class="fas fa-book-open"></i> Kitoblar</a>
+            <a href="#"><i class="fas fa-language"></i> Lug'atlar</a>
+            <a href="#"><i class="fas fa-folder"></i> Papkalar</a>
+        </div>
+    </div>
+
+    <!-- PAPKA (FOLDER) ASOSIY QISMI -->
+    <div class="papka-section">
+        <div class="papka-section-title">
+            <i class="fas fa-folder"></i>
+            <h2>Papkalar</h2>
+            <span>Universitetlar · Kitoblar · Lug‘atlar</span>
+        </div>
+
+        <div class="papka-grid">
+            <!-- 1-PAPKA: UNIVERSITETLAR -->
+            <div class="papka-item">
+                <div class="papka-header">
+                    <div class="folder-icon"><i class="fas fa-university"></i></div>
+                    <h3>Universitetlar <small>O‘zbekiston · Xorij</small></h3>
+                </div>
+                <div class="papka-content">
+                    <ul>
+                        <li><i class="fas fa-graduation-cap"></i> O‘zMU <span class="count">145</span></li>
+                        <li><i class="fas fa-graduation-cap"></i> Toshkent DTU <span class="count">32</span></li>
+                        <li><i class="fas fa-graduation-cap"></i> MDU filial <span class="count">18</span></li>
+                        <li><i class="fas fa-graduation-cap"></i> Cambridge <span class="count">24</span></li>
+                        <li><i class="fas fa-graduation-cap"></i> Stanford <span class="count">12</span></li>
+                    </ul>
+                </div>
+                <div class="papka-footer">
+                    <span class="btn-folder"><i class="fas fa-arrow-right"></i> 8 ta papka</span>
+                    <span class="btn-primary-folder"><i class="fas fa-plus"></i> Ko‘proq</span>
+                </div>
+            </div>
+
+            <!-- 2-PAPKA: KITOBLAR -->
+            <div class="papka-item">
+                <div class="papka-header">
+                    <div class="folder-icon"><i class="fas fa-book-open"></i></div>
+                    <h3>Kitoblar <small>Ilmiy · Badiiy · Darslik</small></h3>
+                </div>
+                <div class="papka-content">
+                    <ul>
+                        <li><i class="fas fa-book"></i> Matematika <span class="count">210</span></li>
+                        <li><i class="fas fa-book"></i> Fizika <span class="count">86</span></li>
+                        <li><i class="fas fa-book"></i> Dasturlash <span class="count">134</span></li>
+                        <li><i class="fas fa-book"></i> Iqtisodiyot <span class="count">47</span></li>
+                        <li><i class="fas fa-book"></i> Tarix <span class="count">63</span></li>
+                    </ul>
+                </div>
+                <div class="papka-footer">
+                    <span class="btn-folder"><i class="fas fa-arrow-right"></i> 5 ta papka</span>
+                    <span class="btn-primary-folder"><i class="fas fa-plus"></i> Ko‘proq</span>
+                </div>
+            </div>
+
+            <!-- 3-PAPKA: LUG'ATLAR -->
+            <div class="papka-item">
+                <div class="papka-header">
+                    <div class="folder-icon"><i class="fas fa-language"></i></div>
+                    <h3>Lug‘atlar <small>Ruscha · Inglizcha · Lotincha</small></h3>
+                </div>
+                <div class="papka-content">
+                    <ul>
+                        <li><i class="fas fa-exchange-alt"></i> O‘zbekcha-ruscha <span class="count">12k</span></li>
+                        <li><i class="fas fa-exchange-alt"></i> Inglizcha-o‘zbekcha <span class="count">8.5k</span></li>
+                        <li><i class="fas fa-exchange-alt"></i> Lotincha-o‘zbekcha <span class="count">3.2k</span></li>
+                        <li><i class="fas fa-exchange-alt"></i> Terminologik <span class="count">1.4k</span></li>
+                        <li><i class="fas fa-exchange-alt"></i> Frazeologik <span class="count">720</span></li>
+                    </ul>
+                </div>
+                <div class="papka-footer">
+                    <span class="btn-folder"><i class="fas fa-arrow-right"></i> 4 ta papka</span>
+                    <span class="btn-primary-folder"><i class="fas fa-plus"></i> Ko‘proq</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- QO‘SHIMCHA RO‘YXATLAR (papkalar bo‘yicha) -->
+    <div class="extra-row">
+        <div class="extra-col">
+            <h4><i class="fas fa-university"></i> Universitet papkalari</h4>
+            <ul>
+                <li><i class="fas fa-folder"></i> O‘zbekiston</li>
+                <li><i class="fas fa-folder"></i> AQSH</li>
+                <li><i class="fas fa-folder"></i> Yevropa</li>
+                <li><i class="fas fa-folder"></i> Osiyo</li>
+            </ul>
+        </div>
+        <div class="extra-col">
+            <h4><i class="fas fa-book"></i> Kitob papkalari</h4>
+            <ul>
+                <li><i class="fas fa-folder"></i> Algoritmlar</li>
+                <li><i class="fas fa-folder"></i> Falsafa</li>
+                <li><i class="fas fa-folder"></i> Psixologiya</li>
+                <li><i class="fas fa-folder"></i> Tarix</li>
+            </ul>
+        </div>
+        <div class="extra-col">
+            <h4><i class="fas fa-language"></i> Lug‘at papkalari</h4>
+            <ul>
+                <li><i class="fas fa-folder"></i> Izohli</li>
+                <li><i class="fas fa-folder"></i> Imlo</li>
+                <li><i class="fas fa-folder"></i> Sinonimlar</li>
+                <li><i class="fas fa-folder"></i> Atamalar</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer-note">
+        <div>
+            <i class="fas fa-folder-open"></i> <strong>smartalim.com</strong> — Universitetlar · Kitoblar · Lug‘atlar papkalari
+        </div>
+        <div>
+            <i class="fas fa-tag"></i> 2026 · Papkalar
+        </div>
+    </div>
+</div>
+
+<script>
+    (function() {
+        const toggle = document.getElementById('menuToggle');
+        const navbar = document.getElementById('navbarMenu');
+
+        if (toggle && navbar) {
+            toggle.addEventListener('click', function(e) {
+                e.stopPropagation();
+                navbar.classList.toggle('open');
+                const icon = toggle.querySelector('i');
+                if (navbar.classList.contains('open')) {
+                    icon.className = 'fas fa-times';
+                } else {
+                    icon.className = 'fas fa-bars';
+                }
+            });
+
+            document.addEventListener('click', function(event) {
+                if (!navbar.contains(event.target) && !toggle.contains(event.target)) {
+                    navbar.classList.remove('open');
+                    const icon = toggle.querySelector('i');
+                    if (icon) icon.className = 'fas fa-bars';
+                }
+            });
+        }
+    })();
+</script>
+
+</body>
+</html>
