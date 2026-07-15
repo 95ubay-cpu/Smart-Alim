@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kutubxona — Smart Ta'lim</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<div class="app">
+
+  <div class="topbar">
+    <a class="back" href="../index.html">←</a>
+    <h1>Kutubxona</h1>
+  </div>
+
+  <main>
+    <div class="search-box">
+      <span>🔍</span>
+      <input type="text" id="book-search" placeholder="Kitob yoki muallif qidirish...">
+    </div>
+
+    <div class="chip-row" style="margin-top:14px;">
+      <div class="chip active">Barchasi</div>
+      <div class="chip">Darsliklar</div>
+      <div class="chip">Ilmiy</div>
+      <div class="chip">Badiiy</div>
+      <div class="chip">Tayyorgarlik</div>
+    </div>
+
+    <div class="section-title">Kitoblar</div>
+    <div id="book-list">
+
+      <div class="item-card">
+        <div class="thumb">📘</div>
+        <div class="meta">
+          <p class="title">Matematika asoslari</p>
+          <p class="sub">A. Karimov · Darslik</p>
+        </div>
+        <span class="tag">PDF</span>
+      </div>
+
+      <div class="item-card">
+        <div class="thumb">📗</div>
+        <div class="meta">
+          <p class="title">Ingliz tili grammatikasi</p>
+          <p class="sub">R. Murphy · Tayyorgarlik</p>
+        </div>
+        <span class="tag">PDF</span>
+      </div>
+
+      <div class="item-card">
+        <div class="thumb">📙</div>
+        <div class="meta">
+          <p class="title">Fizika: Mexanika</p>
+          <p class="sub">S. Yusupov · Ilmiy</p>
+        </div>
+        <span class="tag">PDF</span>
+      </div>
+
+      <div class="item-card">
+        <div class="thumb">📕</div>
+        <div class="meta">
+          <p class="title">Jahon adabiyoti antologiyasi</p>
+          <p class="sub">Toʻplam · Badiiy</p>
+        </div>
+        <span class="tag">EPUB</span>
+      </div>
+
+      <div class="item-card">
+        <div class="thumb">📘</div>
+        <div class="meta">
+          <p class="title">IELTS uchun tayyorgarlik</p>
+          <p class="sub">Cambridge · Tayyorgarlik</p>
+        </div>
+        <span class="tag">PDF</span>
+      </div>
+
+    </div>
+  </main>
+
+  <nav class="bottom-nav">
+    <a class="nav-item" href="../index.html"><span class="ic">🏠</span>Bosh sahifa</a>
+    <a class="nav-item active" href="kutubxona.html"><span class="ic">📚</span>Kitoblar</a>
+    <a class="nav-item" href="lugat.html"><span class="ic">🔤</span>Lugʻat</a>
+    <a class="nav-item" href="chat.html"><span class="ic">💬</span>Chat</a>
+  </nav>
+
+</div>
+<script src="../js/script.js"></script>
+<script>initListFilter('book-search', '#book-list .item-card');</script>
+</body>
+</html>
