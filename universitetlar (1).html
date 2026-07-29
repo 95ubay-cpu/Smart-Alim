@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>O'zbekiston universitetlari | Smart Ta'lim</title>
+<style>
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #f7faf7;
+    color: #1b1b1b;
+  }
+
+  header {
+    background: #1b5e20;
+    color: #fff;
+    padding: 18px 16px;
+    text-align: center;
+  }
+
+  header a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 14px;
+    opacity: 0.9;
+  }
+
+  header h1 {
+    margin: 8px 0 0 0;
+    font-size: 22px;
+  }
+
+  .uni-section {
+    padding: 24px 16px 50px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .uni-search {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid #a5d6a7;
+    border-radius: 10px;
+    font-size: 15px;
+    margin-bottom: 20px;
+    outline: none;
+    box-sizing: border-box;
+  }
+
+  .uni-search:focus {
+    border-color: #2e7d32;
+  }
+
+  .uni-count {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 16px;
+  }
+
+  .uni-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 14px;
+  }
+
+  .uni-card {
+    background: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-left: 4px solid #2e7d32;
+    border-radius: 10px;
+    padding: 16px;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+
+  .uni-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(46, 125, 50, 0.15);
+  }
+
+  .uni-card h3 {
+    margin: 0 0 6px 0;
+    font-size: 16px;
+  }
+
+  .uni-card p {
+    margin: 2px 0;
+    font-size: 13px;
+    color: #555;
+  }
+
+  .uni-city {
+    display: inline-block;
+    margin-top: 8px;
+    background: #e8f5e9;
+    color: #1b5e20;
+    font-size: 12px;
+    padding: 3px 10px;
+    border-radius: 20px;
+  }
+
+  .empty-msg {
+    text-align: center;
+    color: #888;
+    padding: 40px 0;
+    font-size: 14px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a href="index.html">← Bosh sahifa</a>
+  <h1>🎓 O'zbekiston universitetlari</h1>
+</header>
+
+<section class="uni-section">
+  <input type="text" id="uniSearch" class="uni-search" placeholder="Universitet nomi yoki shahar bo'yicha qidirish...">
+  <div class="uni-count" id="uniCount"></div>
+  <div class="uni-grid" id="uniGrid"></div>
+  <div class="empty-msg" id="emptyMsg" style="display:none;">Hech narsa topilmadi</div>
+</section>
+
+<script>
+  const universities = [
+    { name: "O'zbekiston Milliy universiteti (O'zMU)", city: "Toshkent", type: "Davlat" },
+    { name: "Toshkent davlat texnika universiteti (TDTU)", city: "Toshkent", type: "Davlat" },
+    { name: "Toshkent axborot texnologiyalari universiteti (TATU)", city: "Toshkent", type: "Davlat" },
+    { name: "Toshkent davlat iqtisodiyot universiteti (TDIU)", city: "Toshkent", type: "Davlat" },
+    { name: "Toshkent davlat yuridik universiteti", city: "Toshkent", type: "Davlat" },
+    { name: "Toshkent tibbiyot akademiyasi", city: "Toshkent", type: "Davlat" },
+    { name: "Toshkent pediatriya tibbiyot instituti", city: "Toshkent", type: "Davlat" },
+    { name: "Toshkent moliya instituti", city: "Toshkent", type: "Davlat" },
+    { name: "Toshkent davlat sharqshunoslik universiteti", city: "Toshkent", type: "Davlat" },
+    { name: "Toshkent davlat pedagogika universiteti (TDPU)", city: "Toshkent", type: "Davlat" },
+    { name: "O'zbekiston jahon tillari universiteti", city: "Toshkent", type: "Davlat" },
+    { name: "Toshkent arxitektura-qurilish universiteti (TAQU)", city: "Toshkent", type: "Davlat" },
+    { name: "Toshkent kimyo-texnologiya instituti", city: "Toshkent", type: "Davlat" },
+    { name: "Toshkent to'qimachilik va yengil sanoat instituti", city: "Toshkent", type: "Davlat" },
+    { name: "Toshkent temir yo'l muhandislari instituti", city: "Toshkent", type: "Davlat" },
+    { name: "Toshkent avtomobil yo'llari instituti", city: "Toshkent", type: "Davlat" },
+    { name: "Toshkent davlat agrar universiteti", city: "Toshkent", type: "Davlat" },
+    { name: "O'zbekiston davlat jismoniy tarbiya va sport universiteti", city: "Chirchiq", type: "Davlat" },
+    { name: "Toshkent islom universiteti", city: "Toshkent", type: "Davlat" },
+    { name: "Vestminster xalqaro universiteti", city: "Toshkent", type: "Xususiy" },
+    { name: "Inha universiteti", city: "Toshkent", type: "Xorijiy filial" },
+    { name: "Turin politexnika universiteti", city: "Toshkent", type: "Xorijiy filial" },
+    { name: "Amiti universiteti", city: "Toshkent", type: "Xususiy" },
+    { name: "Yeoju texnik instituti", city: "Toshkent", type: "Xususiy" },
+    { name: "Milliy universitetlararo institut", city: "Toshkent", type: "Davlat" },
+    { name: "Samarqand davlat universiteti", city: "Samarqand", type: "Davlat" },
+    { name: "Samarqand davlat tibbiyot universiteti", city: "Samarqand", type: "Davlat" },
+    { name: "Samarqand davlat arxitektura-qurilish instituti", city: "Samarqand", type: "Davlat" },
+    { name: "Samarqand qishloq xo'jaligi universiteti", city: "Samarqand", type: "Davlat" },
+    { name: "Samarqand davlat chet tillar instituti", city: "Samarqand", type: "Davlat" },
+    { name: "Buxoro davlat universiteti", city: "Buxoro", type: "Davlat" },
+    { name: "Buxoro davlat tibbiyot instituti", city: "Buxoro", type: "Davlat" },
+    { name: "Buxoro muhandislik-texnologiya instituti", city: "Buxoro", type: "Davlat" },
+    { name: "Andijon davlat universiteti", city: "Andijon", type: "Davlat" },
+    { name: "Andijon davlat tibbiyot instituti", city: "Andijon", type: "Davlat" },
+    { name: "Andijon mashinasozlik instituti", city: "Andijon", type: "Davlat" },
+    { name: "Farg'ona davlat universiteti", city: "Farg'ona", type: "Davlat" },
+    { name: "Farg'ona politexnika instituti", city: "Farg'ona", type: "Davlat" },
+    { name: "Qo'qon davlat pedagogika instituti", city: "Qo'qon", type: "Davlat" },
+    { name: "Namangan davlat universiteti", city: "Namangan", type: "Davlat" },
+    { name: "Namangan muhandislik-texnologiya instituti", city: "Namangan", type: "Davlat" },
+    { name: "Namangan muhandislik-qurilish instituti", city: "Namangan", type: "Davlat" },
+    { name: "Qarshi davlat universiteti", city: "Qarshi", type: "Davlat" },
+    { name: "Qarshi muhandislik-iqtisodiyot instituti", city: "Qarshi", type: "Davlat" },
+    { name: "Termiz davlat universiteti", city: "Termiz", type: "Davlat" },
+    { name: "Jizzax davlat pedagogika universiteti", city: "Jizzax", type: "Davlat" },
+    { name: "Jizzax politexnika instituti", city: "Jizzax", type: "Davlat" },
+    { name: "Guliston davlat universiteti", city: "Guliston", type: "Davlat" },
+    { name: "Urganch davlat universiteti", city: "Urganch", type: "Davlat" },
+    { name: "Nukus davlat pedagogika instituti", city: "Nukus", type: "Davlat" },
+    { name: "Qoraqalpoq davlat universiteti", city: "Nukus", type: "Davlat" },
+    { name: "Navoiy davlat konchilik va texnologiyalar universiteti", city: "Navoiy", type: "Davlat" },
+    { name: "Navoiy davlat pedagogika instituti", city: "Navoiy", type: "Davlat" },
+    { name: "Sirdaryo davlat pedagogika instituti", city: "Guliston", type: "Davlat" },
+    { name: "Chirchiq davlat pedagogika universiteti", city: "Chirchiq", type: "Davlat" },
+    { name: "Xorazm Ma'mun akademiyasi", city: "Xiva", type: "Davlat" },
+    { name: "Webster universiteti Toshkent", city: "Toshkent", type: "Xorijiy filial" },
+    { name: "Sharq xalqaro universiteti", city: "Toshkent", type: "Xususiy" }
+  ];
+
+  function renderUniversities(list) {
+    const grid = document.getElementById("uniGrid");
+    const emptyMsg = document.getElementById("emptyMsg");
+    const count = document.getElementById("uniCount");
+    grid.innerHTML = "";
+    count.textContent = `Jami: ${list.length} ta universitet`;
+    emptyMsg.style.display = list.length === 0 ? "block" : "none";
+    list.forEach(u => {
+      const card = document.createElement("div");
+      card.className = "uni-card";
+      card.innerHTML = `
+        <h3>${u.name}</h3>
+        <p>Turi: ${u.type}</p>
+        <span class="uni-city">📍 ${u.city}</span>
+      `;
+      grid.appendChild(card);
+    });
+  }
+
+  renderUniversities(universities);
+
+  document.getElementById("uniSearch").addEventListener("input", function (e) {
+    const q = e.target.value.toLowerCase();
+    const filtered = universities.filter(u =>
+      u.name.toLowerCase().includes(q) || u.city.toLowerCase().includes(q)
+    );
+    renderUniversities(filtered);
+  });
+</script>
+
+</body>
+</html>
