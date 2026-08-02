@@ -1,0 +1,36 @@
+-- Lug'at jadvali (Postgres)
+CREATE TABLE dictionaries (
+  id SERIAL PRIMARY KEY,
+  lemma TEXT NOT NULL,               -- asosiy so'z
+  pronunciation TEXT,                -- talaffuz
+  pos VARCHAR(32),                   -- part of speech (noun, verb...)
+  definition TEXT,                   -- ta'rif
+  example TEXT,                      -- misol
+  translation JSONB,                 -- {"uz":"...", "ru":"...", "en":"..."}
+  synonyms TEXT[],                   -- massiv
+  antonyms TEXT[],                   -- massiv
+  audio_url TEXT,                    -- audio fayl manzili
+  source VARCHAR(128),               -- qayerdan olingan
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT now()
+);
+
+-- Qidiruv tezlashtirish uchun tsvector ustun va index (full-text)
+ALTER TABLE dictionaries ADD COLUMN search_vector tsvector;
+CREATE INDEX dictionaries_search_idx ON dictionaries USING GIN(search_vector);
+
+-- trigger: lemma, definition, example va translation larni indeksga solish
+CREATE FUNCTION dictionaries_search_vector_update() RETURNS trigger AS $$
+BEGIN
+  NEW.search_vector :=
+    setweight(to_tsvector('simple', coalesce(NEW.lemma,'')), 'A') ||
+    setweight(to_tsvector('simple', coalesce(NEW.definition,'')), 'B') ||
+    setweight(to_tsvector('simple', coalesce(NEW.example,'')), 'C') ||
+    setweight(to_tsvector('simple', coalesce(NEW.translation::text, '')), 'D');
+  RETURN NEW;
+END
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_dictionaries_search_vector
+BEFORE INSERT OR UPDATE ON dictionaries
+FOR EACH ROW EXECUTE FUNCTION dictionaries_search_vector_update();
