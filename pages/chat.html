@@ -55,7 +55,12 @@
         .message-text {
             color: #333;
             font-size: 14px;
-            word-break: break-all;
+            overflow-wrap: break-word;
+        }
+        .empty-state {
+            text-align: center;
+            color: #888;
+            margin-top: 20px;
         }
         .input-box {
             display: flex;
@@ -90,27 +95,28 @@
         .send-btn:hover {
             background: #1b5e20;
         }
+        .send-btn:disabled {
+            background: #aaa;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 <body>
 
     <div class="chat-container">
         <div class="chat-header">Smart ta'lim - Jonli Chat</div>
-        
-        <!-- Xabarlar chiqadigan qism -->
+
         <div id="xabarlar-oynasi" class="messages-box">
-            <div style="text-align: center; color: #888; margin-top: 20px;">Xabarlar yuklanmoqda...</div>
+            <div class="empty-state">Xabarlar yuklanmoqda...</div>
         </div>
-        
-        <!-- Yozish qismi -->
+
         <div class="input-box">
-            <input type="text" id="foydalanuvchi-ismi" class="input-name" placeholder="Ismingiz">
-            <input type="text" id="xabar-matni" class="input-text" placeholder="Xabar yozing...">
+            <input type="text" id="foydalanuvchi-ismi" class="input-name" placeholder="Ismingiz" maxlength="30">
+            <input type="text" id="xabar-matni" class="input-text" placeholder="Xabar yozing..." maxlength="500">
             <button id="yuborish-tugmasi" class="send-btn">Yuborish</button>
         </div>
     </div>
 
-    <!-- Supabase ulanishi va mantiqi -->
     <script type="module">
         import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
@@ -124,7 +130,29 @@
         const xabarInput = document.getElementById('xabar-matni');
         const yuborishBtn = document.getElementById('yuborish-tugmasi');
 
-        // Bazadagi xabarlarni chiqarish
+        // Bitta xabar kartochkasini xavfsiz (XSS'siz) yaratish
+        function xabarKartaYarat(item) {
+            const card = document.createElement('div');
+            card.className = 'message-card';
+
+            const ismDiv = document.createElement('div');
+            ismDiv.className = 'message-user';
+            ismDiv.textContent = item.ism || 'Mehmon';
+
+            const matnDiv = document.createElement('div');
+            matnDiv.className = 'message-text';
+            matnDiv.textContent = item.matn;
+
+            card.appendChild(ismDiv);
+            card.appendChild(matnDiv);
+            return card;
+        }
+
+        function pastgaScroll() {
+            xabarlarOynasi.scrollTop = xabarlarOynasi.scrollHeight;
+        }
+
+        // Bazadagi barcha xabarlarni yuklash
         async function xabarlarniYuklash() {
             const { data, error } = await supabase
                 .from('chat')
@@ -133,67 +161,40 @@
 
             if (error) {
                 console.error('Xatolik:', error.message);
+                xabarlarOynasi.innerHTML = '';
+                const err = document.createElement('div');
+                err.className = 'empty-state';
+                err.textContent = 'Xabarlarni yuklab bo\'lmadi. Qayta urinib ko\'ring.';
+                xabarlarOynasi.appendChild(err);
                 return;
             }
 
             xabarlarOynasi.innerHTML = '';
-            if (data.length === 0) {
-                xabarlarOynasi.innerHTML = '<div style="text-align: center; color: #888; margin-top: 20px;">Hozircha xabarlar yo\'q. Birinchi bo\'lib yozing!</div>';
+
+            if (!data || data.length === 0) {
+                const bosh = document.createElement('div');
+                bosh.className = 'empty-state';
+                bosh.textContent = 'Hozircha xabarlar yo\'q. Birinchi bo\'lib yozing!';
+                xabarlarOynasi.appendChild(bosh);
                 return;
             }
 
             data.forEach(item => {
-                xabarlarOynasi.innerHTML += `
-                    <div class="message-card">
-                        <div class="message-user">${item.ism || 'Mehmon'}</div>
-                        <div class="message-text">${item.matn}</div>
-                    </div>`;
+                xabarlarOynasi.appendChild(xabarKartaYarat(item));
             });
-            xabarlarOynasi.scrollTop = xabarlarOynasi.scrollHeight;
+            pastgaScroll();
         }
 
         xabarlarniYuklash();
 
-        // Real-time (Jonli) yangilanish
+        // Real-time yangilanish
         supabase
             .channel('public:chat')
             .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'chat' }, payload => {
-                const item = payload.new;
-                // Agar birinchi xabar bo'lsa "Xabarlar yo'q" yozuvini tozalash
-                if (xabarlarOynasi.innerHTML.includes('Hozircha xabarlar yo\'q') || xabarlarOynasi.innerHTML.includes('Xabarlar yuklanmoqda')) {
+                const boshSarlavha = xabarlarOynasi.querySelector('.empty-state');
+                if (boshSarlavha) {
                     xabarlarOynasi.innerHTML = '';
                 }
-                xabarlarOynasi.innerHTML += `
-                    <div class="message-card">
-                        <div class="message-user">${item.ism || 'Mehmon'}</div>
-                        <div class="message-text">${item.matn}</div>
-                    </div>`;
-                xabarlarOynasi.scrollTop = xabarlarOynasi.scrollHeight;
+                xabarlarOynasi.appendChild(xabarKartaYarat(payload.new));
+                pastgaScroll();
             })
-            .subscribe();
-
-        // Xabar yuborish
-        async function xabarYuborish() {
-            const ism = ismInput.value.trim() || 'Mehmon';
-            const matn = xabarInput.value.trim();
-
-            if (matn === '') return;
-
-            const { error } = await supabase
-                .from('chat')
-                .insert([{ ism: ism, matn: matn }]);
-
-            if (error) {
-                alert('Xatolik: ' + error.message);
-            } else {
-                xabarInput.value = '';
-            }
-        }
-
-        yuborishBtn.addEventListener('click', xabarYuborish);
-        xabarInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') xabarYuborish();
-        });
-    </script>
-</body>
-</html>
