@@ -1,38 +1,95 @@
-<!DOCTYPE html>
-<html lang="uz">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Chat — Smart Ta'lim</title>
-<link rel="stylesheet" href="../css/style.css">
-</head>
-<body>
-<div class="app">
-
-  <div class="topbar">
-    <a class="back" href="../index.html">←</a>
-    <h1>Yordamchi chat</h1>
-  </div>
-
-  <main>
-    <div class="chat-body" id="chat-body">
-      <div class="bubble in">Assalomu alaykum! Men Smart Ta'lim yordamchisiman. Kitoblar, universitetlar yoki lugʻat boʻyicha savolingiz bormi?</div>
+<!-- Chat interfeysi dizayni -->
+<div id="smartalim-chat" style="max-width: 450px; margin: 20px auto; font-family: sans-serif; background: #f9f9f9; padding: 15px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+    <h3 style="text-align: center; color: #2c3e50; margin-top: 0;">Smart ta'lim - Chat</h3>
+    
+    <!-- Xabarlar chiqadigan oyna -->
+    <div id="xabarlar-oynasi" style="height: 350px; overflow-y: scroll; background: #ffffff; border: 1px solid #e0e0e0; padding: 10px; border-radius: 8px; margin-bottom: 10px; display: flex; flexDirection: column;">
+        <p style="text-align: center; color: #888;">Xabarlar yuklanmoqda...</p>
     </div>
-
-    <form class="chat-input-bar" id="chat-form">
-      <input type="text" id="chat-input" placeholder="Xabar yozing..." autocomplete="off">
-      <button type="submit">➤</button>
-    </form>
-  </main>
-
-  <nav class="bottom-nav">
-    <a class="nav-item" href="../index.html"><span class="ic">🏠</span>Bosh sahifa</a>
-    <a class="nav-item" href="kutubxona.html"><span class="ic">📚</span>Kitoblar</a>
-    <a class="nav-item" href="lugat.html"><span class="ic">🔤</span>Lugʻat</a>
-    <a class="nav-item active" href="chat.html"><span class="ic">💬</span>Chat</a>
-  </nav>
-
+    
+    <!-- Matn yozish va yuborish qismi -->
+    <div style="display: flex; gap: 5px; margin-bottom: 8px;">
+        <input type="text" id="foydalanuvchi-ismi" placeholder="Ismingiz..." style="width: 30%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; outline: none;">
+        <input type="text" id="xabar-matni" placeholder="Xabar yozing..." style="flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 6px; outline: none;">
+    </div>
+    <button id="yuborish-tugmasi" style="width: 100%; padding: 10px; background: #27ae60; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">Yuborish</button>
 </div>
-<script src="../js/script.js"></script>
-</body>
-</html>
+
+<!-- Supabase va Chat mantiqiy kodi -->
+<script type="module">
+  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+  // Sizning Supabase ma'lumotlaringiz
+  const SUPABASE_URL = 'https://sjkygpcdwfmdafceamnn.supabase.co'; // Proyekt manzili
+  const SUPABASE_ANON_KEY = 'sb_publishable_BtIqBdd9iLiCtG04b5tTjQ_Mv8Ozrjx';
+
+  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  const xabarlarOynasi = document.getElementById('xabarlar-oynasi');
+  const ismInput = document.getElementById('foydalanuvchi-ismi');
+  const xabarInput = document.getElementById('xabar-matni');
+  const yuborishBtn = document.getElementById('yuborish-tugmasi');
+
+  // 1. Bazadagi mavjud xabarlarni ekranga chiqarish funksiyasi
+  async function xabarlarniYuklash() {
+    const { data, error } = await supabase
+      .from('chat')
+      .select('*')
+      .order('created_at', { ascending: true });
+
+    if (error) {
+      console.error('Xatolik:', error.message);
+      return;
+    }
+
+    xabarlarOynasi.innerHTML = '';
+    data.forEach(item => {
+      xabarlarOynasi.innerHTML += `
+        <div style="margin-bottom: 8px; padding: 8px 12px; background: #f1f2f6; border-radius: 8px; max-width: 80%;">
+            <strong style="color: #2980b9; font-size: 13px;">${item.ism || 'Mehmon'}:</strong>
+            <div style="color: #333; font-size: 14px; margin-top: 2px; word-break: break-all;">${item.matn}</div>
+        </div>`;
+    });
+    xabarlarOynasi.scrollTop = xabarlarOynasi.scrollHeight;
+  }
+
+  // Sahifa ochilganda xabarlarni yuklash
+  xabarlarniYuklash();
+
+  // 2. Real-time (Jonli) yangilanishni yoqish (Boshqalar yozganda darhol ko'rinishi uchun)
+  supabase
+    .channel('public:chat')
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'chat' }, payload => {
+      const item = payload.new;
+      xabarlarOynasi.innerHTML += `
+        <div style="margin-bottom: 8px; padding: 8px 12px; background: #f1f2f6; border-radius: 8px; max-width: 80%;">
+            <strong style="color: #2980b9; font-size: 13px;">${item.ism || 'Mehmon'}:</strong>
+            <div style="color: #333; font-size: 14px; margin-top: 2px; word-break: break-all;">${item.matn}</div>
+        </div>`;
+      xabarlarOynasi.scrollTop = xabarlarOynasi.scrollHeight;
+    })
+    .subscribe();
+
+  // 3. Xabar yuborish tugmasi bosilganda
+  async function xabarYuborish() {
+    const ism = ismInput.value.trim() || 'Mehmon';
+    const matn = xabarInput.value.trim();
+
+    if (matn === '') return;
+
+    const { error } = await supabase
+      .from('chat')
+      .insert([{ ism: ism, matn: matn }]);
+
+    if (error) {
+      alert('Xatolik yuz berdi: ' + error.message);
+    } else {
+      xabarInput.value = ''; // Matn maydonini tozalash
+    }
+  }
+
+  yuborishBtn.addEventListener('click', xabarYuborish);
+  xabarInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') xabarYuborish();
+  });
+</script>
