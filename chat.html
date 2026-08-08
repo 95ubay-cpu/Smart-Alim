@@ -1,38 +1,56 @@
-<!DOCTYPE html>
-<html lang="uz">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Chat — Smart Ta'lim</title>
-<link rel="stylesheet" href="../css/style.css">
-</head>
-<body>
-<div class="app">
+import { initializeApp } from 'firebase/app';
+import { getAuth, signInAnonymously } from 'firebase/auth';
+import { getFirestore, collection, addDoc, serverTimestamp, query, orderBy, onSnapshot } from 'firebase/firestore';
 
-  <div class="topbar">
-    <a class="back" href="../index.html">←</a>
-    <h1>Yordamchi chat</h1>
-  </div>
+// Firebase konfiguratsiyasi
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY", // Firebase konsolidan loyiha sozlamalaridan olasiz
+  authDomain: "smartalim-chat.firebaseapp.com",
+  projectId: "smartalim-chat",
+  storageBucket: "smartalim-chat.appspot.com",
+  messagingSenderId: "975545287065",
+  appId: "YOUR_APP_ID" // Firebase konsolidan olasiz
+};
 
-  <main>
-    <div class="chat-body" id="chat-body">
-      <div class="bubble in">Assalomu alaykum! Men Smart Ta'lim yordamchisiman. Kitoblar, universitetlar yoki lugʻat boʻyicha savolingiz bormi?</div>
-    </div>
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
-    <form class="chat-input-bar" id="chat-form">
-      <input type="text" id="chat-input" placeholder="Xabar yozing..." autocomplete="off">
-      <button type="submit">➤</button>
-    </form>
-  </main>
+// Anonim tarzda tizimga kirish
+signInAnonymously(auth)
+  .then(() => {
+    console.log("Tizimga kirildi!");
+    loadMessages();
+  })
+  .catch((error) => {
+    console.error("Xatolik yuz berdi:", error);
+  });
 
-  <nav class="bottom-nav">
-    <a class="nav-item" href="../index.html"><span class="ic">🏠</span>Bosh sahifa</a>
-    <a class="nav-item" href="kutubxona.html"><span class="ic">📚</span>Kitoblar</a>
-    <a class="nav-item" href="lugat.html"><span class="ic">🔤</span>Lugʻat</a>
-    <a class="nav-item active" href="chat.html"><span class="ic">💬</span>Chat</a>
-  </nav>
+// Xabar yuborish funksiyasi
+async function sendMessage(text) {
+  if (!text.trim()) return;
+  try {
+    await addDoc(collection(db, "chats"), {
+      text: text,
+      createdAt: serverTimestamp(),
+      userId: auth.currentUser.uid
+    });
+  } catch (error) {
+    console.error("Xabarni yuborishda xatolik:", error);
+  }
+}
 
-</div>
-<script src="../js/script.js"></script>
-</body>
-</html>
+// Xabarlarni real vaqt rejimida yuklash
+function loadMessages() {
+  const q = query(collection(db, "chats"), orderBy("createdAt", "asc"));
+  onSnapshot(q, (snapshot) => {
+    const messagesList = document.getElementById("messages");
+    messagesList.innerHTML = "";
+    snapshot.forEach((doc) => {
+      const msg = doc.data();
+      const li = document.createElement("li");
+      li.textContent = `${msg.userId.substring(0, 5)}: ${msg.text}`;
+      messagesList.appendChild(li);
+    });
+  });
+}
