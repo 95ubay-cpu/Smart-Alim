@@ -45,6 +45,18 @@
             border-radius: 8px;
             max-width: 80%;
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            word-wrap: break-word;
+            animation: slideIn 0.3s ease;
+        }
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         .message-user {
             font-weight: bold;
@@ -75,6 +87,7 @@
             border: 1px solid #ccc;
             border-radius: 6px;
             outline: none;
+            font-size: 14px;
         }
         .input-text {
             flex: 1;
@@ -82,6 +95,12 @@
             border: 1px solid #ccc;
             border-radius: 6px;
             outline: none;
+            font-size: 14px;
+            resize: none;
+        }
+        .input-text:focus {
+            border-color: #2e7d32;
+            box-shadow: 0 0 4px rgba(46, 125, 50, 0.2);
         }
         .send-btn {
             background: #2e7d32;
@@ -91,6 +110,7 @@
             border-radius: 6px;
             cursor: pointer;
             font-weight: bold;
+            transition: background 0.2s;
         }
         .send-btn:hover {
             background: #1b5e20;
@@ -102,7 +122,7 @@
     </style>
 </head>
 <body>
-
+    
     <div class="chat-container">
         <div class="chat-header">Smart ta'lim - Jonli Chat</div>
 
@@ -218,14 +238,19 @@
             if (error) {
                 alert('Xatolik: ' + error.message);
             } else {
-                xabarInput.value = '';
-                xabarInput.focus();
+                xabarInput.value = '';  // ✅ INPUT BO'SH BO'LADI
+                xabarInput.focus();     // ✅ CURSOR QAYTADI INPUTGA
             }
         }
 
         yuborishBtn.addEventListener('click', xabarYuborish);
+        
+        // ✅ ENTER TUGMASI BILAN YUBORISH
         xabarInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') xabarYuborish();
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                xabarYuborish();
+            }
         });
     </script>
 </body>
