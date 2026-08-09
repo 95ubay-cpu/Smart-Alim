@@ -3,216 +3,248 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat - Smart Ta'lim</title>
+    <title>Smart ta'lim - Chat</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; }
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f0f7f4;
+            font-family: Arial, sans-serif;
+        }
         .chat-container {
-            max-width: 800px;
+            max-width: 500px;
             margin: 20px auto;
-            background: white;
+            background: #ffffff;
             border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            height: 90vh;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             display: flex;
             flex-direction: column;
+            height: 85vh;
+            overflow: hidden;
         }
         .chat-header {
-            padding: 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #2e7d32;
             color: white;
-            border-radius: 12px 12px 0 0;
+            padding: 15px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
         }
-        .chat-header h2 { font-size: 20px; }
-        .messages {
+        .messages-box {
             flex: 1;
+            padding: 15px;
             overflow-y: auto;
-            padding: 20px;
             display: flex;
             flex-direction: column;
             gap: 10px;
+            background: #f9f9f9;
         }
-        .message {
-            max-width: 70%;
-            padding: 12px 16px;
-            border-radius: 18px;
+        .message-card {
+            background: #e8f5e9;
+            padding: 10px 14px;
+            border-radius: 8px;
+            max-width: 80%;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
             word-wrap: break-word;
             animation: slideIn 0.3s ease;
         }
         @keyframes slideIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
-        .message.me {
-            background: #0084ff;
-            color: white;
-            align-self: flex-end;
-            border-bottom-right-radius: 4px;
-        }
-        .message.other {
-            background: #e4e6eb;
-            color: #000;
-            align-self: flex-start;
-            border-bottom-left-radius: 4px;
-        }
-        .message .name {
-            font-size: 11px;
+        .message-user {
             font-weight: bold;
-            margin-bottom: 4px;
-            opacity: 0.8;
+            color: #2e7d32;
+            font-size: 13px;
+            margin-bottom: 3px;
         }
-        .input-area {
-            padding: 15px;
-            border-top: 1px solid #e4e6eb;
+        .message-text {
+            color: #333;
+            font-size: 14px;
+            overflow-wrap: break-word;
+        }
+        .empty-state {
+            text-align: center;
+            color: #888;
+            margin-top: 20px;
+        }
+        .input-box {
             display: flex;
-            gap: 10px;
+            padding: 10px;
+            background: #ffffff;
+            border-top: 1px solid #ddd;
+            gap: 8px;
         }
-        #messageInput {
-            flex: 1;
-            padding: 12px 16px;
-            border: 1px solid #ddd;
-            border-radius: 20px;
+        .input-name {
+            width: 30%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
             outline: none;
-            font-size: 15px;
+            font-size: 14px;
         }
-        #messageInput:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 4px rgba(102, 126, 234, 0.2);
+        .input-text {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            outline: none;
+            font-size: 14px;
+            resize: none;
         }
-        #sendBtn {
-            padding: 12px 24px;
-            background: #0084ff;
+        .input-text:focus {
+            border-color: #2e7d32;
+            box-shadow: 0 0 4px rgba(46, 125, 50, 0.2);
+        }
+        .send-btn {
+            background: #2e7d32;
             color: white;
             border: none;
-            border-radius: 20px;
+            padding: 0 15px;
+            border-radius: 6px;
             cursor: pointer;
             font-weight: bold;
             transition: background 0.2s;
         }
-        #sendBtn:hover { background: #0073e6; }
-        #sendBtn:disabled { background: #ccc; cursor: not-allowed; }
-        #username {
-            padding: 12px 16px;
-            border: 1px solid #ddd;
-            border-radius: 20px;
-            width: 150px;
-            outline: none;
-            font-size: 15px;
+        .send-btn:hover {
+            background: #1b5e20;
         }
-        .login-box {
-            text-align: center;
-            padding: 40px;
+        .send-btn:disabled {
+            background: #aaa;
+            cursor: not-allowed;
         }
-        .login-box h3 { margin-bottom: 20px; }
-        .login-box br { line-height: 2; }
     </style>
 </head>
 <body>
+    
     <div class="chat-container">
-        <div class="chat-header">
-            <h2>💬 Smart Ta'lim - Umumiy Chat</h2>
-            <p style="font-size: 13px; margin-top: 4px;">Foydalanuvchilar bilan suhbat</p>
-        </div>
-        
-        <div id="loginArea" class="login-box">
-            <h3>Ismingizni kiriting</h3>
-            <input type="text" id="username" placeholder="Masalan: Ali" />
-            <br><br>
-            <button id="loginBtn" onclick="startChat()" style="padding: 10px 24px; background: #667eea; color: white; border: none; border-radius: 20px; cursor: pointer; font-weight: bold;">Kirish</button>
+        <div class="chat-header">Smart ta'lim - Jonli Chat</div>
+
+        <div id="xabarlar-oynasi" class="messages-box">
+            <div class="empty-state">Xabarlar yuklanmoqda...</div>
         </div>
 
-        <div id="chatArea" style="display: none; flex: 1; flex-direction: column;">
-            <div class="messages" id="messages"></div>
-            <div class="input-area">
-                <input type="text" id="messageInput" placeholder="Xabar yozing..." />
-                <button id="sendBtn" onclick="sendMessage()">Yuborish</button>
-            </div>
+        <div class="input-box">
+            <input type="text" id="foydalanuvchi-ismi" class="input-name" placeholder="Ismingiz" maxlength="30">
+            <input type="text" id="xabar-matni" class="input-text" placeholder="Xabar yozing..." maxlength="500">
+            <button id="yuborish-tugmasi" class="send-btn">Yuborish</button>
         </div>
     </div>
 
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script type="module">
+        import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
-    <script>
-        // ✅ FIREBASE KONFIGURATSIYASI (smartalim-chat loyihasi)
-        const firebaseConfig = {
-            apiKey: "AIzaSyACnXKWns2OiGzbtbyf3yhrd3uCOZLM2Bc",
-            authDomain: "smartalim-chat.firebaseapp.com",
-            projectId: "smartalim-chat",
-            storageBucket: "smartalim-chat.firebasestorage.app",
-            messagingSenderId: "975545287065",
-            appId: "1:975545287065:web:d5962180721515dbbb9308",
-            databaseURL: "https://smartalim-chat-default-rtdb.firebaseio.com"
-        };
+        const SUPABASE_URL = 'https://sjkygpcdwfmdafceamnn.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_BtIqBdd9iLiCtG04b5tTjQ_Mv8Ozrjx';
 
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
-        let currentUser = "";
+        const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        function startChat() {
-            const name = document.getElementById('username').value.trim();
-            if (!name) { 
-                alert('Ismingizni kiriting!'); 
-                return; 
+        const xabarlarOynasi = document.getElementById('xabarlar-oynasi');
+        const ismInput = document.getElementById('foydalanuvchi-ismi');
+        const xabarInput = document.getElementById('xabar-matni');
+        const yuborishBtn = document.getElementById('yuborish-tugmasi');
+
+        function xabarKartaYarat(item) {
+            const card = document.createElement('div');
+            card.className = 'message-card';
+
+            const ismDiv = document.createElement('div');
+            ismDiv.className = 'message-user';
+            ismDiv.textContent = item.ism || 'Mehmon';
+
+            const matnDiv = document.createElement('div');
+            matnDiv.className = 'message-text';
+            matnDiv.textContent = item.matn;
+
+            card.appendChild(ismDiv);
+            card.appendChild(matnDiv);
+            return card;
+        }
+
+        function pastgaScroll() {
+            xabarlarOynasi.scrollTop = xabarlarOynasi.scrollHeight;
+        }
+
+        async function xabarlarniYuklash() {
+            const { data, error } = await supabase
+                .from('chat')
+                .select('*')
+                .order('created_at', { ascending: true });
+
+            if (error) {
+                console.error('Xatolik:', error.message);
+                xabarlarOynasi.innerHTML = '';
+                const err = document.createElement('div');
+                err.className = 'empty-state';
+                err.textContent = "Xabarlarni yuklab bo'lmadi. Qayta urinib ko'ring.";
+                xabarlarOynasi.appendChild(err);
+                return;
             }
-            currentUser = name;
-            document.getElementById('loginArea').style.display = 'none';
-            document.getElementById('chatArea').style.display = 'flex';
-            loadMessages();
+
+            xabarlarOynasi.innerHTML = '';
+
+            if (!data || data.length === 0) {
+                const bosh = document.createElement('div');
+                bosh.className = 'empty-state';
+                bosh.textContent = "Hozircha xabarlar yo'q. Birinchi bo'lib yozing!";
+                xabarlarOynasi.appendChild(bosh);
+                return;
+            }
+
+            data.forEach(item => {
+                xabarlarOynasi.appendChild(xabarKartaYarat(item));
+            });
+            pastgaScroll();
         }
 
-        function sendMessage() {
-            const input = document.getElementById('messageInput');
-            const text = input.value.trim();
-            if (!text) return;
+        xabarlarniYuklash();
 
-            const sendBtn = document.getElementById('sendBtn');
-            sendBtn.disabled = true;
+        supabase
+            .channel('public:chat')
+            .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'chat' }, payload => {
+                const boshSarlavha = xabarlarOynasi.querySelector('.empty-state');
+                if (boshSarlavha) {
+                    xabarlarOynasi.innerHTML = '';
+                }
+                xabarlarOynasi.appendChild(xabarKartaYarat(payload.new));
+                pastgaScroll();
+            })
+            .subscribe();
 
-            db.ref('messages').push({
-                name: currentUser,
-                text: text,
-                time: firebase.database.ServerValue.TIMESTAMP
-            }).then(() => {
-                input.value = '';  // ✅ INPUT BO'SH BO'LADI
-                input.focus();     // ✅ CURSOR QAYTADI
-                sendBtn.disabled = false;
-            }).catch((error) => {
+        async function xabarYuborish() {
+            const ism = ismInput.value.trim() || 'Mehmon';
+            const matn = xabarInput.value.trim();
+
+            if (matn === '') return;
+
+            yuborishBtn.disabled = true;
+
+            const { error } = await supabase
+                .from('chat')
+                .insert([{ ism: ism, matn: matn }]);
+
+            yuborishBtn.disabled = false;
+
+            if (error) {
                 alert('Xatolik: ' + error.message);
-                sendBtn.disabled = false;
-            });
+            } else {
+                xabarInput.value = '';
+                xabarInput.focus();
+            }
         }
 
-        function loadMessages() {
-            const messagesDiv = document.getElementById('messages');
-            
-            db.ref('messages').orderByChild('time').limitToLast(50).on('child_added', (snapshot) => {
-                const msg = snapshot.val();
-                if (!msg) return;
-
-                const msgEl = document.createElement('div');
-                msgEl.className = 'message ' + (msg.name === currentUser ? 'me' : 'other');
-                
-                const nameEl = document.createElement('div');
-                nameEl.className = 'name';
-                nameEl.textContent = msg.name || 'Mehmon';
-                
-                const textEl = document.createElement('div');
-                textEl.textContent = msg.text;
-                
-                msgEl.appendChild(nameEl);
-                msgEl.appendChild(textEl);
-                messagesDiv.appendChild(msgEl);
-                messagesDiv.scrollTop = messagesDiv.scrollHeight;
-            });
-        }
-
-        // Enter tugmasi bilan yuborish
-        document.getElementById('messageInput').addEventListener('keypress', (e) => {
+        yuborishBtn.addEventListener('click', xabarYuborish);
+        
+        xabarInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
-                sendMessage();
+                xabarYuborish();
             }
         });
     </script>
