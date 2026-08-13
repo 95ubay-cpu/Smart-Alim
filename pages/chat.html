@@ -56,6 +56,16 @@
         .message-card.own .message-user {
             color: #1b5e20;
         }
+        .delete-btn {
+            float: right;
+            background: none;
+            border: none;
+            color: #c62828;
+            font-size: 16px;
+            line-height: 1;
+            cursor: pointer;
+            padding: 0 0 0 8px;
+        }
         @keyframes slideIn {
             from {
                 opacity: 0;
@@ -161,6 +171,13 @@
         // Realtime'dan takrorlanmasligi uchun ko'rilgan idlar
         const koRilganIdlar = new Set();
 
+        // Qurilma uchun noyob id (o'z xabarlarini aniqlash va o'chirish uchun)
+        let meningId = localStorage.getItem('smartalim_chat_id');
+        if (!meningId) {
+            meningId = 'id-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+            localStorage.setItem('smartalim_chat_id', meningId);
+        }
+
         // Ro'yxatdan o'tgan foydalanuvchi ismini avtomatik qo'yish
         try {
             const user = JSON.parse(localStorage.getItem('smartalim_current'));
@@ -172,8 +189,30 @@
             const card = document.createElement('div');
             card.className = 'message-card';
 
-            if (item.ism === (ismInput.value.trim() || 'Mehmon')) {
+            const menmi = (item.sender_id && item.sender_id === meningId) ||
+                (!item.sender_id && item.ism === (ismInput.value.trim() || 'Mehmon'));
+
+            if (menmi) {
                 card.classList.add('own');
+
+                const ochirishBtn = document.createElement('button');
+                ochirishBtn.className = 'delete-btn';
+                ochirishBtn.title = 'Xabarni o\'chirish';
+                ochirishBtn.textContent = '×';
+                ochirishBtn.addEventListener('click', async (e) => {
+                    e.stopPropagation();
+                    const { error } = await supabase
+                        .from('chat')
+                        .delete()
+                        .eq('id', item.id)
+                        .eq('sender_id', meningId);
+                    if (error) {
+                        alert('O\'chirishda xatolik: ' + error.message);
+                    } else {
+                        card.remove();
+                    }
+                });
+                card.appendChild(ochirishBtn);
             }
 
             const ismDiv = document.createElement('div');
@@ -254,7 +293,7 @@
 
             const { data, error } = await supabase
                 .from('chat')
-                .insert([{ ism: ism, matn: matn, created_at: new Date().toISOString() }])
+                .insert([{ ism: ism, matn: matn, created_at: new Date().toISOString(), sender_id: meningId }])
                 .select();
 
             yuborishBtn.disabled = false;
