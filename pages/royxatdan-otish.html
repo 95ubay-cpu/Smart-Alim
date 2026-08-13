@@ -42,55 +42,12 @@
       <button class="btn-primary" type="submit">Roʻyxatdan oʻtish</button>
     </form>
 
-    <div style="text-align:center;margin:12px 0;">yoki</div>
-    <div style="display:flex;justify-content:center;gap:10px;margin-bottom:8px;">
-      <button id="google-signup" class="btn-outline">Google bilan</button>
-    </div>
-
     <div class="auth-switch">
       Hisobingiz bormi? <a href="kirish.html">Kirish</a>
     </div>
   </main>
 
 </div>
-<script type="module">
-  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-
-  const SUPABASE_URL = 'https://sjkygpcdwfmdafceamnn.supabase.co';
-  const SUPABASE_ANON_KEY = 'sb_publishable_BtIqBdd9iLiCtG04b5tTjQ_Mv8Ozrjx';
-  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-  const form = document.getElementById('register-form');
-  const errBox = document.getElementById('register-error');
-  const googleBtn = document.getElementById('google-signup');
-
-  form.addEventListener('submit', async (e)=>{
-    e.preventDefault();
-    errBox.textContent = '';
-    const name = document.getElementById('reg-name').value.trim();
-    const email = document.getElementById('reg-email').value.trim();
-    const pass = document.getElementById('reg-pass').value;
-    const pass2 = document.getElementById('reg-pass2').value;
-
-    if(!name || !email || !pass){ errBox.textContent = 'Barcha maydonlarni toʻldiring.'; return; }
-    if(pass.length < 6){ errBox.textContent = 'Parol kamida 6 belgidan iborat boʻlishi kerak.'; return; }
-    if(pass !== pass2){ errBox.textContent = 'Parollar mos kelmadi.'; return; }
-
-    const { data, error } = await supabase.auth.signUp({
-      email: email,
-      password: pass,
-      options: { data: { full_name: name } }
-    });
-
-    if(error){ errBox.textContent = error.message; return; }
-
-    // Supabase sends confirmation email if configured. Redirect to profil.
-    window.location.href = 'profil.html';
-  });
-
-  googleBtn.addEventListener('click', async ()=>{
-    await supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.origin + '/pages/profil.html' } });
-  });
-</script>
+<script src="script.js"></script>
 </body>
 </html>
