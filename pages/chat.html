@@ -137,18 +137,19 @@
         </div>
     </div>
 
-    <script type="module">
-        import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-
-        const SUPABASE_URL = 'https://sjkygpcdwfmdafceamnn.supabase.co';
-        const SUPABASE_ANON_KEY = 'sb_publishable_BtIqBdd9iLiCtG04b5tTjQ_Mv8Ozrjx';
-
-        const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    <script>
+        const CHAT_KEY = 'smartalim_chat';
 
         const xabarlarOynasi = document.getElementById('xabarlar-oynasi');
         const ismInput = document.getElementById('foydalanuvchi-ismi');
         const xabarInput = document.getElementById('xabar-matni');
         const yuborishBtn = document.getElementById('yuborish-tugmasi');
+
+        function xabarlarniOlish() {
+            try { return JSON.parse(localStorage.getItem(CHAT_KEY)) || []; }
+            catch (e) { return []; }
+        }
+        function xabarlarniSaqlash(list) { localStorage.setItem(CHAT_KEY, JSON.stringify(list)); }
 
         // Bitta xabar kartochkasini xavfsiz (XSS'siz) yaratish
         function xabarKartaYarat(item) {
@@ -172,23 +173,9 @@
             xabarlarOynasi.scrollTop = xabarlarOynasi.scrollHeight;
         }
 
-        // Bazadagi barcha xabarlarni yuklash
-        async function xabarlarniYuklash() {
-            const { data, error } = await supabase
-                .from('chat')
-                .select('*')
-                .order('created_at', { ascending: true });
-
-            if (error) {
-                console.error('Xatolik:', error.message);
-                xabarlarOynasi.innerHTML = '';
-                const err = document.createElement('div');
-                err.className = 'empty-state';
-                err.textContent = "Xabarlarni yuklab bo'lmadi. Qayta urinib ko'ring.";
-                xabarlarOynasi.appendChild(err);
-                return;
-            }
-
+        // Saqlangan xabarlarni yuklash
+        function xabarlarniYuklash() {
+            const data = xabarlarniOlish();
             xabarlarOynasi.innerHTML = '';
 
             if (!data || data.length === 0) {
@@ -207,45 +194,30 @@
 
         xabarlarniYuklash();
 
-        // Real-time yangilanish
-        supabase
-            .channel('public:chat')
-            .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'chat' }, payload => {
-                const boshSarlavha = xabarlarOynasi.querySelector('.empty-state');
-                if (boshSarlavha) {
-                    xabarlarOynasi.innerHTML = '';
-                }
-                xabarlarOynasi.appendChild(xabarKartaYarat(payload.new));
-                pastgaScroll();
-            })
-            .subscribe();
-
         // Xabar yuborish
-        async function xabarYuborish() {
+        function xabarYuborish() {
             const ism = ismInput.value.trim() || 'Mehmon';
             const matn = xabarInput.value.trim();
 
             if (matn === '') return;
 
-            yuborishBtn.disabled = true;
+            const list = xabarlarniOlish();
+            list.push({ ism: ism, matn: matn, created_at: new Date().toISOString() });
+            xabarlarniSaqlash(list);
 
-            const { error } = await supabase
-                .from('chat')
-                .insert([{ ism: ism, matn: matn }]);
+            const bosh = xabarlarOynasi.querySelector('.empty-state');
+            if (bosh) xabarlarOynasi.innerHTML = '';
 
-            yuborishBtn.disabled = false;
+            xabarlarOynasi.appendChild(xabarKartaYarat({ ism: ism, matn: matn }));
+            pastgaScroll();
 
-            if (error) {
-                alert('Xatolik: ' + error.message);
-            } else {
-                xabarInput.value = '';  // ✅ INPUT BO'SH BO'LADI
-                xabarInput.focus();     // ✅ CURSOR QAYTADI INPUTGA
-            }
+            xabarInput.value = '';
+            xabarInput.focus();
         }
 
         yuborishBtn.addEventListener('click', xabarYuborish);
-        
-        // ✅ ENTER TUGMASI BILAN YUBORISH
+
+        // ENTER TUGMASI BILAN YUBORISH
         xabarInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();

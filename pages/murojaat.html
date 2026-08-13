@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Murojaat yuborish — Smart Ta'lim</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   :root{
     --main-green:#1fa363;
@@ -20,6 +19,10 @@
   .topbar{
     background:var(--main-green);color:var(--white);
     padding:16px 18px;box-shadow:0 2px 6px rgba(0,0,0,.08);
+    display:flex;align-items:center;gap:10px;
+  }
+  .topbar a.back{
+    color:var(--white);text-decoration:none;font-size:20px;line-height:1;
   }
   .topbar h1{font-size:20px;font-weight:600;}
 
@@ -124,12 +127,13 @@
 </div>
 
 <script>
-// ====== SHU IKKI QATORNI SUPABASE'DAGI O'ZINGIZNIKI BILAN ALMASHTIRING ======
-const SUPABASE_URL = "https://itcqrocfpwrdgnkdxgak.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml0Y3Fyb2NmcHdyZGdua2R4Z2FrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU4MzM0NDAsImV4cCI6MjEwMTQwOTQ0MH0.FiUJgDRF1VwztO4aKA7ZKzTZzSCAu0L3NnHROUt4ab4";
-// ==============================================================================
+const MUR_SAQLASH_KEY = 'smartalim_murojaatlar';
 
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+function murojaatlarOlish(){
+  try{ return JSON.parse(localStorage.getItem(MUR_SAQLASH_KEY)) || []; }
+  catch(e){ return []; }
+}
+function murojaatlarSaqlash(list){ localStorage.setItem(MUR_SAQLASH_KEY, JSON.stringify(list)); }
 
 let currentMode = "bizga";
 const notes = {
@@ -150,7 +154,6 @@ function setMode(mode){
 const form = document.getElementById("murojaatForm");
 const fileInput = document.getElementById("fileInput");
 const fileLabel = document.getElementById("fileLabel");
-const submitBtn = document.getElementById("submitBtn");
 const statusBox = document.getElementById("statusBox");
 
 fileInput.addEventListener("change", () => {
@@ -163,64 +166,39 @@ fileInput.addEventListener("change", () => {
   }
 });
 
-form.addEventListener("submit", async (e) => {
+form.addEventListener("submit", (e) => {
   e.preventDefault();
 
-  if (SUPABASE_URL.includes("SIZNING-PROJECT")){
-    showStatus("Baza sozlanmagan. Kod ichidagi SUPABASE_URL va SUPABASE_ANON_KEY ni to'ldiring.", false);
+  const fullname = document.getElementById("fullname").value.trim();
+  const phone = document.getElementById("phone").value.trim();
+  const university = document.getElementById("university").value.trim();
+  const message = document.getElementById("message").value.trim() || null;
+
+  if(!fullname || !phone || !university){
+    showStatus("❌ Iltimos, barcha kerakli maydonlarni to'ldiring.", false);
     return;
   }
 
-  submitBtn.disabled = true;
-  submitBtn.textContent = "Yuborilmoqda...";
-
-  const fullname = document.getElementById("fullname").value;
-  const phone = document.getElementById("phone").value;
-  const university = document.getElementById("university").value;
-  const message = document.getElementById("message").value || null;
-
-  try {
-    let fileUrl = null;
-
-    if (fileInput.files.length > 0){
-      const file = fileInput.files[0];
-      const filePath = `${Date.now()}_${file.name}`;
-
-      const { error: uploadError } = await supabase.storage
-        .from("hujjatlar")
-        .upload(filePath, file);
-
-      if (uploadError) throw uploadError;
-
-      const { data: urlData } = supabase.storage
-        .from("hujjatlar")
-        .getPublicUrl(filePath);
-
-      fileUrl = urlData.publicUrl;
-    }
-
-    const { error: insertError } = await supabase
-      .from("murojaatlar")
-      .insert([{
-        fullname, phone, university, message,
-        file_url: fileUrl,
-        turi: currentMode
-      }]);
-
-    if (insertError) throw insertError;
-
-    showStatus("✅ Murojaatingiz yuborildi! Tez orada bog'lanamiz.", true);
-    form.reset();
-    fileLabel.textContent = "📎 Fayl tanlash (PDF, rasm)";
-    fileLabel.classList.remove("has-file");
-
-  } catch (err){
-    console.error(err);
-    showStatus("❌ Xatolik yuz berdi. Qaytadan urinib ko'ring.", false);
-  } finally {
-    submitBtn.disabled = false;
-    submitBtn.textContent = "Yuborish";
+  let fileInfo = null;
+  if (fileInput.files.length > 0){
+    const file = fileInput.files[0];
+    fileInfo = { name: file.name, size: file.size, type: file.type };
   }
+
+  const list = murojaatlarOlish();
+  list.push({
+    id: Date.now(),
+    fullname, phone, university, message,
+    file: fileInfo,
+    turi: currentMode,
+    created_at: new Date().toISOString()
+  });
+  murojaatlarSaqlash(list);
+
+  showStatus("✅ Murojaatingiz yuborildi! Tez orada bog'lanamiz.", true);
+  form.reset();
+  fileLabel.textContent = "📎 Fayl tanlash (PDF, rasm)";
+  fileLabel.classList.remove("has-file");
 });
 
 function showStatus(text, ok){
