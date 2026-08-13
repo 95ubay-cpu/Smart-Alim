@@ -150,6 +150,9 @@
         const xabarInput = document.getElementById('xabar-matni');
         const yuborishBtn = document.getElementById('yuborish-tugmasi');
 
+        // Realtime'dan takrorlanmasligi uchun ko'rilgan idlar
+        const koRilganIdlar = new Set();
+
         // Ro'yxatdan o'tgan foydalanuvchi ismini avtomatik qo'yish
         try {
             const user = JSON.parse(localStorage.getItem('smartalim_current'));
@@ -206,6 +209,7 @@
             }
 
             data.forEach(item => {
+                koRilganIdlar.add(item.id);
                 xabarlarOynasi.appendChild(xabarKartaYarat(item));
             });
             pastgaScroll();
@@ -217,6 +221,7 @@
         supabase
             .channel('public:chat')
             .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'chat' }, payload => {
+                if (koRilganIdlar.has(payload.new.id)) return;
                 const boshSarlavha = xabarlarOynasi.querySelector('.empty-state');
                 if (boshSarlavha) {
                     xabarlarOynasi.innerHTML = '';
@@ -235,15 +240,23 @@
 
             yuborishBtn.disabled = true;
 
-            const { error } = await supabase
+            const { data, error } = await supabase
                 .from('chat')
-                .insert([{ ism: ism, matn: matn, created_at: new Date().toISOString() }]);
+                .insert([{ ism: ism, matn: matn, created_at: new Date().toISOString() }])
+                .select();
 
             yuborishBtn.disabled = false;
 
             if (error) {
                 alert('Xatolik: ' + error.message);
-            } else {
+            } else if (data && data[0]) {
+                koRilganIdlar.add(data[0].id);
+                const boshSarlavha = xabarlarOynasi.querySelector('.empty-state');
+                if (boshSarlavha) {
+                    xabarlarOynasi.innerHTML = '';
+                }
+                xabarlarOynasi.appendChild(xabarKartaYarat(data[0]));
+                pastgaScroll();
                 xabarInput.value = '';
                 xabarInput.focus();
             }
