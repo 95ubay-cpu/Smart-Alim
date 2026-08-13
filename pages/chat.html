@@ -237,7 +237,7 @@
 
             const { error } = await supabase
                 .from('chat')
-                .insert([{ ism: ism, matn: matn }]);
+                .insert([{ ism: ism, matn: matn, created_at: new Date().toISOString() }]);
 
             yuborishBtn.disabled = false;
 
