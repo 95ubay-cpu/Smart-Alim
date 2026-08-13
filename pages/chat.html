@@ -48,6 +48,14 @@
             word-wrap: break-word;
             animation: slideIn 0.3s ease;
         }
+        .message-card.own {
+            align-self: flex-end;
+            background: #c8e6c9;
+            border-top-right-radius: 2px;
+        }
+        .message-card.own .message-user {
+            color: #1b5e20;
+        }
         @keyframes slideIn {
             from {
                 opacity: 0;
@@ -163,6 +171,10 @@
         function xabarKartaYarat(item) {
             const card = document.createElement('div');
             card.className = 'message-card';
+
+            if (item.ism === (ismInput.value.trim() || 'Mehmon')) {
+                card.classList.add('own');
+            }
 
             const ismDiv = document.createElement('div');
             ismDiv.className = 'message-user';
