@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shaxsiy xabarlar — Smart Ta'lim</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    background-color: #f0f7f4;
+    font-family: Arial, sans-serif;
+  }
+  .app {
+    max-width: 520px;
+    margin: 0 auto;
+    min-height: 100vh;
+    background: #ffffff;
+  }
+  .topbar {
+    background: #2e7d32;
+    color: white;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 18px;
+    font-weight: bold;
+  }
+  .topbar .back {
+    color: white;
+    text-decoration: none;
+    font-size: 22px;
+  }
+  main {
+    padding: 12px;
+  }
+  .section-title {
+    font-weight: bold;
+    color: #2e7d32;
+    margin: 12px 0 8px;
+    font-size: 14px;
+  }
+  .user-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .user-card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    background: #f5f5f5;
+    border-radius: 8px;
+    cursor: pointer;
+    border: 1px solid #eee;
+  }
+  .user-card.active {
+    background: #e8f5e9;
+    border-color: #2e7d32;
+  }
+  .user-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #2e7d32;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+  }
+  .user-name {
+    font-weight: bold;
+    color: #333;
+    font-size: 15px;
+  }
+  .empty-state {
+    text-align: center;
+    color: #888;
+    margin-top: 30px;
+  }
+  .chat-header {
+    background: #2e7d32;
+    color: white;
+    padding: 10px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 8px 8px 0 0;
+  }
+  .messages-box {
+    height: 45vh;
+    overflow-y: auto;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background: #f9f9f9;
+    border: 1px solid #eee;
+    border-top: none;
+  }
+  .message-card {
+    background: #ffffff;
+    padding: 8px 12px;
+    border-radius: 8px;
+    max-width: 80%;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    word-wrap: break-word;
+  }
+  .message-card.own {
+    align-self: flex-end;
+    background: #c8e6c9;
+  }
+  .message-text {
+    color: #333;
+    font-size: 14px;
+    overflow-wrap: break-word;
+  }
+  .input-box {
+    display: flex;
+    gap: 8px;
+    padding: 10px;
+    background: #fff;
+    border: 1px solid #eee;
+    border-top: none;
+  }
+  .input-text {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    outline: none;
+    font-size: 14px;
+  }
+  .input-text:focus {
+    border-color: #2e7d32;
+  }
+  .send-btn {
+    background: #2e7d32;
+    color: white;
+    border: none;
+    padding: 0 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  .send-btn:disabled {
+    background: #aaa;
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <a class="back" href="chat.html">←</a>
+    <span>Shaxsiy xabarlar</span>
+  </div>
+
+  <main>
+    <div class="section-title">Foydalanuvchilar</div>
+    <div id="foydalanuvchilar-lista" class="user-list">
+      <div class="empty-state">Yuklanmoqda...</div>
+    </div>
+
+    <div id="suhbat-blok" style="display:none;">
+      <div id="suhbat-sarlavha" class="chat-header">—</div>
+      <div id="suhbat-oynasi" class="messages-box">
+        <div class="empty-state">Suhbatlashish uchun foydalanuvchini tanlang</div>
+      </div>
+      <div class="input-box">
+        <input type="text" id="xabar-matni" class="input-text" placeholder="Xabar yozing..." maxlength="500">
+        <button id="yuborish-tugmasi" class="send-btn">Yuborish</button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+(function(){
+  const SB_URL = 'https://sjkygpcdwfmdafceaemn.supabase.co';
+  const SB_KEY = 'sb_publishable_BtIqBdd9iLiCtG04b5tTjQ_Mv8Ozrjx';
+  const sb = supabase.createClient(SB_URL, SB_KEY);
+
+  const foydalanuvchilarBlok = document.getElementById('foydalanuvchilar-lista');
+  const suhbatBlok = document.getElementById('suhbat-blok');
+  const suhbatSarlavha = document.getElementById('suhbat-sarlavha');
+  const suhbatOynasi = document.getElementById('suhbat-oynasi');
+  const xabarInput = document.getElementById('xabar-matni');
+  const yuborishBtn = document.getElementById('yuborish-tugmasi');
+
+  let meningId = null;
+  let suhbatdoshId = null;
+  const koRilganIdlar = new Set();
+
+  function escapeHtml(str){
+    const d = document.createElement('div');
+    d.textContent = str;
+    return d.innerHTML;
+  }
+
+  function xabarKartaYarat(y){
+    const card = document.createElement('div');
+    card.className = 'message-card';
+    if(y.yuboruvchi === meningId) card.classList.add('own');
+    const matnDiv = document.createElement('div');
+    matnDiv.className = 'message-text';
+    matnDiv.textContent = y.matn;
+    card.appendChild(matnDiv);
+    return card;
+  }
+
+  function xabarQosh(y){
+    koRilganIdlar.add(y.id);
+    const boshSarlavha = suhbatOynasi.querySelector('.empty-state');
+    if(boshSarlavha) suhbatOynasi.innerHTML = '';
+    suhbatOynasi.appendChild(xabarKartaYarat(y));
+    suhbatOynasi.scrollTop = suhbatOynasi.scrollHeight;
+  }
+
+  async function foydalanuvchilarRuyxatiniYukla(){
+    const { data, error } = await sb.from('profillar').select('id, ism').neq('id', meningId).order('ism');
+    if(error || !data){
+      foydalanuvchilarBlok.innerHTML = '<div class="empty-state">Foydalanuvchilar yuklab bo\'lmadi</div>';
+      return;
+    }
+    if(data.length === 0){
+      foydalanuvchilarBlok.innerHTML = '<div class="empty-state">Hali boshqa foydalanuvchilar yo\'q</div>';
+      return;
+    }
+    foydalanuvchilarBlok.innerHTML = '';
+    data.forEach(u => {
+      const card = document.createElement('div');
+      card.className = 'user-card';
+      card.dataset.id = u.id;
+      card.innerHTML = '<div class="user-avatar">' + escapeHtml(u.ism.charAt(0).toUpperCase()) + '</div>' +
+                       '<div class="user-name">' + escapeHtml(u.ism) + '</div>';
+      card.addEventListener('click', () => suhbatniOchish(u));
+      foydalanuvchilarBlok.appendChild(card);
+    });
+  }
+
+  async function suhbatniOchish(u){
+    suhbatdoshId = u.id;
+    suhbatBlok.style.display = 'block';
+    suhbatSarlavha.textContent = u.ism;
+    document.querySelectorAll('.user-card').forEach(c => c.classList.remove('active'));
+    const activeCard = foydalanuvchilarBlok.querySelector('[data-id="' + u.id + '"]');
+    if(activeCard) activeCard.classList.add('active');
+
+    suhbatOynasi.innerHTML = '<div class="empty-state">Yuklanmoqda...</div>';
+
+    const { data, error } = await sb.from('xabarlar').select('*')
+      .or('and(yuboruvchi.eq.' + meningId + ',qabul_qiluvchi.eq.' + suhbatdoshId + '),and(yuboruvchi.eq.' + suhbatdoshId + ',qabul_qiluvchi.eq.' + meningId + ')')
+      .order('created_at', { ascending: true });
+
+    if(error){
+      suhbatOynasi.innerHTML = '<div class="empty-state">Xatolik: ' + escapeHtml(error.message) + '</div>';
+      return;
+    }
+    suhbatOynasi.innerHTML = '';
+    if(!data || data.length === 0){
+      suhbatOynasi.innerHTML = '<div class="empty-state">Hozircha xabarlar yo\'q</div>';
+      return;
+    }
+    data.forEach(y => xabarQosh(y));
+  }
+
+  async function xabarYuborish(){
+    const matn = xabarInput.value.trim();
+    if(!matn || !suhbatdoshId) return;
+    yuborishBtn.disabled = true;
+    const { data, error } = await sb.from('xabarlar')
+      .insert({ yuboruvchi: meningId, qabul_qiluvchi: suhbatdoshId, matn })
+      .select();
+    yuborishBtn.disabled = false;
+    if(error){
+      alert('Xatolik: ' + error.message);
+      return;
+    }
+    if(data && data[0]) xabarQosh(data[0]);
+    xabarInput.value = '';
+    xabarInput.focus();
+  }
+
+  async function boshlash(){
+    const { data } = await sb.auth.getUser();
+    if(!data || !data.user){
+      window.location.href = 'kirish.html';
+      return;
+    }
+    meningId = data.user.id;
+
+    foydalanuvchilarRuyxatiniYukla();
+
+    sb.channel('xabarlar-shaxsiy')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'xabarlar' }, payload => {
+        const y = payload.new;
+        if(!suhbatdoshId || koRilganIdlar.has(y.id)) return;
+        if(y.yuboruvchi === suhbatdoshId || (y.qabul_qiluvchi === suhbatdoshId && y.yuboruvchi === meningId)){
+          xabarQosh(y);
+        }
+      })
+      .subscribe();
+  }
+
+  yuborishBtn.addEventListener('click', xabarYuborish);
+  xabarInput.addEventListener('keypress', (e) => {
+    if(e.key === 'Enter' && !e.shiftKey){
+      e.preventDefault();
+      xabarYuborish();
+    }
+  });
+
+  boshlash();
+})();
+</script>
+</body>
+</html>

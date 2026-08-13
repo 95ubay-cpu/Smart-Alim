@@ -127,27 +127,30 @@ function escapeHtml(str){
   return d.innerHTML;
 }
 
-/* ---------- Auth (ro'yxatdan o'tish / kirish) ---------- */
-const AUTH_USERS_KEY = 'smartalim_users';
-const AUTH_CURRENT_KEY = 'smartalim_current';
+/* ---------- Auth (Supabase) ---------- */
+const SB_URL = 'https://sjkygpcdwfmdafceaemn.supabase.co';
+const SB_KEY = 'sb_publishable_BtIqBdd9iLiCtG04b5tTjQ_Mv8Ozrjx';
+const sb = (typeof supabase !== 'undefined') ? supabase.createClient(SB_URL, SB_KEY) : null;
 
-function getUsers(){
-  try{ return JSON.parse(localStorage.getItem(AUTH_USERS_KEY)) || []; }
-  catch(e){ return []; }
+async function joriyFoydalanuvchi(){
+  if(!sb) return null;
+  try{
+    const { data } = await sb.auth.getUser();
+    if(!data || !data.user) return null;
+    const ism = (data.user.user_metadata && data.user.user_metadata.ism) || data.user.email.split('@')[0];
+    return { id: data.user.id, name: ism, email: data.user.email };
+  }catch(e){ return null; }
 }
-function saveUsers(list){ localStorage.setItem(AUTH_USERS_KEY, JSON.stringify(list)); }
-function getCurrentUser(){
-  try{ return JSON.parse(localStorage.getItem(AUTH_CURRENT_KEY)); }
-  catch(e){ return null; }
+
+async function logoutUser(){
+  if(sb) await sb.auth.signOut();
 }
-function setCurrentUser(user){ localStorage.setItem(AUTH_CURRENT_KEY, JSON.stringify(user)); }
-function logoutUser(){ localStorage.removeItem(AUTH_CURRENT_KEY); }
 
 function initRegisterForm(){
   const form = document.getElementById('register-form');
   if(!form) return;
   const errorBox = document.getElementById('register-error');
-  form.addEventListener('submit', e=>{
+  form.addEventListener('submit', async e=>{
     e.preventDefault();
     const name = document.getElementById('reg-name').value.trim();
     const email = document.getElementById('reg-email').value.trim().toLowerCase();
@@ -164,15 +167,26 @@ function initRegisterForm(){
     if(pass !== pass2){
       errorBox.textContent = 'Parollar mos kelmadi.'; return;
     }
-    const users = getUsers();
-    if(users.some(u=>u.email === email)){
-      errorBox.textContent = 'Bu email allaqachon roʻyxatdan oʻtgan.'; return;
+    if(!sb){
+      errorBox.textContent = 'Auth serveriga ulanishda xatolik. Internetni tekshiring.'; return;
     }
-    const newUser = { name, email, pass };
-    users.push(newUser);
-    saveUsers(users);
-    setCurrentUser({ name, email });
-    window.location.href = 'profil.html';
+
+    const { data, error } = await sb.auth.signUp({
+      email,
+      password: pass,
+      options: { data: { ism: name } }
+    });
+
+    if(error){
+      errorBox.textContent = error.message; return;
+    }
+    if(data && data.user){
+      try{
+        await sb.from('profillar').insert({ id: data.user.id, ism: name });
+      }catch(e){}
+    }
+    errorBox.textContent = 'Hisob yaratildi! Endi tizimga kirishingiz mumkin.';
+    setTimeout(()=>{ window.location.href = 'kirish.html'; }, 1500);
   });
 }
 
@@ -180,27 +194,29 @@ function initLoginForm(){
   const form = document.getElementById('login-form');
   if(!form) return;
   const errorBox = document.getElementById('login-error');
-  form.addEventListener('submit', e=>{
+  form.addEventListener('submit', async e=>{
     e.preventDefault();
     const email = document.getElementById('login-email').value.trim().toLowerCase();
     const pass = document.getElementById('login-pass').value;
     errorBox.textContent = '';
 
-    const users = getUsers();
-    const found = users.find(u=>u.email === email && u.pass === pass);
-    if(!found){
-      errorBox.textContent = 'Email yoki parol notoʻgʻri.'; return;
+    if(!sb){
+      errorBox.textContent = 'Auth serveriga ulanishda xatolik. Internetni tekshiring.'; return;
     }
-    setCurrentUser({ name: found.name, email: found.email });
-    window.location.href = 'profil.html';
+
+    const { error } = await sb.auth.signInWithPassword({ email, password: pass });
+    if(error){
+      errorBox.textContent = error.message; return;
+    }
+    window.location.href = 'index.html';
   });
 }
 
-function initProfilePage(){
+async function initProfilePage(){
   const guestBox = document.getElementById('profile-guest');
   const userBox = document.getElementById('profile-user');
   if(!guestBox || !userBox) return;
-  const user = getCurrentUser();
+  const user = await joriyFoydalanuvchi();
 
   if(user){
     guestBox.style.display = 'none';
@@ -209,8 +225,8 @@ function initProfilePage(){
     document.getElementById('profile-email').textContent = user.email;
     const logoutBtn = document.getElementById('logout-btn');
     if(logoutBtn){
-      logoutBtn.addEventListener('click', ()=>{
-        logoutUser();
+      logoutBtn.addEventListener('click', async ()=>{
+        await logoutUser();
         window.location.reload();
       });
     }

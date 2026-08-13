@@ -144,6 +144,10 @@
     <div class="chat-container">
         <div class="chat-header">Smart ta'lim - Jonli Chat</div>
 
+        <div style="text-align:center; padding:8px; background:#f9f9f9; border-bottom:1px solid #eee;">
+            <a href="xabarlar.html" style="color:#2e7d32; font-weight:bold; text-decoration:none; font-size:14px;">💌 Shaxsiy xabarlar</a>
+        </div>
+
         <div id="xabarlar-oynasi" class="messages-box">
             <div class="empty-state">Xabarlar yuklanmoqda...</div>
         </div>
@@ -179,10 +183,18 @@
         }
 
         // Ro'yxatdan o'tgan foydalanuvchi ismini avtomatik qo'yish
-        try {
-            const user = JSON.parse(localStorage.getItem('smartalim_current'));
-            if (user && user.name) ismInput.value = user.name;
-        } catch (e) {}
+        (async function() {
+            try {
+                const { data } = await supabase.auth.getUser();
+                if (data && data.user) {
+                    const ism = (data.user.user_metadata && data.user.user_metadata.ism) || data.user.email.split('@')[0];
+                    ismInput.value = ism;
+                } else {
+                    const u = JSON.parse(localStorage.getItem('smartalim_current'));
+                    if (u && u.name) ismInput.value = u.name;
+                }
+            } catch (e) {}
+        })();
 
         // Bitta xabar kartochkasini xavfsiz (XSS'siz) yaratish
         function xabarKartaYarat(item) {
