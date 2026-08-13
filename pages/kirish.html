@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kirish — Smart Ta'lim</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+
+  <div class="topbar">
+    <a class="back" href="index.html">←</a>
+    <h1>Kirish</h1>
+  </div>
+
+  <main>
+    <div class="auth-hero">
+      <img src="talim.jpg" alt="Smart Ta'lim">
+      <h2>Xush kelibsiz!</h2>
+      <p>Hisobingizga kirish uchun maʼlumotlarni kiriting</p>
+    </div>
+
+    <form id="login-form">
+      <div class="form-group">
+        <label for="login-email">Email</label>
+        <input class="form-input" type="email" id="login-email" placeholder="email@misol.uz" autocomplete="email">
+      </div>
+      <div class="form-group">
+        <label for="login-pass">Parol</label>
+        <input class="form-input" type="password" id="login-pass" placeholder="Parolingiz" autocomplete="current-password">
+      </div>
+      <div class="form-error" id="login-error"></div>
+      <button class="btn-primary" type="submit">Kirish</button>
+    </form>
+
+    <div class="auth-switch">
+      Hisobingiz yoʻqmi? <a href="royxatdan-otish.html">Roʻyxatdan oʻtish</a>
+    </div>
+  </main>
+
+</div>
+<script src="script.js"></script>
+</body>
+</html>
