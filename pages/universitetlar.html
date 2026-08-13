@@ -67,6 +67,42 @@
     padding: 8px 0;
   }
   .item-card { cursor: pointer; }
+
+  .uni-card{ flex-direction:column; align-items:stretch; }
+  .uni-photo{
+    width:100%; height:150px;
+    border-radius:10px;
+    overflow:hidden;
+    background:#e9f5ef;
+    display:flex; align-items:center; justify-content:center;
+    margin-bottom:12px;
+    flex-shrink:0;
+  }
+  .uni-photo img{
+    width:100%; height:100%;
+    object-fit:cover;
+    display:block;
+  }
+  .uni-photo.no-photo{ font-size:36px; }
+  .uni-info{
+    margin:8px 0 0;
+    font-size:13px; color:#5B6B65; line-height:1.55;
+  }
+
+  .uni-modal-photo{
+    margin:-20px -20px 14px;
+    height:160px;
+    border-radius:16px 16px 0 0;
+    overflow:hidden;
+    background:#e9f5ef;
+    display:flex; align-items:center; justify-content:center;
+    font-size:40px;
+  }
+  .uni-modal-photo img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .uni-modal-info{
+    font-size:13.5px; color:#444; line-height:1.6;
+    margin:10px 0 4px;
+  }
 </style>
 </head>
 <body>
@@ -100,8 +136,10 @@
 <div class="uni-modal-overlay" id="uniModal">
   <div class="uni-modal-box">
     <button class="uni-modal-close" id="uniModalClose">✕</button>
+    <div class="uni-modal-photo" id="uniModalPhoto">🏛️</div>
     <h2 id="uniModalTitle"></h2>
     <p class="uni-modal-sub" id="uniModalSub"></p>
+    <p class="uni-modal-info" id="uniModalInfo"></p>
     <div class="uni-modal-section-title">Fakultetlar / yo'nalishlar</div>
     <ul class="uni-modal-fac-list" id="uniModalFacList"></ul>
   </div>
@@ -110,7 +148,7 @@
 <script src="../js/script.js"></script>
 <script>
   const universities = [
-    { name: "O'zbekiston Milliy universiteti (O'zMU)", city: "Toshkent", type: "Davlat", faculties: ["Tarix fakulteti","Kimyo fakulteti","Fizika fakulteti","Geologiya va geoinformatsion tizimlar fakulteti","Geografiya va tabiiy resurslar fakulteti","Iqtisodiyot fakulteti","Jurnalistika fakulteti","Xorijiy filologiya fakulteti","Matematika fakulteti","Biologiya fakulteti","Ijtimoiy fanlar fakulteti"] },
+    { name: "O'zbekiston Milliy universiteti (O'zMU)", city: "Toshkent", type: "Davlat", img: "../img/universitetlar/ozmu.jpg", info: "Mamlakatdagi eng qadimiy va yirik oliy ta'lim muassasalaridan biri (1918-yilda tashkil etilgan). 15 dan ortiq fakultet, magistratura va doktorantura yo'nalishlari mavjud.", faculties: ["Tarix fakulteti","Kimyo fakulteti","Fizika fakulteti","Geologiya va geoinformatsion tizimlar fakulteti","Geografiya va tabiiy resurslar fakulteti","Iqtisodiyot fakulteti","Jurnalistika fakulteti","Xorijiy filologiya fakulteti","Matematika fakulteti","Biologiya fakulteti","Ijtimoiy fanlar fakulteti"] },
     { name: "Toshkent davlat texnika universiteti (TDTU)", city: "Toshkent", type: "Davlat", faculties: ["Mexanika fakulteti","Energetika fakulteti","Elektronika va avtomatika fakulteti","Mashinasozlik fakulteti","Muhandislik geologiyasi va konchilik ishi fakulteti","Muhandislik texnologiyalari fakulteti"] },
     { name: "Toshkent axborot texnologiyalari universiteti (TATU)", city: "Toshkent", type: "Davlat", faculties: ["Kompyuter injiniringi fakulteti","Telekommunikatsiya texnologiyalari fakulteti","Televizion texnologiyalar fakulteti","AKT sohasida iqtisodiyot va menejment fakulteti","AKT sohasida kasb ta'limi fakulteti"] },
     { name: "Toshkent davlat iqtisodiyot universiteti (TDIU)", city: "Toshkent", type: "Davlat", faculties: [] },
@@ -175,14 +213,18 @@
     grid.innerHTML = "";
     list.forEach((u) => {
       const card = document.createElement("div");
-      card.className = "item-card";
+      card.className = "item-card uni-card";
+      const photo = u.img
+        ? `<div class="uni-photo"><img src="${u.img}" alt="${u.name}" loading="lazy"></div>`
+        : `<div class="uni-photo no-photo">🏛️</div>`;
       card.innerHTML = `
-        <div class="thumb">🏛️</div>
+        ${photo}
         <div class="meta">
           <p class="title">${u.name}</p>
           <p class="sub">O'zbekiston · ${u.city}</p>
+          <span class="tag">${u.type}</span>
+          ${u.info ? `<p class="uni-info">${u.info}</p>` : ""}
         </div>
-        <span class="tag">${u.type}</span>
       `;
       card.addEventListener("click", () => openUniModal(u));
       grid.appendChild(card);
@@ -192,6 +234,15 @@
   function openUniModal(u) {
     document.getElementById("uniModalTitle").textContent = u.name;
     document.getElementById("uniModalSub").textContent = `${u.type} · ${u.city}`;
+    const photoEl = document.getElementById("uniModalPhoto");
+    if (u.img) {
+      photoEl.innerHTML = `<img src="${u.img}" alt="${u.name}">`;
+    } else {
+      photoEl.innerHTML = "🏛️";
+    }
+    const infoEl = document.getElementById("uniModalInfo");
+    infoEl.textContent = u.info || "";
+    infoEl.style.display = u.info ? "block" : "none";
     const list = document.getElementById("uniModalFacList");
     list.innerHTML = "";
     if (u.faculties && u.faculties.length > 0) {
