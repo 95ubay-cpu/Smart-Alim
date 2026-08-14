@@ -127,8 +127,120 @@ function escapeHtml(str){
   return d.innerHTML;
 }
 
+/* ---------- Auth (Supabase) ---------- */
+const SB_URL = 'https://sjkygpcdwfmdafceaemn.supabase.co';
+const SB_KEY = 'sb_publishable_BtIqBdd9iLiCtG04b5tTjQ_Mv8Ozrjx';
+const sb = (typeof supabase !== 'undefined') ? supabase.createClient(SB_URL, SB_KEY) : null;
+
+async function joriyFoydalanuvchi(){
+  if(!sb) return null;
+  try{
+    const { data } = await sb.auth.getUser();
+    if(!data || !data.user) return null;
+    const ism = (data.user.user_metadata && data.user.user_metadata.ism) || data.user.email.split('@')[0];
+    return { id: data.user.id, name: ism, email: data.user.email };
+  }catch(e){ return null; }
+}
+
+async function logoutUser(){
+  if(sb) await sb.auth.signOut();
+}
+
+function initRegisterForm(){
+  const form = document.getElementById('register-form');
+  if(!form) return;
+  const errorBox = document.getElementById('register-error');
+  form.addEventListener('submit', async e=>{
+    e.preventDefault();
+    const name = document.getElementById('reg-name').value.trim();
+    const email = document.getElementById('reg-email').value.trim().toLowerCase();
+    const pass = document.getElementById('reg-pass').value;
+    const pass2 = document.getElementById('reg-pass2').value;
+    errorBox.textContent = '';
+
+    if(!name || !email || !pass){
+      errorBox.textContent = 'Barcha maydonlarni toʻldiring.'; return;
+    }
+    if(pass.length < 6){
+      errorBox.textContent = 'Parol kamida 6 belgidan iborat boʻlishi kerak.'; return;
+    }
+    if(pass !== pass2){
+      errorBox.textContent = 'Parollar mos kelmadi.'; return;
+    }
+    if(!sb){
+      errorBox.textContent = 'Auth serveriga ulanishda xatolik. Internetni tekshiring.'; return;
+    }
+
+    const { data, error } = await sb.auth.signUp({
+      email,
+      password: pass,
+      options: { data: { ism: name } }
+    });
+
+    if(error){
+      errorBox.textContent = error.message; return;
+    }
+    if(data && data.user){
+      try{
+        await sb.from('profillar').insert({ id: data.user.id, ism: name });
+      }catch(e){}
+    }
+    errorBox.textContent = 'Hisob yaratildi! Endi tizimga kirishingiz mumkin.';
+    setTimeout(()=>{ window.location.href = 'kirish.html'; }, 1500);
+  });
+}
+
+function initLoginForm(){
+  const form = document.getElementById('login-form');
+  if(!form) return;
+  const errorBox = document.getElementById('login-error');
+  form.addEventListener('submit', async e=>{
+    e.preventDefault();
+    const email = document.getElementById('login-email').value.trim().toLowerCase();
+    const pass = document.getElementById('login-pass').value;
+    errorBox.textContent = '';
+
+    if(!sb){
+      errorBox.textContent = 'Auth serveriga ulanishda xatolik. Internetni tekshiring.'; return;
+    }
+
+    const { error } = await sb.auth.signInWithPassword({ email, password: pass });
+    if(error){
+      errorBox.textContent = error.message; return;
+    }
+    window.location.href = 'index.html';
+  });
+}
+
+async function initProfilePage(){
+  const guestBox = document.getElementById('profile-guest');
+  const userBox = document.getElementById('profile-user');
+  if(!guestBox || !userBox) return;
+  const user = await joriyFoydalanuvchi();
+
+  if(user){
+    guestBox.style.display = 'none';
+    userBox.style.display = 'block';
+    document.getElementById('profile-name').textContent = user.name;
+    document.getElementById('profile-email').textContent = user.email;
+    const logoutBtn = document.getElementById('logout-btn');
+    if(logoutBtn){
+      logoutBtn.addEventListener('click', async ()=>{
+        await logoutUser();
+        window.location.reload();
+      });
+    }
+  } else {
+    guestBox.style.display = 'block';
+    userBox.style.display = 'none';
+  }
+}
+
 /* ---------- Init on load ---------- */
 document.addEventListener('DOMContentLoaded', ()=>{
   initDictionary();
   initChat();
+  initRegisterForm();
+  initLoginForm();
+  initProfilePage();
 });

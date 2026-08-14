@@ -16,13 +16,13 @@
 
     <div class="search-box">
       <span>🔍</span>
-      <input type="text" placeholder="Qidiruv: kitob, universitet, so'z...">
+      <input type="text" id="search-input" placeholder="Qidiruv: kitob, universitet, so'z...">
     </div>
 
     <div class="section-title">Boʻlimlar</div>
     <div class="folder-grid">
 
-      <a class="folder-card" href="pages/royxatdan-otish.html">
+      <a class="folder-card" href="royxatdan-otish.html">
         <div class="icon">📝</div>
         <div>
           <div class="folder-name">Roʻyxatdan oʻtish</div>
@@ -38,7 +38,7 @@
         </div>
       </a>
 
-      <a class="folder-card" href="pages/universitetlar.html">
+      <a class="folder-card" href="universitetlar.html">
         <div class="icon">🎓</div>
         <div>
           <div class="folder-name">Universitetlar</div>
@@ -54,7 +54,7 @@
         </div>
       </a>
 
-      <a class="folder-card" href="pages/chat.html">
+      <a class="folder-card" href="chat.html">
         <div class="icon">💬</div>
         <div>
           <div class="folder-name">Chat</div>
@@ -78,7 +78,7 @@
         </div>
       </a>
 
-      <a class="folder-card" href="pages/murojaat.html">
+      <a class="folder-card" href="murojaat.html">
         <div class="icon">📨</div>
         <div>
           <div class="folder-name">Murojaatlar</div>
@@ -91,15 +91,35 @@
 
   <nav class="bottom-nav">
     <a class="nav-item active" href="index.html"><span class="ic">🏠</span>Bosh sahifa</a>
-    <a class="nav-item" href="pages/royxatdan-otish.html"><span class="ic">📝</span>Roʻyxatdan</a>
     <a class="nav-item" href="kutubxona.html"><span class="ic">📚</span>Kitoblar</a>
     <a class="nav-item" href="lugat.html"><span class="ic">🔤</span>Lugʻat</a>
-    <a class="nav-item" href="pages/xabarlar.html"><span class="ic">💌</span>Xabarlar</a>
-    <a class="nav-item" href="pages/chat.html"><span class="ic">💬</span>Chat</a>
-    <a class="nav-item" href="pages/murojaat.html"><span class="ic">✉️</span>Murojaat</a>
+    <a class="nav-item" href="xabarlar.html"><span class="ic">💌</span>Xabarlar</a>
+    <a class="nav-item" href="chat.html"><span class="ic">💬</span>Chat</a>
+    <a class="nav-item" href="murojaat.html"><span class="ic">✉️</span>Murojaat</a>
   </nav>
 
 </div>
 <script src="script.js"></script>
+<script>
+  const searchInput = document.getElementById('search-input');
+  const cards = document.querySelectorAll('.folder-card');
+  const searchHint = document.createElement('div');
+  searchHint.className = 'empty';
+  searchHint.style.cssText = 'display:none;text-align:center;color:#6b7a73;padding:24px 0;';
+  searchHint.innerHTML = '<div class="ic">🔍</div><p>Hech narsa topilmadi. Boshqa soʻz bilan izlab koʻring.</p>';
+
+  searchInput.addEventListener('input', () => {
+    const q = searchInput.value.trim().toLowerCase();
+    let found = 0;
+    cards.forEach(card => {
+      const text = card.textContent.toLowerCase();
+      const show = !q || text.includes(q);
+      card.style.display = show ? '' : 'none';
+      if (show) found++;
+    });
+    searchHint.style.display = found === 0 ? 'block' : 'none';
+    document.querySelector('.folder-grid').appendChild(searchHint);
+  });
+</script>
 </body>
 </html>
