@@ -123,8 +123,8 @@
   <div class="nav-item">📨<br>Murojaatlar</div>
 </div>
 
-<script src="lugat_oson_data.js"></script>
-<script src="lugat_qiyin_data.js"></script>
+<script src="lugat_oson_data.js?v=2"></script>
+<script src="lugat_qiyin_data.js?v=2"></script>
 <script>
 const LUGAT_BOLIMLAR = {
   oson: typeof LUGAT_OSON !== 'undefined' ? LUGAT_OSON : [],
@@ -143,16 +143,23 @@ function render(filter=""){
   listEl.innerHTML = "";
   const f = filter.trim().toLowerCase();
   let shown = 0;
+  const words = getWords();
+
+  if (words.length === 0){
+    listEl.innerHTML = `<div class="empty-state">Lug'at ma'lumotlari yuklanmadi. Internetni tekshirib, sahifani yangilang.</div>`;
+    countEl.textContent = "";
+    return;
+  }
 
   const rows = [];
-  getWords().forEach(([en, uz], idx) => {
+  words.forEach(([en, uz]) => {
     const main = currentDir === "en-uz" ? en : uz;
     const sub  = currentDir === "en-uz" ? uz : en;
     if (f && !main.toLowerCase().includes(f) && !sub.toLowerCase().includes(f)) return;
 
     shown++;
     rows.push(`
-      <div class="item-card" data-i="${idx}">
+      <div class="item-card" data-main="${main}" data-lang="${currentDir === "en-uz" ? "en-US" : "uz-UZ"}">
         <div class="word-block">
           <div class="word-main">${main}</div>
           <div class="word-sub">${sub}</div>
@@ -165,11 +172,10 @@ function render(filter=""){
   });
   listEl.innerHTML = rows.join("");
   listEl.querySelectorAll(".item-card").forEach((card) => {
-    const idx = +card.getAttribute("data-i");
-    const [en, uz] = getWords()[idx];
-    const main = currentDir === "en-uz" ? en : uz;
+    const main = card.getAttribute("data-main");
+    const lang = card.getAttribute("data-lang");
     const btn = card.querySelector(".speak-btn");
-    const speakFn = () => speak(main, currentDir === "en-uz" ? "en-US" : "uz-UZ", btn);
+    const speakFn = () => speak(main, lang, btn);
     btn.addEventListener("click", (e)=>{ e.stopPropagation(); speakFn(); });
     card.addEventListener("click", speakFn);
   });
