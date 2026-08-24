@@ -49,6 +49,9 @@ main{padding:4px 20px 40px;flex:1}
 .letter{width:48px;height:48px;border-radius:12px;background:var(--mint-2);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;font-family:'Amiri',serif;color:var(--ink);direction:rtl;cursor:pointer;touch-action:manipulation;transition:all .15s}
 .letter:active{transform:scale(1.1);box-shadow:0 4px 14px rgba(0,0,0,.12)}
 .letter.used{opacity:.25;pointer-events:none;transform:scale(.85)}
+.harakat{width:44px;height:44px;border-radius:12px;background:#FFF7E0;border:2px solid #F3E3AD;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;font-family:'Amiri',serif;color:#8A6D1D;direction:rtl;cursor:pointer;touch-action:manipulation;transition:all .15s}
+.harakat:active{transform:scale(1.1);box-shadow:0 4px 14px rgba(0,0,0,.12)}
+.harakat.used{opacity:.25;pointer-events:none;transform:scale(.85)}
 .space-dot{width:14px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:16px}
 
 .fb{text-align:center;padding:12px;border-radius:var(--radius-sm);margin-bottom:16px;font-weight:700;font-size:14px;display:none}
@@ -106,8 +109,13 @@ main{padding:4px 20px 40px;flex:1}
     </div>
 
     <div class="pool-area">
-      <div class="label">Oyat harflarini bosing — joylanadi</div>
+      <div class="label">Harflarni bosing — joylanadi</div>
       <div class="pool" id="pool"></div>
+    </div>
+
+    <div class="pool-area">
+      <div class="label">Harakatlarni bosing — harf ustiga qo'yiladi</div>
+      <div class="pool" id="harakatPool"></div>
     </div>
 
     <div class="ctrls">
@@ -130,24 +138,54 @@ main{padding:4px 20px 40px;flex:1}
 
 <script>
 (function(){
+  // Har bir oyat matni — harakatlar (fatha, damma, kasra, sukun, shadda...) shu yerda, matn ichida
   var AYAHS = [
-    { text: "\u0642\u064F\u0644\u0652 \u0647\u064F\u0648\u064E \u0627\u0644\u0644\u0651\u064E\u0647\u064F \u0623\u064E\u062D\u064E\u062F\u064C",
-      letters: ["\u0642","\u0644"," ","\u0647","\u0648"," ","\u0627","\u0644","\u0644","\u0647"," ","\u0623","\u062D","\u062F"] },
-    { text: "\u0627\u0644\u0644\u0651\u064E\u0647\u064F \u0627\u0644\u0652\u0635\u0650\u064E\u0645\u064E\u062F\u064F",
-      letters: ["\u0627","\u0644","\u0644","\u0647"," ","\u0627","\u0644","\u0635","\u0645","\u062F"] },
-    { text: "\u0644\u064E\u0645\u0652 \u064A\u064E\u0644\u0650\u062F\u0652 \u0648\u064E\u0644\u064E\u0645\u0652 \u064A\u064F\u0648\u064E\u0644\u064E\u062F\u0652",
-      letters: ["\u0644","\u0645"," ","\u064A","\u0644","\u062F"," ","\u0648","\u0644","\u0645"," ","\u064A","\u0648","\u0644","\u062F"] },
-    { text: "\u0648\u064E\u0644\u064E\u0645\u0652 \u064A\u064E\u0643\u064F\u0646\u0652 \u0644\u0651\u064E\u0647\u064F \u0643\u064F\u0641\u064F\u0648\u064E\u064B \u0623\u064E\u062D\u064E\u062F\u064C",
-      letters: ["\u0648","\u0644","\u0645"," ","\u064A","\u0643","\u0646"," ","\u0644","\u0647"," ","\u0643","\u0641","\u0648","\u0647"," ","\u0623","\u062D","\u062F"] }
+    { text: "\u0642\u064F\u0644\u0652 \u0647\u064F\u0648\u064E \u0627\u0644\u0644\u0651\u064E\u0647\u064F \u0623\u064E\u062D\u064E\u062F\u064C" },
+    { text: "\u0627\u0644\u0644\u0651\u064E\u0647\u064F \u0627\u0644\u0652\u0635\u0650\u064E\u0645\u064E\u062F\u064F" },
+    { text: "\u0644\u064E\u0645\u0652 \u064A\u064E\u0644\u0650\u062F\u0652 \u0648\u064E\u0644\u064E\u0645\u0652 \u064A\u064F\u0648\u064E\u0644\u064E\u062F\u0652" },
+    { text: "\u0648\u064E\u0644\u064E\u0645\u0652 \u064A\u064E\u0643\u064F\u0646\u0652 \u0644\u0651\u064E\u0647\u064F \u0643\u064F\u0641\u064F\u0648\u064E\u064B \u0623\u064E\u062D\u064E\u062F\u064C" }
   ];
 
+  // Arabcha harakat belgilarining unicode oralig'i (harf ustiga/tagiga qo'yiladigan belgilar)
+  function isHarakat(code) {
+    return (code >= 0x0610 && code <= 0x061A) ||
+           (code >= 0x064B && code <= 0x065F) ||
+           code === 0x0670 ||
+           (code >= 0x06D6 && code <= 0x06ED);
+  }
+
+  // Matnni "token"larga ajratadi: bo'shliq (' '), yoki {base, diac} — harf va uning harakati
+  function tokenize(text) {
+    var tokens = [];
+    for (var i = 0; i < text.length; i++) {
+      var c = text.charAt(i);
+      if (c === ' ') { tokens.push(' '); continue; }
+      var code = c.codePointAt(0);
+      if (isHarakat(code) && tokens.length > 0 && tokens[tokens.length - 1] !== ' ') {
+        tokens[tokens.length - 1].diac += c;
+      } else {
+        tokens.push({ base: c, diac: '' });
+      }
+    }
+    return tokens;
+  }
+
+  // Oldindan har bir oyatga tokenlarini hisoblab qo'yamiz
+  for (var a = 0; a < AYAHS.length; a++) {
+    AYAHS[a].tokens = tokenize(AYAHS[a].text);
+  }
+
+  var DOTTED = '\u25CC'; // yolg'iz harakatni ko'rsatish uchun nuqtali doira
+
   var ayahIdx = 0;
-  var placed = [];
+  var placedLetter = [];   // har bir katak uchun: joylashtirilgan harf ('ق' kabi) yoki null
+  var placedHarakat = [];  // har bir katak uchun: joylashtirilgan harakat yoki null
   var soundOn = true;
   var synth = window.speechSynthesis || null;
 
   var slotsEl = document.getElementById('slots');
   var poolEl = document.getElementById('pool');
+  var harakatPoolEl = document.getElementById('harakatPool');
   var fbEl = document.getElementById('fb');
   var ayahTextEl = document.getElementById('ayahText');
   var progressEl = document.getElementById('progress');
@@ -180,10 +218,11 @@ main{padding:4px 20px 40px;flex:1}
     } catch(e) {}
   }
 
-  function getClean(ayah) {
+  // Faqat harf-tokenlar (bo'shliqsiz) ro'yxati — bitta katak = bitta shu ro'yxatdagi element
+  function letterTokens(ayah) {
     var result = [];
-    for (var i = 0; i < ayah.letters.length; i++) {
-      if (ayah.letters[i] !== ' ') result.push(ayah.letters[i]);
+    for (var i = 0; i < ayah.tokens.length; i++) {
+      if (ayah.tokens[i] !== ' ') result.push(ayah.tokens[i]);
     }
     return result;
   }
@@ -201,9 +240,10 @@ main{padding:4px 20px 40px;flex:1}
 
   function render() {
     var ayah = AYAHS[ayahIdx];
-    var letters = getClean(ayah);
-    placed = [];
-    for (var i = 0; i < letters.length; i++) placed.push(null);
+    var tokens = letterTokens(ayah);
+    placedLetter = [];
+    placedHarakat = [];
+    for (var i = 0; i < tokens.length; i++) { placedLetter.push(null); placedHarakat.push(null); }
 
     ayahTextEl.textContent = ayah.text;
     fbEl.className = 'fb';
@@ -211,8 +251,9 @@ main{padding:4px 20px 40px;flex:1}
     nextBtn.disabled = true;
 
     renderProgress();
-    renderSlots(letters.length);
-    renderPool(ayah.letters);
+    renderSlots(tokens.length);
+    renderLetterPool(ayah.tokens);
+    renderHarakatPool(ayah.tokens);
   }
 
   function renderSlots(n) {
@@ -230,11 +271,11 @@ main{padding:4px 20px 40px;flex:1}
     return function() { removeSlot(idx); };
   }
 
-  function renderPool(letters) {
+  function renderLetterPool(tokens) {
     poolEl.innerHTML = '';
-    var letterIdx = 0;
-    for (var i = 0; i < letters.length; i++) {
-      if (letters[i] === ' ') {
+    var idx = 0;
+    for (var i = 0; i < tokens.length; i++) {
+      if (tokens[i] === ' ') {
         var d = document.createElement('div');
         d.className = 'space-dot';
         d.textContent = '\u00B7';
@@ -243,62 +284,97 @@ main{padding:4px 20px 40px;flex:1}
       }
       var t = document.createElement('div');
       t.className = 'letter';
-      t.textContent = letters[i];
-      t.setAttribute('data-idx', letterIdx);
-      t.setAttribute('data-ch', letters[i]);
-      t.addEventListener('click', createPoolClick(t));
+      t.textContent = tokens[i].base;
+      t.setAttribute('data-idx', idx);
+      t.addEventListener('click', function(tile) { return function() { placeBaseLetter(tile); }; }(t));
       poolEl.appendChild(t);
-      letterIdx++;
+      idx++;
     }
   }
 
-  function createPoolClick(tile) {
-    return function() { placeLetter(tile); };
+  function renderHarakatPool(tokens) {
+    harakatPoolEl.innerHTML = '';
+    var idx = 0;
+    var any = false;
+    for (var i = 0; i < tokens.length; i++) {
+      if (tokens[i] === ' ') { idx += 0; continue; }
+      if (tokens[i].diac) {
+        var h = document.createElement('div');
+        h.className = 'harakat';
+        h.textContent = DOTTED + tokens[i].diac;
+        h.setAttribute('data-idx', idx);
+        h.addEventListener('click', function(tile) { return function() { placeHarakat(tile); }; }(h));
+        harakatPoolEl.appendChild(h);
+        any = true;
+      }
+      idx++;
+    }
+    harakatPoolEl.parentElement.style.display = any ? '' : 'none';
   }
 
-  function placeLetter(tile) {
-    if (tile.classList.contains('used')) return;
+  function currentSlotText(idx) {
+    var base = placedLetter[idx] || (placedHarakat[idx] ? DOTTED : '');
+    return base + (placedHarakat[idx] || '');
+  }
 
-    var idx = parseInt(tile.getAttribute('data-idx'), 10);
-    var slots = slotsEl.children;
-    var slot = slots[idx];
-    if (!slot || slot.classList.contains('filled')) return;
-
-    var ch = tile.getAttribute('data-ch');
-    placed[idx] = ch;
-
-    slot.innerHTML = ch + '<span class="slot-x">\u2715</span>';
+  function updateSlotDisplay(idx) {
+    var slot = slotsEl.children[idx];
+    var txt = currentSlotText(idx);
+    if (!txt) {
+      slot.innerHTML = '';
+      slot.classList.remove('filled');
+      return;
+    }
+    slot.innerHTML = txt + '<span class="slot-x">\u2715</span>';
     slot.classList.add('filled');
-    tile.classList.add('used');
+  }
 
-    slotsEl.classList.add('flash');
-    setTimeout(function() { slotsEl.classList.remove('flash'); }, 250);
-
-    speak(ch);
-
-    var filledCount = 0;
-    for (var j = 0; j < placed.length; j++) {
-      if (placed[j]) filledCount++;
-    }
-
-    if (filledCount > 1) {
-      setTimeout(function() {
-        var lastFilled = [];
-        for (var k = placed.length - 1; k >= 0; k--) {
-          if (placed[k]) {
-            lastFilled.unshift(placed[k]);
-            if (lastFilled.length >= 3) break;
-          }
-        }
-        speak(lastFilled.join(''));
-      }, 700);
-    }
+  function placeBaseLetter(tile) {
+    if (tile.classList.contains('used')) return;
+    var idx = parseInt(tile.getAttribute('data-idx'), 10);
+    if (placedLetter[idx]) return;
 
     var ayah = AYAHS[ayahIdx];
-    var totalLetters = getClean(ayah).length;
-    if (filledCount === totalLetters) {
-      setTimeout(finishAyah, 400);
+    var token = letterTokens(ayah)[idx];
+    placedLetter[idx] = token.base;
+    tile.classList.add('used');
+
+    updateSlotDisplay(idx);
+    flashSlots();
+    speak(token.base);
+    checkAllDone();
+  }
+
+  function placeHarakat(tile) {
+    if (tile.classList.contains('used')) return;
+    var idx = parseInt(tile.getAttribute('data-idx'), 10);
+    if (placedHarakat[idx]) return;
+
+    var ayah = AYAHS[ayahIdx];
+    var token = letterTokens(ayah)[idx];
+    placedHarakat[idx] = token.diac;
+    tile.classList.add('used');
+
+    updateSlotDisplay(idx);
+    flashSlots();
+    // harf allaqachon joylangan bo'lsa — to'liq to'g'ri ovozi (masalan "qu") eshittiramiz
+    speak((placedLetter[idx] || '') + token.diac);
+    checkAllDone();
+  }
+
+  function flashSlots() {
+    slotsEl.classList.add('flash');
+    setTimeout(function() { slotsEl.classList.remove('flash'); }, 250);
+  }
+
+  function checkAllDone() {
+    var ayah = AYAHS[ayahIdx];
+    var tokens = letterTokens(ayah);
+    for (var i = 0; i < tokens.length; i++) {
+      if (!placedLetter[i]) return;
+      if (tokens[i].diac && !placedHarakat[i]) return;
     }
+    setTimeout(finishAyah, 400);
   }
 
   function finishAyah() {
@@ -312,18 +388,25 @@ main{padding:4px 20px 40px;flex:1}
   }
 
   function removeSlot(idx) {
-    if (!placed[idx]) return;
-    placed[idx] = null;
+    if (!placedLetter[idx] && !placedHarakat[idx]) return;
+    placedLetter[idx] = null;
+    placedHarakat[idx] = null;
+    updateSlotDisplay(idx);
+    slotsEl.children[idx].classList.remove('ok', 'err');
 
-    var slots = slotsEl.children;
-    slots[idx].innerHTML = '';
-    slots[idx].classList.remove('filled', 'ok', 'err');
-
-    var tiles = poolEl.children;
-    for (var i = 0; i < tiles.length; i++) {
-      if (tiles[i].classList.contains('letter') &&
-          parseInt(tiles[i].getAttribute('data-idx'), 10) === idx) {
-        tiles[i].classList.remove('used');
+    var letterTiles = poolEl.children;
+    for (var i = 0; i < letterTiles.length; i++) {
+      if (letterTiles[i].classList.contains('letter') &&
+          parseInt(letterTiles[i].getAttribute('data-idx'), 10) === idx) {
+        letterTiles[i].classList.remove('used');
+        break;
+      }
+    }
+    var harakatTiles = harakatPoolEl.children;
+    for (var j = 0; j < harakatTiles.length; j++) {
+      if (harakatTiles[j].classList.contains('harakat') &&
+          parseInt(harakatTiles[j].getAttribute('data-idx'), 10) === idx) {
+        harakatTiles[j].classList.remove('used');
         break;
       }
     }
