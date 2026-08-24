@@ -37,7 +37,7 @@ main{padding:4px 20px 40px;flex:1}
 
 .source-area{margin-bottom:16px}
 .source-area .label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
-.source{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;padding:12px 8px;background:var(--white);border:1px solid var(--border);border-radius:var(--radius);min-height:56px}
+.source{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;padding:12px 8px;background:var(--white);border:1px solid var(--border);border-radius:var(--radius);min-height:56px;direction:rtl}
 .src-letter{width:46px;height:46px;border-radius:12px;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;font-family:'Amiri',serif;cursor:pointer;touch-action:manipulation;transition:all .2s;direction:rtl}
 .src-letter:active{transform:scale(1.08)}
 .src-letter.used{opacity:.2;pointer-events:none;transform:scale(.8)}
@@ -46,7 +46,7 @@ main{padding:4px 20px 40px;flex:1}
 
 .target-area{margin-bottom:16px}
 .target-area .label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
-.target{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;min-height:56px;padding:12px 8px;background:var(--white);border:2px dashed var(--border);border-radius:var(--radius);transition:border-color .2s}
+.target{display:flex;flex-wrap:wrap;gap:7px;justify-content:flex-end;min-height:56px;padding:12px 8px;background:var(--white);border:2px dashed var(--border);border-radius:var(--radius);transition:border-color .2s;direction:rtl}
 .target.flash{border-color:var(--green)}
 .t-slot{width:46px;height:46px;border-radius:12px;background:var(--mint-2);border:2px dashed var(--border);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;font-family:'Amiri',serif;color:var(--green-deep);direction:rtl;transition:all .2s;position:relative}
 .t-slot.filled{background:var(--green);color:#fff;border:2px solid var(--green);animation:pop .25s ease}
