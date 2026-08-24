@@ -26,33 +26,28 @@ main{padding:4px 20px 40px;flex:1}
 .surah-header .name{font-size:16px;opacity:.85;font-weight:600;margin-top:4px}
 .surah-header .num{font-size:12px;opacity:.6;margin-top:4px}
 
-.ayah-box{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:18px 16px;text-align:center;margin-bottom:16px}
-.ayah-box .label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
-.ayah-box .text{font-size:26px;line-height:1.8;font-weight:700;color:var(--green-deep);font-family:'Amiri',serif;direction:rtl}
-
 .progress{display:flex;gap:6px;justify-content:center;margin-bottom:16px}
 .dot{width:10px;height:10px;border-radius:50%;background:var(--border);transition:background .2s}
 .dot.done{background:var(--green)}
 .dot.current{background:var(--green-deep);box-shadow:0 0 0 3px rgba(14,159,110,.25)}
 
-.source-area{margin-bottom:16px}
-.source-area .label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
-.source{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;padding:12px 8px;background:var(--white);border:1px solid var(--border);border-radius:var(--radius);min-height:56px;direction:rtl}
-.src-letter{width:46px;height:46px;border-radius:12px;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;font-family:'Amiri',serif;cursor:pointer;touch-action:manipulation;transition:all .2s;direction:rtl}
-.src-letter:active{transform:scale(1.08)}
-.src-letter.used{opacity:.2;pointer-events:none;transform:scale(.8)}
-.src-space{width:14px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:16px}
-.src-space.used{opacity:.2}
+.ayah-box{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:18px 16px;text-align:center;margin-bottom:16px}
+.ayah-box .label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+.ayah-letters{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;direction:rtl}
+.ayah-l{display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;border-radius:10px;background:var(--green);color:#fff;font-size:20px;font-weight:700;font-family:'Amiri',serif;cursor:pointer;touch-action:manipulation;transition:all .15s;direction:rtl}
+.ayah-l:active{transform:scale(1.1)}
+.ayah-l.used{opacity:.2;pointer-events:none;transform:scale(.8)}
+.ayah-space{width:10px}
 
-.target-area{margin-bottom:16px}
-.target-area .label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
-.target{display:flex;flex-wrap:wrap;gap:7px;justify-content:flex-end;min-height:56px;padding:12px 8px;background:var(--white);border:2px dashed var(--border);border-radius:var(--radius);transition:border-color .2s;direction:rtl}
-.target.flash{border-color:var(--green)}
-.t-slot{width:46px;height:46px;border-radius:12px;background:var(--mint-2);border:2px dashed var(--border);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;font-family:'Amiri',serif;color:var(--green-deep);direction:rtl;transition:all .2s;position:relative}
+.target-box{background:var(--white);border:2px dashed var(--border);border-radius:var(--radius);padding:14px 10px;margin-bottom:16px;min-height:64px;transition:border-color .2s}
+.target-box.flash{border-color:var(--green)}
+.target-box .label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;text-align:center}
+.target-slots{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;direction:rtl}
+.t-slot{width:42px;height:42px;border-radius:10px;background:var(--mint-2);border:2px dashed var(--border);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;font-family:'Amiri',serif;color:var(--green-deep);direction:rtl;transition:all .2s;position:relative}
 .t-slot.filled{background:var(--green);color:#fff;border:2px solid var(--green);animation:pop .25s ease}
 .t-slot.ok{box-shadow:0 0 0 3px #22c55e88}
 .t-slot.err{animation:shake .35s ease;background:#fee2e2;border-color:#ef4444}
-.t-slot .x{position:absolute;top:-6px;right:-6px;width:20px;height:20px;border-radius:50%;background:#ef4444;color:#fff;font-size:11px;font-weight:800;display:none;align-items:center;justify-content:center;cursor:pointer;z-index:2;font-family:'Inter',sans-serif}
+.t-slot .x{position:absolute;top:-5px;right:-5px;width:18px;height:18px;border-radius:50%;background:#ef4444;color:#fff;font-size:10px;font-weight:800;display:none;align-items:center;justify-content:center;cursor:pointer;z-index:2;font-family:'Inter',sans-serif}
 .t-slot.filled .x{display:flex}
 @keyframes pop{0%{transform:scale(.4);opacity:0}100%{transform:scale(1);opacity:1}}
 @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
@@ -95,20 +90,15 @@ main{padding:4px 20px 40px;flex:1}
     <div class="progress" id="progress"></div>
 
     <div class="ayah-box">
-      <div class="label">Oyat matni</div>
-      <div class="text" id="ayahText"></div>
-    </div>
-
-    <div class="source-area">
-      <div class="label">Harflarni bosing — pastga tushadi</div>
-      <div class="source" id="source"></div>
+      <div class="label">Oyat — harflarni bosing</div>
+      <div class="ayah-letters" id="ayahLetters"></div>
     </div>
 
     <div class="fb" id="fb"></div>
 
-    <div class="target-area">
+    <div class="target-box" id="targetBox">
       <div class="label">Joylangan harflar</div>
-      <div class="target" id="target"></div>
+      <div class="target-slots" id="targetSlots"></div>
     </div>
 
     <div class="ctrls">
@@ -147,10 +137,10 @@ main{padding:4px 20px 40px;flex:1}
   var srcUsed = [];
   var synth = window.speechSynthesis || null;
 
-  var sourceEl = document.getElementById('source');
-  var targetEl = document.getElementById('target');
+  var ayahLettersEl = document.getElementById('ayahLetters');
+  var targetSlotsEl = document.getElementById('targetSlots');
+  var targetBoxEl = document.getElementById('targetBox');
   var fbEl = document.getElementById('fb');
-  var ayahTextEl = document.getElementById('ayahText');
   var progressEl = document.getElementById('progress');
   var nextBtn = document.getElementById('nextBtn');
   var resetBtn = document.getElementById('resetBtn');
@@ -208,145 +198,138 @@ main{padding:4px 20px 40px;flex:1}
       srcUsed.push(false);
     }
 
-    ayahTextEl.textContent = ayah.text;
     fbEl.className = 'fb';
     fbEl.textContent = '';
     nextBtn.disabled = true;
 
     renderProgress();
-    renderSource(ayah.letters);
-    renderTarget(letters.length);
+    renderAyahLetters(ayah.letters);
+    renderTargetSlots(letters.length);
   }
 
-  function renderSource(letters) {
-    sourceEl.innerHTML = '';
-    var si = 0;
+  function renderAyahLetters(letters) {
+    ayahLettersEl.innerHTML = '';
+    var li = 0;
     for (var i = 0; i < letters.length; i++) {
       if (letters[i] === ' ') {
         var sp = document.createElement('div');
-        sp.className = 'src-space';
-        sp.textContent = '\u00B7';
-        sp.setAttribute('data-si', si);
-        sourceEl.appendChild(sp);
-        si++;
+        sp.className = 'ayah-space';
+        sp.setAttribute('data-li', li);
+        ayahLettersEl.appendChild(sp);
+        li++;
         continue;
       }
       var el = document.createElement('div');
-      el.className = 'src-letter';
+      el.className = 'ayah-l';
       el.textContent = letters[i];
-      el.setAttribute('data-si', si);
+      el.setAttribute('data-li', li);
       el.setAttribute('data-ch', letters[i]);
-      el.addEventListener('click', createSrcClick(el, si, letters[i]));
-      sourceEl.appendChild(el);
-      si++;
+      el.addEventListener('click', createLetterClick(el, li, letters[i]));
+      ayahLettersEl.appendChild(el);
+      li++;
     }
   }
 
-  function createSrcClick(el, idx, ch) {
+  function createLetterClick(el, idx, ch) {
     return function() {
       if (srcUsed[idx]) return;
-      dropLetter(idx, ch, el);
+
+      var slots = targetSlotsEl.children;
+      var emptySlot = null;
+      var emptyIdx = -1;
+      for (var i = 0; i < slots.length; i++) {
+        if (!slots[i].classList.contains('filled')) {
+          emptySlot = slots[i];
+          emptyIdx = i;
+          break;
+        }
+      }
+      if (!emptySlot) return;
+
+      srcUsed[idx] = true;
+      placed[emptyIdx] = ch;
+
+      el.classList.add('used');
+      emptySlot.innerHTML = ch + '<span class="x">\u2715</span>';
+      emptySlot.classList.add('filled');
+
+      targetBoxEl.classList.add('flash');
+      setTimeout(function() { targetBoxEl.classList.remove('flash'); }, 250);
+
+      speak(ch);
+
+      var filledCount = 0;
+      var allPlaced = '';
+      for (var j = 0; j < placed.length; j++) {
+        if (placed[j]) {
+          filledCount++;
+          allPlaced += placed[j];
+        }
+      }
+
+      if (filledCount > 1) {
+        setTimeout(function() { speak(allPlaced); }, 800);
+      }
+
+      if (filledCount === placed.length) {
+        setTimeout(checkAnswer, 600);
+      }
     };
   }
 
-  function dropLetter(srcIdx, ch, srcEl) {
-    var slots = targetEl.children;
-    var emptySlot = null;
-    var emptyIdx = -1;
-    for (var i = 0; i < slots.length; i++) {
-      if (!slots[i].classList.contains('filled')) {
-        emptySlot = slots[i];
-        emptyIdx = i;
-        break;
-      }
-    }
-    if (!emptySlot) return;
-
-    srcUsed[srcIdx] = true;
-    placed[emptyIdx] = ch;
-
-    srcEl.classList.add('used');
-    emptySlot.innerHTML = ch + '<span class="x">\u2715</span>';
-    emptySlot.classList.add('filled');
-
-    targetEl.classList.add('flash');
-    setTimeout(function() { targetEl.classList.remove('flash'); }, 250);
-
-    speak(ch);
-
-    var filledCount = 0;
-    var allPlaced = '';
-    for (var j = 0; j < placed.length; j++) {
-      if (placed[j]) {
-        filledCount++;
-        allPlaced += placed[j];
-      }
-    }
-
-    if (filledCount > 1) {
-      setTimeout(function() {
-        speak(allPlaced);
-      }, 800);
-    }
-
-    var ayah = AYAHS[ayahIdx];
-    var totalLetters = getClean(ayah).length;
-    if (filledCount === totalLetters) {
-      setTimeout(checkAnswer, 600);
-    }
-  }
-
-  function renderTarget(n) {
-    targetEl.innerHTML = '';
+  function renderTargetSlots(n) {
+    targetSlotsEl.innerHTML = '';
     for (var i = 0; i < n; i++) {
       var s = document.createElement('div');
       s.className = 't-slot';
       s.setAttribute('data-i', i);
-      s.addEventListener('click', createTargetClick(i));
-      targetEl.appendChild(s);
+      s.addEventListener('click', createSlotClick(i));
+      targetSlotsEl.appendChild(s);
     }
   }
 
-  function createTargetClick(idx) {
+  function createSlotClick(idx) {
     return function(e) {
       if (e.target.classList.contains('x')) {
-        removeTarget(idx);
+        removeSlot(idx);
       } else if (placed[idx]) {
         speak(placed[idx]);
       }
     };
   }
 
-  function removeTarget(idx) {
+  function removeSlot(idx) {
     if (!placed[idx]) return;
     var ch = placed[idx];
     placed[idx] = null;
 
-    var slots = targetEl.children;
+    var slots = targetSlotsEl.children;
     slots[idx].innerHTML = '';
     slots[idx].classList.remove('filled', 'ok', 'err');
 
-    var srcItems = sourceEl.children;
-    for (var i = 0; i < srcItems.length; i++) {
-      if ((srcItems[i].classList.contains('src-letter') || srcItems[i].classList.contains('src-space')) &&
-          srcItems[i].getAttribute('data-si') !== null &&
-          parseInt(srcItems[i].getAttribute('data-si')) === getSrcIdxForChar(ch)) {
-        if (srcItems[i].classList.contains('used')) {
-          srcItems[i].classList.remove('used');
-          srcUsed[parseInt(srcItems[i].getAttribute('data-si'))] = false;
-          break;
-        }
+    var ayahItems = ayahLettersEl.children;
+    for (var i = 0; i < ayahItems.length; i++) {
+      var item = ayahItems[i];
+      if (item.getAttribute('data-li') !== null &&
+          parseInt(item.getAttribute('data-li')) === findFirstUnused(ch)) {
+        item.classList.remove('used');
+        srcUsed[parseInt(item.getAttribute('data-li'))] = false;
+        break;
       }
     }
   }
 
-  function getSrcIdxForChar(ch) {
-    var ayah = AYAHS[ayahIdx];
-    var si = 0;
-    for (var i = 0; i < ayah.letters.length; i++) {
-      if (ayah.letters[i] !== ' ') {
-        if (ayah.letters[i] === ch && !srcUsed[si]) return si;
-        si++;
+  function findFirstUnused(ch) {
+    for (var i = 0; i < srcUsed.length; i++) {
+      if (!srcUsed[i]) {
+        var ayah = AYAHS[ayahIdx];
+        var li = 0;
+        for (var j = 0; j < ayah.letters.length; j++) {
+          if (ayah.letters[j] !== ' ') {
+            if (li === i && ayah.letters[j] === ch) return i;
+            li++;
+          }
+        }
       }
     }
     return -1;
@@ -355,7 +338,7 @@ main{padding:4px 20px 40px;flex:1}
   function checkAnswer() {
     var ayah = AYAHS[ayahIdx];
     var correct = getClean(ayah);
-    var slots = targetEl.children;
+    var slots = targetSlotsEl.children;
     var allOk = true;
 
     for (var i = 0; i < correct.length; i++) {
