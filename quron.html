@@ -225,7 +225,13 @@ main{padding:4px 20px 40px;flex:1}
   }
 
   function createSlotClick(idx) {
-    return function() { removeSlot(idx); };
+    return function(e) {
+      if (e.target.classList.contains('slot-x')) {
+        removeSlot(idx);
+      } else if (placed[idx]) {
+        speak(placed[idx]);
+      }
+    };
   }
 
   function renderPool(letters) {
@@ -280,27 +286,24 @@ main{padding:4px 20px 40px;flex:1}
     speak(ch);
 
     var filledCount = 0;
+    var allPlaced = '';
     for (var j = 0; j < placed.length; j++) {
-      if (placed[j]) filledCount++;
+      if (placed[j]) {
+        filledCount++;
+        allPlaced += placed[j];
+      }
     }
 
     if (filledCount > 1) {
       setTimeout(function() {
-        var lastFilled = [];
-        for (var k = placed.length - 1; k >= 0; k--) {
-          if (placed[k]) {
-            lastFilled.unshift(placed[k]);
-            if (lastFilled.length >= 3) break;
-          }
-        }
-        speak(lastFilled.join(''));
-      }, 700);
+        speak(allPlaced);
+      }, 800);
     }
 
     var ayah = AYAHS[ayahIdx];
     var totalLetters = getClean(ayah).length;
     if (filledCount === totalLetters) {
-      setTimeout(checkAnswer, 400);
+      setTimeout(checkAnswer, 600);
     }
   }
 
@@ -370,8 +373,11 @@ main{padding:4px 20px 40px;flex:1}
   resetBtn.addEventListener('click', reset);
   nextBtn.addEventListener('click', nextAyah);
   soundBtn.addEventListener('click', function() {
-    var ayah = AYAHS[ayahIdx];
-    speak(ayah.text);
+    var text = '';
+    for (var i = 0; i < placed.length; i++) {
+      if (placed[i]) text += placed[i];
+    }
+    if (text) speak(text);
   });
   overlayCloseBtn.addEventListener('click', closeOverlay);
 
