@@ -21,36 +21,35 @@ body{font-family:'Inter',sans-serif;color:var(--ink);background:var(--mint);min-
 .topbar h1{font-size:19px;font-weight:800;margin:0;flex:1;text-align:center}
 main{padding:4px 20px 40px;flex:1}
 
-.surah-header{text-align:center;background:linear-gradient(135deg,var(--green),var(--green-deep));border-radius:var(--radius);padding:24px 20px;margin-bottom:16px;color:#fff}
+.surah-header{text-align:center;background:linear-gradient(135deg,var(--green),var(--green-deep));border-radius:var(--radius);padding:24px 20px;margin-bottom:20px;color:#fff}
 .surah-header .arabic{font-size:34px;font-weight:700;font-family:'Amiri',serif}
 .surah-header .name{font-size:16px;opacity:.85;font-weight:600;margin-top:4px}
 .surah-header .num{font-size:12px;opacity:.6;margin-top:4px}
 
-.progress{display:flex;gap:6px;justify-content:center;margin-bottom:16px}
-.dot{width:10px;height:10px;border-radius:50%;background:var(--border);transition:background .2s}
-.dot.done{background:var(--green)}
-.dot.current{background:var(--green-deep);box-shadow:0 0 0 3px rgba(14,159,110,.25)}
+.ayah-box{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:20px 16px;text-align:center;margin-bottom:20px}
+.ayah-box .label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px}
+.ayah-box .text{font-size:28px;line-height:1.8;font-weight:700;color:var(--green-deep);font-family:'Amiri',serif;direction:rtl}
 
-.ayah-box{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:18px 16px;text-align:center;margin-bottom:16px}
-.ayah-box .label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
-.ayah-letters{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;direction:rtl}
-.ayah-l{display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;border-radius:10px;background:var(--green);color:#fff;font-size:20px;font-weight:700;font-family:'Amiri',serif;cursor:pointer;touch-action:manipulation;transition:all .15s;direction:rtl}
-.ayah-l:active{transform:scale(1.1)}
-.ayah-l.used{opacity:.2;pointer-events:none;transform:scale(.8)}
-.ayah-space{width:10px}
-
-.target-box{background:var(--white);border:2px dashed var(--border);border-radius:var(--radius);padding:14px 10px;margin-bottom:16px;min-height:64px;transition:border-color .2s}
-.target-box.flash{border-color:var(--green)}
-.target-box .label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;text-align:center}
-.target-slots{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;direction:rtl}
-.t-slot{width:42px;height:42px;border-radius:10px;background:var(--mint-2);border:2px dashed var(--border);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;font-family:'Amiri',serif;color:var(--green-deep);direction:rtl;transition:all .2s;position:relative}
-.t-slot.filled{background:var(--green);color:#fff;border:2px solid var(--green);animation:pop .25s ease}
-.t-slot.ok{box-shadow:0 0 0 3px #22c55e88}
-.t-slot.err{animation:shake .35s ease;background:#fee2e2;border-color:#ef4444}
-.t-slot .x{position:absolute;top:-5px;right:-5px;width:18px;height:18px;border-radius:50%;background:#ef4444;color:#fff;font-size:10px;font-weight:800;display:none;align-items:center;justify-content:center;cursor:pointer;z-index:2;font-family:'Inter',sans-serif}
-.t-slot.filled .x{display:flex}
+.slot-area{margin-bottom:20px}
+.slot-area .label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px}
+.slots{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;direction:rtl;min-height:60px;padding:12px 8px;background:var(--white);border:2px dashed var(--border);border-radius:var(--radius);transition:border-color .2s}
+.slots.flash{border-color:var(--green)}
+.slot{width:48px;height:48px;border-radius:12px;background:var(--mint-2);border:2px dashed var(--border);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;font-family:'Amiri',serif;color:var(--green-deep);direction:rtl;transition:all .2s;cursor:pointer;position:relative}
+.slot.filled{background:var(--green);color:#fff;border:2px solid var(--green);animation:pop .25s ease}
+.slot .slot-x{position:absolute;top:-6px;right:-6px;width:20px;height:20px;border-radius:50%;background:#ef4444;color:#fff;font-size:11px;font-weight:800;display:none;align-items:center;justify-content:center;line-height:1;cursor:pointer;z-index:2;font-family:'Inter',sans-serif}
+.slot.filled .slot-x{display:flex}
+.slot.ok{box-shadow:0 0 0 3px #22c55e88}
+.slot.err{animation:shake .35s ease;background:#fee2e2;border-color:#ef4444}
 @keyframes pop{0%{transform:scale(.4);opacity:0}100%{transform:scale(1);opacity:1}}
 @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+
+.pool-area{margin-bottom:20px}
+.pool-area .label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px}
+.pool{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;padding:12px 8px;background:var(--white);border:1px solid var(--border);border-radius:var(--radius);direction:rtl}
+.letter{width:48px;height:48px;border-radius:12px;background:var(--mint-2);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;font-family:'Amiri',serif;color:var(--ink);direction:rtl;cursor:pointer;touch-action:manipulation;transition:all .15s}
+.letter:active{transform:scale(1.1);box-shadow:0 4px 14px rgba(0,0,0,.12)}
+.letter.used{opacity:.25;pointer-events:none;transform:scale(.85)}
+.space-dot{width:14px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:16px}
 
 .fb{text-align:center;padding:12px;border-radius:var(--radius-sm);margin-bottom:16px;font-weight:700;font-size:14px;display:none}
 .fb.ok{display:block;background:#dcfce7;color:#166534}
@@ -64,6 +63,11 @@ main{padding:4px 20px 40px;flex:1}
 
 .sound-btn{position:fixed;bottom:20px;right:20px;width:48px;height:48px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 4px 14px rgba(14,159,110,.3);cursor:pointer;z-index:20;border:none;transition:transform .15s}
 .sound-btn:active{transform:scale(.9)}
+
+.progress{display:flex;gap:6px;justify-content:center;margin-bottom:16px}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--border);transition:background .2s}
+.dot.done{background:var(--green)}
+.dot.current{background:var(--green-deep);box-shadow:0 0 0 3px rgba(14,159,110,.25)}
 
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:50}
 .overlay.show{display:flex}
@@ -90,15 +94,20 @@ main{padding:4px 20px 40px;flex:1}
     <div class="progress" id="progress"></div>
 
     <div class="ayah-box">
-      <div class="label">Oyat — harflarni bosing</div>
-      <div class="ayah-letters" id="ayahLetters"></div>
+      <div class="label">Oyat matni</div>
+      <div class="text" id="ayahText"></div>
     </div>
 
     <div class="fb" id="fb"></div>
 
-    <div class="target-box" id="targetBox">
-      <div class="label">Joylangan harflar</div>
-      <div class="target-slots" id="targetSlots"></div>
+    <div class="slot-area">
+      <div class="label">Harflarni shu yerga bosing</div>
+      <div class="slots" id="slots"></div>
+    </div>
+
+    <div class="pool-area">
+      <div class="label">Oyat harflarini bosing — joylanadi</div>
+      <div class="pool" id="pool"></div>
     </div>
 
     <div class="ctrls">
@@ -134,13 +143,13 @@ main{padding:4px 20px 40px;flex:1}
 
   var ayahIdx = 0;
   var placed = [];
-  var srcUsed = [];
+  var soundOn = true;
   var synth = window.speechSynthesis || null;
 
-  var ayahLettersEl = document.getElementById('ayahLetters');
-  var targetSlotsEl = document.getElementById('targetSlots');
-  var targetBoxEl = document.getElementById('targetBox');
+  var slotsEl = document.getElementById('slots');
+  var poolEl = document.getElementById('pool');
   var fbEl = document.getElementById('fb');
+  var ayahTextEl = document.getElementById('ayahText');
   var progressEl = document.getElementById('progress');
   var nextBtn = document.getElementById('nextBtn');
   var resetBtn = document.getElementById('resetBtn');
@@ -149,32 +158,34 @@ main{padding:4px 20px 40px;flex:1}
   var overlayCloseBtn = document.getElementById('overlayCloseBtn');
 
   function speak(txt) {
-    if (!synth || !txt || !txt.trim()) return;
+    if (!soundOn || !synth || !txt || !txt.trim()) return;
     try {
       synth.cancel();
-      var u = new SpeechSynthesisUtterance(txt);
-      u.lang = 'ar-SA';
-      u.rate = 0.7;
-      u.pitch = 1;
-      var voices = synth.getVoices();
-      var arVoice = null;
-      for (var i = 0; i < voices.length; i++) {
-        if (voices[i].lang && voices[i].lang.indexOf('ar') === 0) {
-          arVoice = voices[i];
-          break;
+      setTimeout(function() {
+        var u = new SpeechSynthesisUtterance(txt);
+        u.lang = 'ar-SA';
+        u.rate = 0.7;
+        u.pitch = 1;
+        var voices = synth.getVoices();
+        var arVoice = null;
+        for (var i = 0; i < voices.length; i++) {
+          if (voices[i].lang && voices[i].lang.indexOf('ar') === 0) {
+            arVoice = voices[i];
+            break;
+          }
         }
-      }
-      if (arVoice) u.voice = arVoice;
-      synth.speak(u);
+        if (arVoice) u.voice = arVoice;
+        synth.speak(u);
+      }, 50);
     } catch(e) {}
   }
 
   function getClean(ayah) {
-    var r = [];
+    var result = [];
     for (var i = 0; i < ayah.letters.length; i++) {
-      if (ayah.letters[i] !== ' ') r.push(ayah.letters[i]);
+      if (ayah.letters[i] !== ' ') result.push(ayah.letters[i]);
     }
-    return r;
+    return result;
   }
 
   function renderProgress() {
@@ -192,172 +203,129 @@ main{padding:4px 20px 40px;flex:1}
     var ayah = AYAHS[ayahIdx];
     var letters = getClean(ayah);
     placed = [];
-    srcUsed = [];
-    for (var i = 0; i < letters.length; i++) {
-      placed.push(null);
-      srcUsed.push(false);
-    }
+    for (var i = 0; i < letters.length; i++) placed.push(null);
 
+    ayahTextEl.textContent = ayah.text;
     fbEl.className = 'fb';
     fbEl.textContent = '';
     nextBtn.disabled = true;
 
     renderProgress();
-    renderAyahLetters(ayah.letters);
-    renderTargetSlots(letters.length);
+    renderSlots(letters.length);
+    renderPool(ayah.letters);
   }
 
-  function renderAyahLetters(letters) {
-    ayahLettersEl.innerHTML = '';
-    var li = 0;
-    for (var i = 0; i < letters.length; i++) {
-      if (letters[i] === ' ') {
-        var sp = document.createElement('div');
-        sp.className = 'ayah-space';
-        sp.setAttribute('data-li', li);
-        ayahLettersEl.appendChild(sp);
-        li++;
-        continue;
-      }
-      var el = document.createElement('div');
-      el.className = 'ayah-l';
-      el.textContent = letters[i];
-      el.setAttribute('data-li', li);
-      el.setAttribute('data-ch', letters[i]);
-      el.addEventListener('click', createLetterClick(el, li, letters[i]));
-      ayahLettersEl.appendChild(el);
-      li++;
-    }
-  }
-
-  function createLetterClick(el, idx, ch) {
-    return function() {
-      if (srcUsed[idx]) return;
-
-      var slots = targetSlotsEl.children;
-      var emptySlot = null;
-      var emptyIdx = -1;
-      for (var i = 0; i < slots.length; i++) {
-        if (!slots[i].classList.contains('filled')) {
-          emptySlot = slots[i];
-          emptyIdx = i;
-          break;
-        }
-      }
-      if (!emptySlot) return;
-
-      srcUsed[idx] = true;
-      placed[emptyIdx] = ch;
-
-      el.classList.add('used');
-      emptySlot.innerHTML = ch + '<span class="x">\u2715</span>';
-      emptySlot.classList.add('filled');
-
-      targetBoxEl.classList.add('flash');
-      setTimeout(function() { targetBoxEl.classList.remove('flash'); }, 250);
-
-      speak(ch);
-
-      var filledCount = 0;
-      var allPlaced = '';
-      for (var j = 0; j < placed.length; j++) {
-        if (placed[j]) {
-          filledCount++;
-          allPlaced += placed[j];
-        }
-      }
-
-      if (filledCount > 1) {
-        setTimeout(function() { speak(allPlaced); }, 800);
-      }
-
-      if (filledCount === placed.length) {
-        setTimeout(checkAnswer, 600);
-      }
-    };
-  }
-
-  function renderTargetSlots(n) {
-    targetSlotsEl.innerHTML = '';
+  function renderSlots(n) {
+    slotsEl.innerHTML = '';
     for (var i = 0; i < n; i++) {
       var s = document.createElement('div');
-      s.className = 't-slot';
+      s.className = 'slot';
       s.setAttribute('data-i', i);
       s.addEventListener('click', createSlotClick(i));
-      targetSlotsEl.appendChild(s);
+      slotsEl.appendChild(s);
     }
   }
 
   function createSlotClick(idx) {
-    return function(e) {
-      if (e.target.classList.contains('x')) {
-        removeSlot(idx);
-      } else if (placed[idx]) {
-        speak(placed[idx]);
+    return function() { removeSlot(idx); };
+  }
+
+  function renderPool(letters) {
+    poolEl.innerHTML = '';
+    var letterIdx = 0;
+    for (var i = 0; i < letters.length; i++) {
+      if (letters[i] === ' ') {
+        var d = document.createElement('div');
+        d.className = 'space-dot';
+        d.textContent = '\u00B7';
+        poolEl.appendChild(d);
+        continue;
       }
-    };
+      var t = document.createElement('div');
+      t.className = 'letter';
+      t.textContent = letters[i];
+      t.setAttribute('data-idx', letterIdx);
+      t.setAttribute('data-ch', letters[i]);
+      t.addEventListener('click', createPoolClick(t));
+      poolEl.appendChild(t);
+      letterIdx++;
+    }
+  }
+
+  function createPoolClick(tile) {
+    return function() { placeLetter(tile); };
+  }
+
+  function placeLetter(tile) {
+    if (tile.classList.contains('used')) return;
+
+    var idx = parseInt(tile.getAttribute('data-idx'), 10);
+    var slots = slotsEl.children;
+    var slot = slots[idx];
+    if (!slot || slot.classList.contains('filled')) return;
+
+    var ch = tile.getAttribute('data-ch');
+    placed[idx] = ch;
+
+    slot.innerHTML = ch + '<span class="slot-x">\u2715</span>';
+    slot.classList.add('filled');
+    tile.classList.add('used');
+
+    slotsEl.classList.add('flash');
+    setTimeout(function() { slotsEl.classList.remove('flash'); }, 250);
+
+    speak(ch);
+
+    var filledCount = 0;
+    for (var j = 0; j < placed.length; j++) {
+      if (placed[j]) filledCount++;
+    }
+
+    if (filledCount > 1) {
+      setTimeout(function() {
+        var lastFilled = [];
+        for (var k = placed.length - 1; k >= 0; k--) {
+          if (placed[k]) {
+            lastFilled.unshift(placed[k]);
+            if (lastFilled.length >= 3) break;
+          }
+        }
+        speak(lastFilled.join(''));
+      }, 700);
+    }
+
+    var ayah = AYAHS[ayahIdx];
+    var totalLetters = getClean(ayah).length;
+    if (filledCount === totalLetters) {
+      setTimeout(finishAyah, 400);
+    }
+  }
+
+  function finishAyah() {
+    var slots = slotsEl.children;
+    for (var i = 0; i < slots.length; i++) slots[i].classList.add('ok');
+    var ayah = AYAHS[ayahIdx];
+    fbEl.className = 'fb ok';
+    fbEl.textContent = 'Mukammal! To\'g\'ri!';
+    nextBtn.disabled = false;
+    speak(ayah.text);
   }
 
   function removeSlot(idx) {
     if (!placed[idx]) return;
-    var ch = placed[idx];
     placed[idx] = null;
 
-    var slots = targetSlotsEl.children;
+    var slots = slotsEl.children;
     slots[idx].innerHTML = '';
     slots[idx].classList.remove('filled', 'ok', 'err');
 
-    var ayahItems = ayahLettersEl.children;
-    for (var i = 0; i < ayahItems.length; i++) {
-      var item = ayahItems[i];
-      if (item.getAttribute('data-li') !== null &&
-          parseInt(item.getAttribute('data-li')) === findFirstUnused(ch)) {
-        item.classList.remove('used');
-        srcUsed[parseInt(item.getAttribute('data-li'))] = false;
+    var tiles = poolEl.children;
+    for (var i = 0; i < tiles.length; i++) {
+      if (tiles[i].classList.contains('letter') &&
+          parseInt(tiles[i].getAttribute('data-idx'), 10) === idx) {
+        tiles[i].classList.remove('used');
         break;
       }
-    }
-  }
-
-  function findFirstUnused(ch) {
-    for (var i = 0; i < srcUsed.length; i++) {
-      if (!srcUsed[i]) {
-        var ayah = AYAHS[ayahIdx];
-        var li = 0;
-        for (var j = 0; j < ayah.letters.length; j++) {
-          if (ayah.letters[j] !== ' ') {
-            if (li === i && ayah.letters[j] === ch) return i;
-            li++;
-          }
-        }
-      }
-    }
-    return -1;
-  }
-
-  function checkAnswer() {
-    var ayah = AYAHS[ayahIdx];
-    var correct = getClean(ayah);
-    var slots = targetSlotsEl.children;
-    var allOk = true;
-
-    for (var i = 0; i < correct.length; i++) {
-      if (placed[i] === correct[i]) {
-        slots[i].classList.add('ok');
-      } else {
-        slots[i].classList.add('err');
-        allOk = false;
-      }
-    }
-
-    if (allOk) {
-      fbEl.className = 'fb ok';
-      fbEl.textContent = 'Mukammal! To\'g\'ri!';
-      nextBtn.disabled = false;
-      speak(ayah.text);
-    } else {
-      fbEl.className = 'fb no';
-      fbEl.textContent = 'Xato bor — qaytadan urinib ko\'ring!';
     }
   }
 
@@ -381,11 +349,8 @@ main{padding:4px 20px 40px;flex:1}
   resetBtn.addEventListener('click', reset);
   nextBtn.addEventListener('click', nextAyah);
   soundBtn.addEventListener('click', function() {
-    var text = '';
-    for (var i = 0; i < placed.length; i++) {
-      if (placed[i]) text += placed[i];
-    }
-    if (text) speak(text);
+    var ayah = AYAHS[ayahIdx];
+    speak(ayah.text);
   });
   overlayCloseBtn.addEventListener('click', closeOverlay);
 
