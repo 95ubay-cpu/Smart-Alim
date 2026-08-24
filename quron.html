@@ -352,6 +352,19 @@ main{padding:4px 20px 40px;flex:1}
     return base + (placedHarakat[idx] || '');
   }
 
+  function getSlotsText() {
+    var ayah = AYAHS[ayahIdx];
+    var tokens = ayah.tokens;
+    var result = '';
+    var idx = 0;
+    for (var i = 0; i < tokens.length; i++) {
+      if (tokens[i] === ' ') { result += ' '; continue; }
+      result += currentSlotText(idx);
+      idx++;
+    }
+    return result;
+  }
+
   function updateSlotDisplay(idx) {
     var slot = slotsEl.children[idx];
     var txt = currentSlotText(idx);
@@ -475,8 +488,8 @@ main{padding:4px 20px 40px;flex:1}
   prevBtn.addEventListener('click', prevAyah);
   nextBtn.addEventListener('click', nextAyah);
   soundBtn.addEventListener('click', function() {
-    var ayah = AYAHS[ayahIdx];
-    speak(applyWaqf(ayah.text));
+    var txt = getSlotsText().trim();
+    if (txt) speak(applyWaqf(txt));
   });
   overlayCloseBtn.addEventListener('click', closeOverlay);
 
