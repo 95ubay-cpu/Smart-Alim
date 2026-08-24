@@ -119,6 +119,7 @@ main{padding:4px 20px 40px;flex:1}
     </div>
 
     <div class="ctrls">
+      <button class="btn btn-w" id="prevBtn">← Oldingi</button>
       <button class="btn btn-w" id="resetBtn">Qayta</button>
       <button class="btn btn-g" id="nextBtn" disabled>Keyingi oyat</button>
     </div>
@@ -177,6 +178,17 @@ main{padding:4px 20px 40px;flex:1}
 
   var DOTTED = '\u25CC'; // yolg'iz harakatni ko'rsatish uchun nuqtali doira
 
+  // Oyat OXIRIDA to'xtalganda tanvin (masalan "un") tushirib qoldiriladi — bu vaqf qoidasi.
+  // Faqat to'liq oyat o'qilayotganda ishlatiladi, harf-harf mashqda emas.
+  function applyWaqf(text) {
+    var t = text.replace(/\s+$/, '');
+    var last = t.charAt(t.length - 1);
+    if (last === '\u064B' || last === '\u064C' || last === '\u064D') {
+      t = t.slice(0, -1);
+    }
+    return t;
+  }
+
   var ayahIdx = 0;
   var placedLetter = [];   // har bir katak uchun: joylashtirilgan harf ('ق' kabi) yoki null
   var placedHarakat = [];  // har bir katak uchun: joylashtirilgan harakat yoki null
@@ -190,6 +202,7 @@ main{padding:4px 20px 40px;flex:1}
   var ayahTextEl = document.getElementById('ayahText');
   var progressEl = document.getElementById('progress');
   var nextBtn = document.getElementById('nextBtn');
+  var prevBtn = document.getElementById('prevBtn');
   var resetBtn = document.getElementById('resetBtn');
   var soundBtn = document.getElementById('soundBtn');
   var overlayEl = document.getElementById('overlay');
@@ -233,9 +246,22 @@ main{padding:4px 20px 40px;flex:1}
       var cls = 'dot';
       if (i < ayahIdx) cls += ' done';
       else if (i === ayahIdx) cls += ' current';
-      html += '<div class="' + cls + '"></div>';
+      html += '<div class="' + cls + '" data-i="' + i + '"></div>';
     }
     progressEl.innerHTML = html;
+    var dots = progressEl.children;
+    for (var j = 0; j < dots.length; j++) {
+      if (j <= ayahIdx) {
+        dots[j].style.cursor = 'pointer';
+        dots[j].addEventListener('click', function(i) { return function() { goToAyah(i); }; }(j));
+      }
+    }
+  }
+
+  function goToAyah(i) {
+    if (i === ayahIdx) return;
+    ayahIdx = i;
+    render();
   }
 
   function render() {
@@ -249,6 +275,7 @@ main{padding:4px 20px 40px;flex:1}
     fbEl.className = 'fb';
     fbEl.textContent = '';
     nextBtn.disabled = true;
+    prevBtn.disabled = (ayahIdx === 0);
 
     renderProgress();
     renderSlots(tokens.length);
@@ -268,7 +295,15 @@ main{padding:4px 20px 40px;flex:1}
   }
 
   function createSlotClick(idx) {
-    return function() { removeSlot(idx); };
+    return function(e) {
+      if (e.target && e.target.classList && e.target.classList.contains('slot-x')) {
+        e.stopPropagation();
+        removeSlot(idx);
+        return;
+      }
+      var txt = currentSlotText(idx);
+      if (txt) speak(txt);
+    };
   }
 
   function renderLetterPool(tokens) {
@@ -384,7 +419,7 @@ main{padding:4px 20px 40px;flex:1}
     fbEl.className = 'fb ok';
     fbEl.textContent = 'Mukammal! To\'g\'ri!';
     nextBtn.disabled = false;
-    speak(ayah.text);
+    speak(applyWaqf(ayah.text));
   }
 
   function removeSlot(idx) {
@@ -429,11 +464,19 @@ main{padding:4px 20px 40px;flex:1}
     render();
   }
 
+  function prevAyah() {
+    if (ayahIdx > 0) {
+      ayahIdx--;
+      render();
+    }
+  }
+
   resetBtn.addEventListener('click', reset);
+  prevBtn.addEventListener('click', prevAyah);
   nextBtn.addEventListener('click', nextAyah);
   soundBtn.addEventListener('click', function() {
     var ayah = AYAHS[ayahIdx];
-    speak(ayah.text);
+    speak(applyWaqf(ayah.text));
   });
   overlayCloseBtn.addEventListener('click', closeOverlay);
 
