@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Koreys yozuvi — Hangul</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=Inter:wght@400;500;600&family=Noto+Sans+KR:wght@500;700;800&display=swap');
+
+:root{
+  --blue:#2563EB;--blue-deep:#1D4ED8;--sky:#EAF1FB;--sky-2:#D9E6FA;
+  --white:#FFFFFF;--ink:#16241F;--muted:#5B6B65;--border:#DCE4EF;
+  --radius:18px;--radius-sm:12px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;color:var(--ink);background:var(--sky);min-height:100vh;-webkit-user-select:none;user-select:none}
+
+.app{max-width:480px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;background:var(--sky)}
+.topbar{display:flex;align-items:center;gap:12px;padding:18px 20px 14px;background:var(--sky);position:sticky;top:0;z-index:10}
+.topbar .back{width:38px;height:38px;border-radius:50%;background:var(--white);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;text-decoration:none;color:var(--ink)}
+.topbar h1{font-size:19px;font-weight:800;margin:0;flex:1;text-align:center}
+main{padding:4px 20px 40px;flex:1}
+
+.surah-header{text-align:center;background:linear-gradient(135deg,var(--blue),var(--blue-deep));border-radius:var(--radius);padding:24px 20px;margin-bottom:20px;color:#fff}
+.surah-header .kr{font-size:34px;font-weight:800;font-family:'Noto Sans KR',sans-serif}
+.surah-header .name{font-size:16px;opacity:.85;font-weight:600;margin-top:4px}
+.surah-header .num{font-size:12px;opacity:.6;margin-top:4px}
+
+.ayah-box{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:20px 16px;text-align:center;margin-bottom:20px}
+.ayah-box .label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px}
+.ayah-box .text{font-size:30px;line-height:1.8;font-weight:700;color:var(--blue-deep);font-family:'Noto Sans KR',sans-serif}
+
+.slot-area{margin-bottom:20px}
+.slot-area .label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px}
+.slots{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;min-height:60px;padding:12px 8px;background:var(--white);border:2px dashed var(--border);border-radius:var(--radius);transition:border-color .2s}
+.slots.flash{border-color:var(--blue)}
+.slot{width:52px;height:52px;border-radius:12px;background:var(--sky-2);border:2px dashed var(--border);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;font-family:'Noto Sans KR',sans-serif;color:var(--blue-deep);transition:all .2s;cursor:pointer;position:relative}
+.slot.filled{background:var(--blue);color:#fff;border:2px solid var(--blue);animation:pop .25s ease}
+.slot.done{background:var(--blue-deep)}
+.slot .slot-x{position:absolute;top:-6px;right:-6px;width:20px;height:20px;border-radius:50%;background:#ef4444;color:#fff;font-size:11px;font-weight:800;display:none;align-items:center;justify-content:center;line-height:1;cursor:pointer;z-index:2;font-family:'Inter',sans-serif}
+.slot.filled .slot-x{display:flex}
+@keyframes pop{0%{transform:scale(.4);opacity:0}100%{transform:scale(1);opacity:1}}
+
+.pool-area{margin-bottom:20px}
+.pool-area .label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px}
+.pool{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;padding:12px 8px;background:var(--white);border:1px solid var(--border);border-radius:var(--radius)}
+.jamo{width:48px;height:48px;border-radius:12px;background:var(--sky-2);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;font-family:'Noto Sans KR',sans-serif;color:var(--ink);cursor:pointer;touch-action:manipulation;transition:all .15s}
+.jamo:active{transform:scale(1.1);box-shadow:0 4px 14px rgba(0,0,0,.12)}
+.jamo.used{opacity:.25;pointer-events:none;transform:scale(.85)}
+.group-gap{width:12px}
+
+.fb{text-align:center;padding:12px;border-radius:var(--radius-sm);margin-bottom:16px;font-weight:700;font-size:14px;display:none}
+.fb.ok{display:block;background:#dcfce7;color:#166534}
+
+.ctrls{display:flex;gap:10px}
+.btn{flex:1;padding:13px;border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:700;cursor:pointer}
+.btn-g{background:var(--blue);color:#fff}.btn-g:active{background:var(--blue-deep)}
+.btn-w{background:var(--white);border:1px solid var(--border);color:var(--ink)}.btn-w:active{background:var(--sky-2)}
+.btn:disabled{opacity:.4;pointer-events:none}
+
+.sound-btn{position:fixed;bottom:20px;right:20px;width:48px;height:48px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 4px 14px rgba(37,99,235,.3);cursor:pointer;z-index:20;border:none;transition:transform .15s}
+.sound-btn:active{transform:scale(.9)}
+
+.progress{display:flex;gap:6px;justify-content:center;margin-bottom:16px}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--border);transition:background .2s}
+.dot.done{background:var(--blue)}
+.dot.current{background:var(--blue-deep);box-shadow:0 0 0 3px rgba(37,99,235,.25)}
+
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:50}
+.overlay.show{display:flex}
+.overlay-card{background:var(--white);border-radius:var(--radius);padding:32px 24px;text-align:center;max-width:340px;width:90%;animation:pop .3s ease}
+.overlay-card .emoji{font-size:52px;margin-bottom:12px}
+.overlay-card h2{font-size:22px;font-weight:800;margin-bottom:6px}
+.overlay-card p{font-size:14px;color:var(--muted);margin-bottom:20px;line-height:1.5}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <a class="back" href="index.html">&larr;</a>
+    <h1>Koreys yozuvi</h1>
+  </div>
+
+  <main>
+    <div class="surah-header">
+      <div class="kr">안녕하세요</div>
+      <div class="name">Salom (rasmiy)</div>
+      <div class="num">5 bo'g'in</div>
+    </div>
+
+    <div class="progress" id="progress"></div>
+
+    <div class="ayah-box">
+      <div class="label">So'z</div>
+      <div class="text" id="wordText"></div>
+    </div>
+
+    <div class="fb" id="fb"></div>
+
+    <div class="slot-area">
+      <div class="label">Bo'g'inlar shu yerga yig'iladi</div>
+      <div class="slots" id="slots"></div>
+    </div>
+
+    <div class="pool-area">
+      <div class="label">Harflarni (jamo) bosing — joylanadi</div>
+      <div class="pool" id="pool"></div>
+    </div>
+
+    <div class="ctrls">
+      <button class="btn btn-w" id="prevBtn">← Oldingi</button>
+      <button class="btn btn-w" id="resetBtn">Qayta</button>
+      <button class="btn btn-g" id="nextBtn" disabled>Keyingi so'z</button>
+    </div>
+  </main>
+
+  <button class="sound-btn" id="soundBtn" title="Ovoz chalish">🔊</button>
+
+  <div class="overlay" id="overlay">
+    <div class="overlay-card">
+      <div class="emoji">🎉</div>
+      <h2>Tabriklaymiz!</h2>
+      <p>Siz so'zlarni<br>mukammal o'rgandingiz!</p>
+      <button class="btn btn-g" id="overlayCloseBtn" style="width:100%">Yaxshi!</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  // O'rganiladigan so'zlar. Har bir so'zning bo'g'inlari (hangul belgilari)
+  // formula orqali avtomatik ㄱㄴㄷ... jamo'larga ajratiladi — qo'lda yozish shart emas.
+  var WORDS = [
+    { text: "\uC548\uB155\uD558\uC138\uC694", name: "Salom (rasmiy)" },
+    { text: "\uAC10\uC0AC\uD569\uB2C8\uB2E4", name: "Rahmat (rasmiy)" },
+    { text: "\uC0AC\uB791\uD574\uC694", name: "Sevaman" },
+    { text: "\uBBF8\uC548\uD574\uC694", name: "Kechirasiz" },
+    { text: "\uC548\uB155", name: "Salom (norasmiy)" },
+    { text: "\uACE0\uB9C8\uC6CC", name: "Rahmat (norasmiy)" },
+    { text: "\uC8C4\uC1A1\uD569\uB2C8\uB2E4", name: "Uzr so'rayman" },
+    { text: "\uB124", name: "Ha" },
+    { text: "\uC544\uB2C8\uC694", name: "Yo'q" },
+    { text: "\uBB3C", name: "Suv" },
+    { text: "\uBC25", name: "Ovqat" },
+    { text: "\uC0AC\uB78C", name: "Odam" },
+    { text: "\uD559\uAD50", name: "Maktab" },
+    { text: "\uCE5C\uAD6C", name: "Do'st" },
+    { text: "\uAC00\uC871", name: "Oila" },
+    { text: "\uC5B4\uBA38\uB2C8", name: "Ona" },
+    { text: "\uC544\uBC84\uC9C0", name: "Ota" },
+    { text: "\uC5B8\uB2C8", name: "Opa (qiz uchun)" },
+    { text: "\uC624\uBE60", name: "Aka (qiz uchun)" },
+    { text: "\uB3D9\uC0DD", name: "Uka/singil" },
+    { text: "\uB098\uB77C", name: "Davlat" },
+    { text: "\uB3C4\uC2DC", name: "Shahar" },
+    { text: "\uC2DC\uAC04", name: "Vaqt" },
+    { text: "\uC624\uB298", name: "Bugun" },
+    { text: "\uB0B4\uC77C", name: "Ertaga" },
+    { text: "\uC5B4\uC81C", name: "Kecha" },
+    { text: "\uC544\uCE68", name: "Ertalab" },
+    { text: "\uC800\uB141", name: "Kechqurun" },
+    { text: "\uC0AC\uB791", name: "Sevgi" },
+    { text: "\uD589\uBCF5", name: "Baxt" },
+    { text: "\uD559\uC0DD", name: "O'quvchi" },
+    { text: "\uC120\uC0DD\uB2D8", name: "O'qituvchi" },
+    { text: "\uD68C\uC0AC", name: "Kompaniya" },
+    { text: "\uBCD1\uC6D0", name: "Kasalxona" },
+    { text: "\uACF5\uC6D0", name: "Bog'" },
+    { text: "\uC74C\uC2DD", name: "Taom" },
+    { text: "\uCEE4\uD53C", name: "Kofe" },
+    { text: "\uC0AC\uACFC", name: "Olma" },
+    { text: "\uBC14\uB098\uB098", name: "Banan" },
+    { text: "\uACE0\uC591\uC774", name: "Mushuk" },
+    { text: "\uAC15\uC544\uC9C0", name: "Kuchukcha" },
+    { text: "\uD558\uB298", name: "Osmon" },
+    { text: "\uBC14\uB2E4", name: "Dengiz" },
+    { text: "\uB098\uBB34", name: "Daraxt" },
+    { text: "\uD558\uB098", name: "Bir" },
+    { text: "\uB458", name: "Ikki" },
+    { text: "\uC14B", name: "Uch" },
+    { text: "\uBE68\uAC04\uC0C9", name: "Qizil rang" },
+    { text: "\uD30C\uB780\uC0C9", name: "Ko'k rang" },
+    { text: "\uB178\uB780\uC0C9", name: "Sariq rang" }
+  ];
+
+  // Hangul bo'g'in blokini alohida harflarga (jamo) ajratuvchi standart formula
+  var CHO = ['\u3131','\u3132','\u3134','\u3137','\u3138','\u3139','\u3141','\u3142','\u3143','\u3145','\u3146','\u3147','\u3148','\u3149','\u314A','\u314B','\u314C','\u314D','\u314E'];
+  var JUNG = ['\u314F','\u3150','\u3151','\u3152','\u3153','\u3154','\u3155','\u3156','\u3157','\u3158','\u3159','\u315A','\u315B','\u315C','\u315D','\u315E','\u315F','\u3160','\u3161','\u3162','\u3163'];
+  var JONG = ['', '\u3131','\u3132','\u3133','\u3134','\u3135','\u3136','\u3137','\u3139','\u313A','\u313B','\u313C','\u313D','\u313E','\u313F','\u3140','\u3141','\u3142','\u3144','\u3145','\u3146','\u3147','\u3148','\u314A','\u314B','\u314C','\u314D','\u314E'];
+  var SBASE = 0xAC00, LCOUNT = 19, VCOUNT = 21, TCOUNT = 28;
+
+  function decompose(ch) {
+    var code = ch.codePointAt(0);
+    if (code < 0xAC00 || code > 0xD7A3) return null;
+    var sIndex = code - SBASE;
+    var L = Math.floor(sIndex / (VCOUNT * TCOUNT));
+    var V = Math.floor((sIndex % (VCOUNT * TCOUNT)) / TCOUNT);
+    var T = sIndex % TCOUNT;
+    var comps = [CHO[L], JUNG[V]];
+    if (T > 0) comps.push(JONG[T - 1]);
+    return { L: L, V: V, T: T, comps: comps };
+  }
+
+  function composedChar(L, V, T) {
+    var sIndex = L * VCOUNT * TCOUNT + V * TCOUNT + T;
+    return String.fromCodePoint(SBASE + sIndex);
+  }
+
+  // Har bir so'zga bo'g'inlar ro'yxatini oldindan hisoblab qo'yamiz
+  for (var w = 0; w < WORDS.length; w++) {
+    var chars = Array.from(WORDS[w].text);
+    var syllables = [];
+    for (var i = 0; i < chars.length; i++) {
+      var d = decompose(chars[i]);
+      if (d) syllables.push(d);
+    }
+    WORDS[w].syllables = syllables;
+  }
+
+  var wordIdx = 0;
+  var placedComps = [];  // har bir bo'g'in uchun: joylashtirilgan komponentlar massivi (masalan ['ㅇ','ㅏ'])
+  var soundOn = true;
+  var synth = window.speechSynthesis || null;
+
+  var slotsEl = document.getElementById('slots');
+  var poolEl = document.getElementById('pool');
+  var fbEl = document.getElementById('fb');
+  var wordTextEl = document.getElementById('wordText');
+  var progressEl = document.getElementById('progress');
+  var nextBtn = document.getElementById('nextBtn');
+  var prevBtn = document.getElementById('prevBtn');
+  var resetBtn = document.getElementById('resetBtn');
+  var soundBtn = document.getElementById('soundBtn');
+  var overlayEl = document.getElementById('overlay');
+  var overlayCloseBtn = document.getElementById('overlayCloseBtn');
+
+  function speak(txt) {
+    if (!soundOn || !synth || !txt || !txt.trim()) return;
+    try {
+      synth.cancel();
+      setTimeout(function() {
+        var u = new SpeechSynthesisUtterance(txt);
+        u.lang = 'ko-KR';
+        u.rate = 0.75;
+        u.pitch = 1;
+        var voices = synth.getVoices();
+        var krVoice = null;
+        for (var i = 0; i < voices.length; i++) {
+          if (voices[i].lang && voices[i].lang.indexOf('ko') === 0) {
+            krVoice = voices[i];
+            break;
+          }
+        }
+        if (krVoice) u.voice = krVoice;
+        synth.speak(u);
+      }, 50);
+    } catch(e) {}
+  }
+
+  function renderProgress() {
+    var html = '';
+    for (var i = 0; i < WORDS.length; i++) {
+      var cls = 'dot';
+      if (i < wordIdx) cls += ' done';
+      else if (i === wordIdx) cls += ' current';
+      html += '<div class="' + cls + '" data-i="' + i + '"></div>';
+    }
+    progressEl.innerHTML = html;
+    var dots = progressEl.children;
+    for (var j = 0; j < dots.length; j++) {
+      if (j <= wordIdx) {
+        dots[j].style.cursor = 'pointer';
+        dots[j].addEventListener('click', function(i) { return function() { goToWord(i); }; }(j));
+      }
+    }
+  }
+
+  function goToWord(i) {
+    if (i === wordIdx) return;
+    wordIdx = i;
+    render();
+  }
+
+  function render() {
+    var word = WORDS[wordIdx];
+    placedComps = [];
+    for (var i = 0; i < word.syllables.length; i++) placedComps.push([]);
+
+    wordTextEl.textContent = word.text + ' — ' + word.name;
+    fbEl.className = 'fb';
+    fbEl.textContent = '';
+    nextBtn.disabled = true;
+    prevBtn.disabled = (wordIdx === 0);
+
+    renderProgress();
+    renderSlots(word.syllables.length);
+    renderPool(word.syllables);
+  }
+
+  function renderSlots(n) {
+    slotsEl.innerHTML = '';
+    for (var i = 0; i < n; i++) {
+      var s = document.createElement('div');
+      s.className = 'slot';
+      s.setAttribute('data-i', i);
+      s.addEventListener('click', createSlotClick(i));
+      slotsEl.appendChild(s);
+    }
+  }
+
+  function createSlotClick(idx) {
+    return function(e) {
+      if (e.target && e.target.classList && e.target.classList.contains('slot-x')) {
+        e.stopPropagation();
+        removeSyllable(idx);
+        return;
+      }
+      var txt = currentSlotText(idx);
+      if (txt) speak(txt);
+    };
+  }
+
+  function renderPool(syllables) {
+    poolEl.innerHTML = '';
+    for (var s = 0; s < syllables.length; s++) {
+      if (s > 0) {
+        var gap = document.createElement('div');
+        gap.className = 'group-gap';
+        poolEl.appendChild(gap);
+      }
+      var comps = syllables[s].comps;
+      for (var c = 0; c < comps.length; c++) {
+        var t = document.createElement('div');
+        t.className = 'jamo';
+        t.textContent = comps[c];
+        t.setAttribute('data-si', s);
+        t.setAttribute('data-ci', c);
+        t.addEventListener('click', function(tile) { return function() { placeJamo(tile); }; }(t));
+        poolEl.appendChild(t);
+      }
+    }
+  }
+
+  function currentSlotText(idx) {
+    return placedComps[idx].join('');
+  }
+
+  function updateSlotDisplay(idx) {
+    var word = WORDS[wordIdx];
+    var syl = word.syllables[idx];
+    var slot = slotsEl.children[idx];
+    var placed = placedComps[idx];
+
+    if (placed.length === 0) {
+      slot.innerHTML = '';
+      slot.classList.remove('filled', 'done');
+      return;
+    }
+
+    var complete = placed.length === syl.comps.length;
+    var display = complete ? composedChar(syl.L, syl.V, syl.T) : placed.join('');
+    slot.innerHTML = display + '<span class="slot-x">\u2715</span>';
+    slot.classList.add('filled');
+    if (complete) slot.classList.add('done'); else slot.classList.remove('done');
+  }
+
+  function placeJamo(tile) {
+    if (tile.classList.contains('used')) return;
+    var si = parseInt(tile.getAttribute('data-si'), 10);
+    var ci = parseInt(tile.getAttribute('data-ci'), 10);
+    var word = WORDS[wordIdx];
+    var syl = word.syllables[si];
+
+    if (placedComps[si].length !== ci) return; // faqat navbatdagi komponent joylanadi (masalan avval ㅇ, keyin ㅏ)
+
+    placedComps[si].push(syl.comps[ci]);
+    tile.classList.add('used');
+
+    updateSlotDisplay(si);
+    flashSlots();
+
+    var complete = placedComps[si].length === syl.comps.length;
+    if (complete) {
+      speak(composedChar(syl.L, syl.V, syl.T));
+    } else {
+      speak(syl.comps[ci]);
+    }
+
+    checkAllDone();
+  }
+
+  function flashSlots() {
+    slotsEl.classList.add('flash');
+    setTimeout(function() { slotsEl.classList.remove('flash'); }, 250);
+  }
+
+  function checkAllDone() {
+    var word = WORDS[wordIdx];
+    for (var i = 0; i < word.syllables.length; i++) {
+      if (placedComps[i].length !== word.syllables[i].comps.length) return;
+    }
+    setTimeout(finishWord, 400);
+  }
+
+  function finishWord() {
+    var slots = slotsEl.children;
+    for (var i = 0; i < slots.length; i++) slots[i].classList.add('done');
+    var word = WORDS[wordIdx];
+    fbEl.className = 'fb ok';
+    fbEl.textContent = 'Mukammal! To\'g\'ri!';
+    nextBtn.disabled = false;
+    speak(word.text);
+  }
+
+  function removeSyllable(idx) {
+    if (placedComps[idx].length === 0) return;
+    var word = WORDS[wordIdx];
+    var syl = word.syllables[idx];
+
+    placedComps[idx] = [];
+    updateSlotDisplay(idx);
+
+    var tiles = poolEl.children;
+    for (var i = 0; i < tiles.length; i++) {
+      if (tiles[i].classList.contains('jamo') &&
+          parseInt(tiles[i].getAttribute('data-si'), 10) === idx) {
+        tiles[i].classList.remove('used');
+      }
+    }
+  }
+
+  function getSlotsText() {
+    var word = WORDS[wordIdx];
+    var result = '';
+    for (var i = 0; i < word.syllables.length; i++) {
+      var syl = word.syllables[i];
+      var placed = placedComps[i];
+      if (placed.length === syl.comps.length) {
+        result += composedChar(syl.L, syl.V, syl.T);
+      } else {
+        result += placed.join('');
+      }
+    }
+    return result;
+  }
+
+  function reset() { render(); }
+
+  function nextWord() {
+    if (wordIdx < WORDS.length - 1) {
+      wordIdx++;
+      render();
+    } else {
+      overlayEl.classList.add('show');
+    }
+  }
+
+  function prevWord() {
+    if (wordIdx > 0) {
+      wordIdx--;
+      render();
+    }
+  }
+
+  function closeOverlay() {
+    overlayEl.classList.remove('show');
+    wordIdx = 0;
+    render();
+  }
+
+  resetBtn.addEventListener('click', reset);
+  prevBtn.addEventListener('click', prevWord);
+  nextBtn.addEventListener('click', nextWord);
+  soundBtn.addEventListener('click', function() {
+    var txt = getSlotsText().trim();
+    if (txt) speak(txt);
+  });
+  overlayCloseBtn.addEventListener('click', closeOverlay);
+
+  if (synth) {
+    synth.onvoiceschanged = function() { synth.getVoices(); };
+  }
+
+  render();
+})();
+</script>
+</body>
+</html>
