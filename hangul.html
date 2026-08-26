@@ -82,6 +82,16 @@ main{padding:4px 16px 24px;flex:1}
 .part-card .nm{font-size:16px;font-weight:700;color:var(--ink)}
 .part-card .info{font-size:12px;color:var(--muted);margin-top:4px}
 .hidden{display:none!important}
+
+.intro-screen{display:flex;flex-direction:column;align-items:center;min-height:100vh;padding:20px;overflow-y:auto}
+.intro-title{font-size:20px;font-weight:800;margin-bottom:16px;text-align:center}
+.intro-text{font-size:14px;color:var(--muted);line-height:1.7;text-align:center;max-width:380px;margin-bottom:20px}
+.intro-example{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;margin-bottom:12px;width:100%;max-width:380px}
+.intro-example .kr{font-size:28px;font-weight:700;font-family:'Noto Sans KR',sans-serif;text-align:center;margin-bottom:4px}
+.intro-example .uz{font-size:13px;color:var(--muted);text-align:center}
+.intro-example .exp{font-size:12px;color:var(--blue);text-align:center;margin-top:4px;font-weight:600}
+.intro-btn{width:100%;max-width:380px;padding:14px;border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:700;cursor:pointer;margin-top:16px;background:var(--blue);color:#fff}
+.intro-btn:active{background:var(--blue-deep)}
 </style>
 </head>
 <body>
@@ -94,6 +104,39 @@ main{padding:4px 16px 24px;flex:1}
     <div class="select-title">Bo'lim tanlang</div>
     <div class="select-sub">O'rganmoqchi bo'lgan bo'limingizni bosing</div>
     <div class="part-cards" id="partCards"></div>
+  </div>
+
+  <div class="hidden" id="introScreen">
+    <div class="topbar">
+      <a class="back" href="#" id="backToIntro">&larr;</a>
+      <h1 id="introTitle">1-qism</h1>
+    </div>
+    <div class="intro-screen">
+      <div class="intro-title">Koreys tilini o'rganamiz!</div>
+      <div class="intro-text">Koreys yozuvi har bir bo'g'indan tashkil topgan. Har bir bo'g'inda 2 yoki 3 ta harf bor: bosh harf + unli + (ixtiyoriy) oxirgi harf.</div>
+
+      <div class="intro-example">
+        <div class="kr">나</div>
+        <div class="uz">"Na" deb o'qiladi</div>
+        <div class="exp">ㄴ (n) + ㅏ (a) = 나 (na)</div>
+      </div>
+
+      <div class="intro-example">
+        <div class="kr">한</div>
+        <div class="uz">"Han" deb o'qiladi</div>
+        <div class="exp">ㅎ (h) + ㅏ (a) + ㄴ (n) = 한 (han)</div>
+      </div>
+
+      <div class="intro-example">
+        <div class="kr">국</div>
+        <div class="uz">"Guk" deb o'qiladi</div>
+        <div class="exp">ㄱ (g) + ㅜ (u) + ㄱ (k) = 국 (guk)</div>
+      </div>
+
+      <div class="intro-text" style="margin-top:8px">Sizga harflar beriladi. Ularni to'g'ri tartibda bosib, bo'g'inni yig'asiz. Har bir bo'g'in tugagach, keyingisiga o'ting.</div>
+
+      <button class="intro-btn" id="startLearnBtn">Davom etish</button>
+    </div>
   </div>
 
   <div class="hidden" id="learnScreen">
@@ -299,10 +342,14 @@ main{padding:4px 16px 24px;flex:1}
   });
 
   var selectScreen = document.getElementById('selectScreen');
+  var introScreen = document.getElementById('introScreen');
   var learnScreen = document.getElementById('learnScreen');
   var partCards = document.getElementById('partCards');
   var soundBtnEl = document.getElementById('soundBtn');
+  var backToIntroBtn = document.getElementById('backToIntro');
+  var startLearnBtn = document.getElementById('startLearnBtn');
   var backToSelectBtn = document.getElementById('backToSelect');
+  var introTitleEl = document.getElementById('introTitle');
   var wordKrEl = document.getElementById('wordKr');
   var wordNameEl = document.getElementById('wordName');
   var wordNumEl = document.getElementById('wordNum');
@@ -314,20 +361,32 @@ main{padding:4px 16px 24px;flex:1}
                      '<div class="info">' + part.desc + ' · ' + part.words.length + ' ta so\'z</div>';
     card.addEventListener('click', function() {
       selectScreen.classList.add('hidden');
-      learnScreen.classList.remove('hidden');
-      soundBtnEl.classList.remove('hidden');
+      introScreen.classList.remove('hidden');
       currentPart = idx;
-      wordIdx = 0;
-      render();
+      introTitleEl.textContent = part.name;
     });
     partCards.appendChild(card);
+  });
+
+  backToIntroBtn.addEventListener('click', function(e) {
+    e.preventDefault();
+    introScreen.classList.add('hidden');
+    selectScreen.classList.remove('hidden');
+  });
+
+  startLearnBtn.addEventListener('click', function() {
+    introScreen.classList.add('hidden');
+    learnScreen.classList.remove('hidden');
+    soundBtnEl.classList.remove('hidden');
+    wordIdx = 0;
+    render();
   });
 
   backToSelectBtn.addEventListener('click', function(e) {
     e.preventDefault();
     learnScreen.classList.add('hidden');
     soundBtnEl.classList.add('hidden');
-    selectScreen.classList.remove('hidden');
+    introScreen.classList.remove('hidden');
   });
 
   var currentPart = 0;
@@ -581,7 +640,7 @@ main{padding:4px 16px 24px;flex:1}
     } else {
       learnScreen.classList.add('hidden');
       soundBtnEl.classList.add('hidden');
-      selectScreen.classList.remove('hidden');
+      introScreen.classList.remove('hidden');
     }
   }
 
@@ -589,7 +648,7 @@ main{padding:4px 16px 24px;flex:1}
     overlayEl.classList.remove('show');
     learnScreen.classList.add('hidden');
     soundBtnEl.classList.add('hidden');
-    selectScreen.classList.remove('hidden');
+    introScreen.classList.remove('hidden');
   }
 
   resetBtn.addEventListener('click', reset);
