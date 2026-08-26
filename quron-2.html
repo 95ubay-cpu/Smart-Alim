@@ -79,16 +79,38 @@ main{padding:4px 20px 40px;flex:1}
 .overlay-card .emoji{font-size:52px;margin-bottom:12px}
 .overlay-card h2{font-size:22px;font-weight:800;margin-bottom:6px}
 .overlay-card p{font-size:14px;color:var(--muted);margin-bottom:20px;line-height:1.5}
+
+.select-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:20px}
+.select-title{font-size:22px;font-weight:800;margin-bottom:6px;text-align:center}
+.select-sub{font-size:14px;color:var(--muted);margin-bottom:28px;text-align:center}
+.surah-cards{display:flex;flex-direction:column;gap:16px;width:100%;max-width:360px}
+.surah-card{background:var(--white);border:2px solid var(--border);border-radius:var(--radius);padding:24px 20px;text-align:center;cursor:pointer;transition:all .2s}
+.surah-card:active{transform:scale(.97);border-color:var(--green);background:var(--mint-2)}
+.surah-card .ar{font-size:32px;font-family:'Amiri',serif;font-weight:700;margin-bottom:8px}
+.surah-card .nm{font-size:16px;font-weight:700;color:var(--ink)}
+.surah-card .info{font-size:12px;color:var(--muted);margin-top:4px}
+.hidden{display:none!important}
 </style>
 </head>
 <body>
 <div class="app">
-  <div class="topbar">
-    <a class="back" href="index.html">&larr;</a>
-    <h1 id="topTitle">Sura</h1>
+  <div class="select-screen" id="selectScreen">
+    <div class="surah-header" style="width:100%;max-width:360px;margin-bottom:28px">
+      <div class="arabic">القرآن الكريم</div>
+      <div class="name">Qur'on o'rganish</div>
+    </div>
+    <div class="select-title">Sura tanlang</div>
+    <div class="select-sub">O'rganmoqchi bo'lgan surangizni bosing</div>
+    <div class="surah-cards" id="surahCards"></div>
   </div>
 
-  <main>
+  <div class="hidden" id="learnScreen">
+    <div class="topbar">
+      <a class="back" href="#" id="backToSelect">&larr;</a>
+      <h1 id="topTitle">Sura</h1>
+    </div>
+
+    <main>
     <div class="surah-header">
       <div class="arabic" id="surahArabic"></div>
       <div class="name" id="surahName"></div>
@@ -127,8 +149,9 @@ main{padding:4px 20px 40px;flex:1}
       <button class="btn btn-g" id="nextBtn" disabled>Keyingi oyat</button>
     </div>
   </main>
+  </div>
 
-  <button class="sound-btn" id="soundBtn" title="Ovoz chalish">🔊</button>
+  <button class="sound-btn hidden" id="soundBtn" title="Ovoz chalish">🔊</button>
 
   <div class="overlay" id="overlay">
     <div class="overlay-card">
@@ -142,8 +165,6 @@ main{padding:4px 20px 40px;flex:1}
 
 <script>
 (function(){
-  // Suralar tartib bilan: avval Al-Fotiha, keyin Al-Ixlos.
-  // Har bir oyat matnida harakatlar (fatha, damma, kasra, sukun, shadda...) matn ichida turibdi.
   var SURAHS = [
     {
       name: "Al-Fotiha",
@@ -172,15 +193,47 @@ main{padding:4px 20px 40px;flex:1}
     }
   ];
 
-  // Arabcha harakat belgilarining unicode oralig'i (harf ustiga/tagiga qo'yiladigan belgilar)
-  function isHarakat(code) {
+  var selectScreen = document.getElementById('selectScreen');
+  var learnScreen = document.getElementById('learnScreen');
+  var surahCards = document.getElementById('surahCards');
+  var soundBtnEl = document.getElementById('soundBtn');
+  var backToSelectBtn = document.getElementById('backToSelect');
+
+  SURAHS.forEach(function(surah, idx) {
+    var card = document.createElement('div');
+    card.className = 'surah-card';
+    card.innerHTML = '<div class="ar">' + surah.arabic + '</div>' +
+                     '<div class="nm">' + surah.name + '</div>' +
+                     '<div class="info">' + surah.num + '</div>';
+    card.addEventListener('click', function() {
+      selectScreen.classList.add('hidden');
+      learnScreen.classList.remove('hidden');
+      soundBtnEl.classList.remove('hidden');
+      startSurah(idx);
+    });
+    surahCards.appendChild(card);
+  });
+
+  backToSelectBtn.addEventListener('click', function(e) {
+    e.preventDefault();
+    learnScreen.classList.add('hidden');
+    soundBtnEl.classList.add('hidden');
+    selectScreen.classList.remove('hidden');
+  });
+
+  function startSurah(idx) {
+    surahIdx = idx;
+    ayahIdx = 0;
+    render();
+  }
+
+  var isHarakat = function(code) {
     return (code >= 0x0610 && code <= 0x061A) ||
            (code >= 0x064B && code <= 0x065F) ||
            code === 0x0670 ||
            (code >= 0x06D6 && code <= 0x06ED);
-  }
+  };
 
-  // Matnni "token"larga ajratadi: bo'shliq (' '), yoki {base, diac} — harf va uning harakati
   function tokenize(text) {
     var tokens = [];
     for (var i = 0; i < text.length; i++) {
@@ -196,7 +249,6 @@ main{padding:4px 20px 40px;flex:1}
     return tokens;
   }
 
-  // Oldindan har bir oyatga tokenlarini hisoblab qo'yamiz
   for (var s = 0; s < SURAHS.length; s++) {
     var ayahsList = SURAHS[s].ayahs;
     for (var a = 0; a < ayahsList.length; a++) {
@@ -204,10 +256,8 @@ main{padding:4px 20px 40px;flex:1}
     }
   }
 
-  var DOTTED = '\u25CC'; // yolg'iz harakatni ko'rsatish uchun nuqtali doira
+  var DOTTED = '\u25CC';
 
-  // Oyat OXIRIDA to'xtalganda oxirgi harakat (fatha/damma/kasra yoki tanvin) tushirib qoldiriladi — bu vaqf qoidasi.
-  // Faqat to'liq oyat o'qilayotganda ishlatiladi, harf-harf mashqda emas.
   function applyWaqf(text) {
     var t = text.replace(/\s+$/, '');
     var last = t.charAt(t.length - 1);
@@ -219,14 +269,9 @@ main{padding:4px 20px 40px;flex:1}
   }
 
   var surahIdx = 0;
-  (function() {
-    var params = new URLSearchParams(window.location.search);
-    var s = parseInt(params.get('surah'), 10);
-    if (!isNaN(s) && s >= 0 && s < SURAHS.length) surahIdx = s;
-  })();
   var ayahIdx = 0;
-  var placedLetter = [];   // har bir katak uchun: joylashtirilgan harf ('ق' kabi) yoki null
-  var placedHarakat = [];  // har bir katak uchun: joylashtirilgan harakat yoki null
+  var placedLetter = [];
+  var placedHarakat = [];
   var soundOn = true;
   var synth = window.speechSynthesis || null;
 
@@ -538,9 +583,9 @@ main{padding:4px 20px 40px;flex:1}
 
   function closeOverlay() {
     overlayEl.classList.remove('show');
-    surahIdx = 0;
-    ayahIdx = 0;
-    render();
+    learnScreen.classList.add('hidden');
+    soundBtnEl.classList.add('hidden');
+    selectScreen.classList.remove('hidden');
   }
 
   function prevAyah() {
@@ -551,6 +596,10 @@ main{padding:4px 20px 40px;flex:1}
       surahIdx--;
       ayahIdx = SURAHS[surahIdx].ayahs.length - 1;
       render();
+    } else {
+      learnScreen.classList.add('hidden');
+      soundBtnEl.classList.add('hidden');
+      selectScreen.classList.remove('hidden');
     }
   }
 
@@ -566,8 +615,6 @@ main{padding:4px 20px 40px;flex:1}
   if (synth) {
     synth.onvoiceschanged = function() { synth.getVoices(); };
   }
-
-  render();
 })();
 </script>
 </body>
