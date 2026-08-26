@@ -34,17 +34,17 @@ main{padding:4px 20px 40px;flex:1}
 .slot-area .label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px}
 .slots{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;min-height:60px;padding:12px 8px;background:var(--white);border:2px dashed var(--border);border-radius:var(--radius);transition:border-color .2s}
 .slots.flash{border-color:var(--blue)}
-.slot{width:52px;height:52px;border-radius:12px;background:var(--sky-2);border:2px dashed var(--border);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;font-family:'Noto Sans KR',sans-serif;color:var(--blue-deep);transition:all .2s;cursor:pointer;position:relative}
+.slot{width:52px;height:52px;border-radius:12px;background:var(--sky-2);border:2px dashed var(--border);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;font-family:'Noto Sans KR',sans-serif;position:relative;cursor:pointer}
 .slot.filled{background:var(--blue);color:#fff;border:2px solid var(--blue);animation:pop .25s ease}
 .slot.done{background:var(--blue-deep)}
-.slot .slot-x{position:absolute;top:-6px;right:-6px;width:20px;height:20px;border-radius:50%;background:#ef4444;color:#fff;font-size:11px;font-weight:800;display:none;align-items:center;justify-content:center;line-height:1;cursor:pointer;z-index:2;font-family:'Inter',sans-serif}
+.slot .slot-x{position:absolute;top:-6px;right:-6px;width:20px;height:20px;border-radius:50%;background:#ef4444;color:#fff;font-size:11px;font-weight:800;display:none;align-items:center;justify-content:center;cursor:pointer}
 .slot.filled .slot-x{display:flex}
 @keyframes pop{0%{transform:scale(.4);opacity:0}100%{transform:scale(1);opacity:1}}
 
 .pool-area{margin-bottom:20px}
 .pool-area .label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px}
 .pool{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;padding:12px 8px;background:var(--white);border:1px solid var(--border);border-radius:var(--radius)}
-.jamo{width:48px;height:48px;border-radius:12px;background:var(--sky-2);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;font-family:'Noto Sans KR',sans-serif;color:var(--ink);cursor:pointer;touch-action:manipulation;transition:all .15s}
+.jamo{width:48px;height:48px;border-radius:12px;background:var(--sky-2);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;font-family:'Noto Sans KR',sans-serif;cursor:pointer;transition:all .1s}
 .jamo:active{transform:scale(1.1);box-shadow:0 4px 14px rgba(0,0,0,.12)}
 .jamo.used{opacity:.25;pointer-events:none;transform:scale(.85)}
 .group-gap{width:12px}
@@ -58,11 +58,11 @@ main{padding:4px 20px 40px;flex:1}
 .btn-w{background:var(--white);border:1px solid var(--border);color:var(--ink)}.btn-w:active{background:var(--sky-2)}
 .btn:disabled{opacity:.4;pointer-events:none}
 
-.sound-btn{position:fixed;bottom:20px;right:20px;width:48px;height:48px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 4px 14px rgba(37,99,235,.3);cursor:pointer;z-index:20;border:none;transition:transform .15s}
+.sound-btn{position:fixed;bottom:20px;right:20px;width:48px;height:48px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 4px 12px rgba(37,99,235,.3);cursor:pointer;transition:all .2s;border:none}
 .sound-btn:active{transform:scale(.9)}
 
 .progress{display:flex;gap:6px;justify-content:center;margin-bottom:16px}
-.dot{width:10px;height:10px;border-radius:50%;background:var(--border);transition:background .2s}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--border);transition:background .2s;cursor:pointer}
 .dot.done{background:var(--blue)}
 .dot.current{background:var(--blue-deep);box-shadow:0 0 0 3px rgba(37,99,235,.25)}
 
@@ -186,7 +186,7 @@ main{padding:4px 20px 40px;flex:1}
   // Hangul bo'g'in blokini alohida harflarga (jamo) ajratuvchi standart formula
   var CHO = ['\u3131','\u3132','\u3134','\u3137','\u3138','\u3139','\u3141','\u3142','\u3143','\u3145','\u3146','\u3147','\u3148','\u3149','\u314A','\u314B','\u314C','\u314D','\u314E'];
   var JUNG = ['\u314F','\u3150','\u3151','\u3152','\u3153','\u3154','\u3155','\u3156','\u3157','\u3158','\u3159','\u315A','\u315B','\u315C','\u315D','\u315E','\u315F','\u3160','\u3161','\u3162','\u3163'];
-  var JONG = ['', '\u3131','\u3132','\u3133','\u3134','\u3135','\u3136','\u3137','\u3139','\u313A','\u313B','\u313C','\u313D','\u313E','\u313F','\u3140','\u3141','\u3142','\u3144','\u3145','\u3146','\u3147','\u3148','\u314A','\u314B','\u314C','\u314D','\u314E'];
+  var JONG = ['','\u3131','\u3132','\u3133','\u3134','\u3135','\u3136','\u3137','\u3139','\u313A','\u313B','\u313C','\u313D','\u313E','\u313F','\u3140','\u3141','\u3142','\u3144','\u3145','\u3146','\u3147','\u3148','\u314A','\u314B','\u314C','\u314D','\u314E'];
   var SBASE = 0xAC00, LCOUNT = 19, VCOUNT = 21, TCOUNT = 28;
 
   function decompose(ch) {
@@ -197,7 +197,7 @@ main{padding:4px 20px 40px;flex:1}
     var V = Math.floor((sIndex % (VCOUNT * TCOUNT)) / TCOUNT);
     var T = sIndex % TCOUNT;
     var comps = [CHO[L], JUNG[V]];
-    if (T > 0) comps.push(JONG[T - 1]);
+    if (T > 0) comps.push(JONG[T]);
     return { L: L, V: V, T: T, comps: comps };
   }
 
