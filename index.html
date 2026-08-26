@@ -2,139 +2,104 @@
 <html lang="uz">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Smart Ta'lim — Bosh sahifa</title>
-<link rel="stylesheet" href="style.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Qur'on o'rganish</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=Inter:wght@400;500;600&family=Amiri:wght@400;700&display=swap');
+
+:root{
+  --green:#0E9F6E;--green-deep:#0B7A54;--mint:#EAFBF4;--mint-2:#D8F5E9;
+  --white:#FFFFFF;--ink:#16241F;--muted:#5B6B65;--border:#DCEFE6;
+  --radius:18px;--radius-sm:12px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;color:var(--ink);background:var(--mint);min-height:100vh;-webkit-user-select:none;user-select:none}
+
+.app{max-width:480px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;background:var(--mint)}
+.topbar{padding:22px 20px 6px}
+.topbar .eyebrow{font-size:11px;font-weight:700;color:var(--green-deep);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}
+.topbar h1{font-family:'Manrope',sans-serif;font-size:26px;font-weight:800}
+main{padding:14px 20px 40px;flex:1}
+
+.hero{background:linear-gradient(135deg,var(--green),var(--green-deep));border-radius:var(--radius);padding:22px 20px;margin-bottom:22px;color:#fff}
+.hero .arabic{font-size:26px;font-weight:700;font-family:'Amiri',serif;margin-bottom:6px}
+.hero p{font-size:13px;opacity:.85;line-height:1.5}
+
+.section-label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin:18px 0 10px}
+
+.surah-card{display:flex;align-items:center;gap:14px;background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:10px;text-decoration:none;color:var(--ink);transition:transform .15s}
+.surah-card:active{transform:scale(.98)}
+.surah-card .num{width:38px;height:38px;border-radius:50%;background:var(--mint-2);color:var(--green-deep);font-weight:800;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.surah-card .info{flex:1;min-width:0}
+.surah-card .info .uz{font-size:15px;font-weight:700}
+.surah-card .info .meta{font-size:12px;color:var(--muted);margin-top:2px}
+.surah-card .arabic{font-family:'Amiri',serif;font-size:20px;color:var(--green-deep);flex-shrink:0}
+.surah-card .arrow{color:var(--muted);font-size:16px;flex-shrink:0}
+
+.surah-card.locked{opacity:.55;pointer-events:none}
+.surah-card.locked .num{background:var(--border);color:var(--muted)}
+.surah-card.locked .badge{font-size:10px;font-weight:700;color:var(--muted);background:var(--mint-2);padding:3px 8px;border-radius:8px;margin-top:4px;display:inline-block}
+</style>
 </head>
 <body>
 <div class="app">
+  <div class="topbar">
+    <div class="eyebrow">Qur'on o'rganish</div>
+    <h1>Suralarni tanlang</h1>
+  </div>
 
   <main>
-    <div class="logo-header">
-      <img src="talim.jpg" alt="Smart Ta'lim" class="logo-large">
+    <div class="hero">
+      <div class="arabic">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+      <p>Harflarni joylab, tinglab, qisqa suralarni harf-ma-harf o'rganing.</p>
     </div>
 
-    <div class="search-box">
-      <span>🔍</span>
-      <input type="text" id="search-input" placeholder="Qidiruv: kitob, universitet, so'z...">
+    <div class="section-label">Mavjud suralar</div>
+    <a class="surah-card" href="quron.html?surah=0">
+      <div class="num">1</div>
+      <div class="info">
+        <div class="uz">Al-Fotiha</div>
+        <div class="meta">7 oyat</div>
+      </div>
+      <div class="arabic">الفاتحة</div>
+      <div class="arrow">&rsaquo;</div>
+    </a>
+    <a class="surah-card" href="quron.html?surah=1">
+      <div class="num">112</div>
+      <div class="info">
+        <div class="uz">Al-Ixlos</div>
+        <div class="meta">4 oyat</div>
+      </div>
+      <div class="arabic">الإخلاص</div>
+      <div class="arrow">&rsaquo;</div>
+    </a>
+
+    <div class="section-label">Tez orada</div>
+    <div class="surah-card locked">
+      <div class="num">113</div>
+      <div class="info">
+        <div class="uz">Al-Falaq</div>
+        <div class="badge">Tez orada</div>
+      </div>
+      <div class="arabic">الفلق</div>
     </div>
-
-    <div class="section-title">Boʻlimlar</div>
-    <div class="folder-grid">
-
-      <a class="folder-card" href="royxatdan-otish.html">
-        <div class="icon">📝</div>
-        <div>
-          <div class="folder-name">Roʻyxatdan oʻtish</div>
-          <div class="folder-count">Hisob yarating</div>
-        </div>
-      </a>
-
-      <a class="folder-card" href="kutubxona.html">
-        <div class="icon">📚</div>
-        <div>
-          <div class="folder-name">Kutubxona</div>
-          <div class="folder-count">Kitoblar toʻplami</div>
-        </div>
-      </a>
-
-      <a class="folder-card" href="universitetlar.html">
-        <div class="icon">🎓</div>
-        <div>
-          <div class="folder-name">Universitetlar</div>
-          <div class="folder-count">Roʻyxat va shartlar</div>
-        </div>
-      </a>
-
-      <a class="folder-card" href="lugat.html">
-        <div class="icon">🔤</div>
-        <div>
-          <div class="folder-name">Lugʻat</div>
-          <div class="folder-count">Ingliz ↔ Oʻzbek</div>
-        </div>
-      </a>
-
-      <a class="folder-card" href="quron.html">
-        <div class="icon">📖</div>
-        <div>
-          <div class="folder-name">Qur'on o'rganish</div>
-          <div class="folder-count">Harflarni surtib o'rganing</div>
-        </div>
-      </a>
-
-      <a class="folder-card" href="chat.html">
-        <div class="icon">💬</div>
-        <div>
-          <div class="folder-name">Chat</div>
-          <div class="folder-count">Yordamchi bilan suhbat</div>
-        </div>
-      </a>
-
-      <a class="folder-card" href="videolar.html">
-        <div class="icon">🎬</div>
-        <div>
-          <div class="folder-name">Videolar</div>
-          <div class="folder-count">Darslar va maʼruzalar</div>
-        </div>
-      </a>
-
-      <a class="folder-card" href="profil.html">
-        <div class="icon">👤</div>
-        <div>
-          <div class="folder-name">Profil</div>
-          <div class="folder-count">Hisobingiz</div>
-        </div>
-      </a>
-
-      <a class="folder-card" href="hangul.html">
-        <div class="icon">🇰🇷</div>
-        <div>
-          <div class="folder-name">Koreys yozuvi</div>
-          <div class="folder-count">Hangul harflarini o'rganing</div>
-        </div>
-      </a>
-
-      <a class="folder-card" href="murojaat.html">
-        <div class="icon">📨</div>
-        <div>
-          <div class="folder-name">Murojaatlar</div>
-          <div class="folder-count">Fikr va takliflar</div>
-        </div>
-      </a>
-
+    <div class="surah-card locked">
+      <div class="num">114</div>
+      <div class="info">
+        <div class="uz">An-Nas</div>
+        <div class="badge">Tez orada</div>
+      </div>
+      <div class="arabic">الناس</div>
+    </div>
+    <div class="surah-card locked">
+      <div class="num">108</div>
+      <div class="info">
+        <div class="uz">Al-Kavsar</div>
+        <div class="badge">Tez orada</div>
+      </div>
+      <div class="arabic">الكوثر</div>
     </div>
   </main>
-
-  <nav class="bottom-nav">
-    <a class="nav-item active" href="index.html"><span class="ic">🏠</span>Bosh sahifa</a>
-    <a class="nav-item" href="quron.html"><span class="ic">📖</span>Qur'on</a>
-    <a class="nav-item" href="kutubxona.html"><span class="ic">📚</span>Kitoblar</a>
-    <a class="nav-item" href="lugat.html"><span class="ic">🔤</span>Lugʻat</a>
-    <a class="nav-item" href="chat.html"><span class="ic">💬</span>Chat</a>
-  </nav>
-
 </div>
-<script src="script.js"></script>
-<script>
-  const searchInput = document.getElementById('search-input');
-  const cards = document.querySelectorAll('.folder-card');
-  const searchHint = document.createElement('div');
-  searchHint.className = 'empty';
-  searchHint.style.cssText = 'display:none;text-align:center;color:#6b7a73;padding:24px 0;';
-  searchHint.innerHTML = '<div class="ic">🔍</div><p>Hech narsa topilmadi. Boshqa soʻz bilan izlab koʻring.</p>';
-
-  searchInput.addEventListener('input', () => {
-    const q = searchInput.value.trim().toLowerCase();
-    let found = 0;
-    cards.forEach(card => {
-      const text = card.textContent.toLowerCase();
-      const show = !q || text.includes(q);
-      card.style.display = show ? '' : 'none';
-      if (show) found++;
-    });
-    searchHint.style.display = found === 0 ? 'block' : 'none';
-    document.querySelector('.folder-grid').appendChild(searchHint);
-  });
-</script>
 </body>
 </html>
