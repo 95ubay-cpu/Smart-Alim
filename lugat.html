@@ -101,6 +101,10 @@
       2-qism
       <small>Keyingi lug'at</small>
     </button>
+    <button class="section-btn" data-section="maxsus" id="secMaxsus">
+      3-qism
+      <small>Maxsus atamalar</small>
+    </button>
   </div>
   <div class="tabs">
     <button class="tab-btn active" data-dir="en-uz" id="tabEnUz">Ingliz → O'zbek</button>
@@ -125,10 +129,12 @@
 
 <script src="lugat_oson_data.js?v=2"></script>
 <script src="lugat_qiyin_data.js?v=2"></script>
+<script src="lugat_maxsus_data.js?v=1"></script>
 <script>
 const LUGAT_BOLIMLAR = {
   oson: typeof LUGAT_OSON !== 'undefined' ? LUGAT_OSON : [],
-  qiyin: typeof LUGAT_QIYIN !== 'undefined' ? LUGAT_QIYIN : []
+  qiyin: typeof LUGAT_QIYIN !== 'undefined' ? LUGAT_QIYIN : [],
+  maxsus: typeof LUGAT_MAXSUS !== 'undefined' ? LUGAT_MAXSUS : []
 };
 
 let currentSection = "oson";
@@ -180,7 +186,7 @@ function render(filter=""){
     card.addEventListener("click", speakFn);
   });
 
-  const bolimNomi = currentSection === "oson" ? "1-qism" : "2-qism";
+  const bolimNomi = currentSection === "oson" ? "1-qism" : currentSection === "qiyin" ? "2-qism" : "3-qism";
   countEl.textContent = shown ? `${bolimNomi} · ${getWords().length} ta so'z` : "";
   if (shown === 0){
     listEl.innerHTML = `<div class="empty-state">Hech narsa topilmadi 🔍</div>`;
@@ -221,10 +227,12 @@ function setSection(sec){
   currentSection = sec;
   document.getElementById("secOson").classList.toggle("active", sec === "oson");
   document.getElementById("secQiyin").classList.toggle("active", sec === "qiyin");
+  document.getElementById("secMaxsus").classList.toggle("active", sec === "maxsus");
   render(searchInput.value);
 }
 document.getElementById("secOson").addEventListener("click", ()=> setSection("oson"));
 document.getElementById("secQiyin").addEventListener("click", ()=> setSection("qiyin"));
+document.getElementById("secMaxsus").addEventListener("click", ()=> setSection("maxsus"));
 searchInput.addEventListener("input", (e)=> render(e.target.value));
 
 render();
