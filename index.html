@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Ta'lim — Bosh sahifa</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+
+  <main>
+    <div class="logo-header">
+      <img src="talim.jpg" alt="Smart Ta'lim" class="logo-large">
+    </div>
+
+    <div class="search-box">
+      <span>🔍</span>
+      <input type="text" id="search-input" placeholder="Qidiruv: kitob, universitet, so'z...">
+    </div>
+
+    <div class="section-title">Boʻlimlar</div>
+    <div class="folder-grid">
+
+      <a class="folder-card" href="royxatdan-otish.html">
+        <div class="icon">📝</div>
+        <div>
+          <div class="folder-name">Roʻyxatdan oʻtish</div>
+          <div class="folder-count">Hisob yarating</div>
+        </div>
+      </a>
+
+      <a class="folder-card" href="kutubxona.html">
+        <div class="icon">📚</div>
+        <div>
+          <div class="folder-name">Kutubxona</div>
+          <div class="folder-count">Kitoblar toʻplami</div>
+        </div>
+      </a>
+
+      <a class="folder-card" href="universitetlar.html">
+        <div class="icon">🎓</div>
+        <div>
+          <div class="folder-name">Universitetlar</div>
+          <div class="folder-count">Roʻyxat va shartlar</div>
+        </div>
+      </a>
+
+      <a class="folder-card" href="lugat.html">
+        <div class="icon">🔤</div>
+        <div>
+          <div class="folder-name">Lugʻat</div>
+          <div class="folder-count">Ingliz ↔ Oʻzbek</div>
+        </div>
+      </a>
+
+      <a class="folder-card" href="quron.html">
+        <div class="icon">📖</div>
+        <div>
+          <div class="folder-name">Qur'on o'rganish</div>
+          <div class="folder-count">Harflarni surtib o'rganing</div>
+        </div>
+      </a>
+
+      <a class="folder-card" href="chat.html">
+        <div class="icon">💬</div>
+        <div>
+          <div class="folder-name">Chat</div>
+          <div class="folder-count">Yordamchi bilan suhbat</div>
+        </div>
+      </a>
+
+      <a class="folder-card" href="videolar.html">
+        <div class="icon">🎬</div>
+        <div>
+          <div class="folder-name">Videolar</div>
+          <div class="folder-count">Darslar va maʼruzalar</div>
+        </div>
+      </a>
+
+      <a class="folder-card" href="profil.html">
+        <div class="icon">👤</div>
+        <div>
+          <div class="folder-name">Profil</div>
+          <div class="folder-count">Hisobingiz</div>
+        </div>
+      </a>
+
+      <a class="folder-card" href="hangul.html">
+        <div class="icon">🇰🇷</div>
+        <div>
+          <div class="folder-name">Koreys yozuvi</div>
+          <div class="folder-count">Hangul harflarini o'rganing</div>
+        </div>
+      </a>
+
+      <a class="folder-card" href="murojaat.html">
+        <div class="icon">📨</div>
+        <div>
+          <div class="folder-name">Murojaatlar</div>
+          <div class="folder-count">Fikr va takliflar</div>
+        </div>
+      </a>
+
+    </div>
+  </main>
+
+  <nav class="bottom-nav">
+    <a class="nav-item active" href="index.html"><span class="ic">🏠</span>Bosh sahifa</a>
+    <a class="nav-item" href="quron.html"><span class="ic">📖</span>Qur'on</a>
+    <a class="nav-item" href="kutubxona.html"><span class="ic">📚</span>Kitoblar</a>
+    <a class="nav-item" href="lugat.html"><span class="ic">🔤</span>Lugʻat</a>
+    <a class="nav-item" href="chat.html"><span class="ic">💬</span>Chat</a>
+  </nav>
+
+</div>
+<script src="script.js"></script>
+<script>
+  const searchInput = document.getElementById('search-input');
+  const cards = document.querySelectorAll('.folder-card');
+  const searchHint = document.createElement('div');
+  searchHint.className = 'empty';
+  searchHint.style.cssText = 'display:none;text-align:center;color:#6b7a73;padding:24px 0;';
+  searchHint.innerHTML = '<div class="ic">🔍</div><p>Hech narsa topilmadi. Boshqa soʻz bilan izlab koʻring.</p>';
+
+  searchInput.addEventListener('input', () => {
+    const q = searchInput.value.trim().toLowerCase();
+    let found = 0;
+    cards.forEach(card => {
+      const text = card.textContent.toLowerCase();
+      const show = !q || text.includes(q);
+      card.style.display = show ? '' : 'none';
+      if (show) found++;
+    });
+    searchHint.style.display = found === 0 ? 'block' : 'none';
+    document.querySelector('.folder-grid').appendChild(searchHint);
+  });
+</script>
+</body>
+</html>
