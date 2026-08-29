@@ -936,6 +936,29 @@ main{padding:2px 12px 16px;flex:1}
 
   harakatClearBtn.addEventListener('click', clearHarakat);
 
+  // ===== Telefonning orqa tugmasi (browser back) =====
+  history.pushState({ qRun: 1 }, document.title);
+  window.addEventListener('popstate', function() {
+    if (!alifScreenEl.classList.contains('hidden')) {
+      alifScreenEl.classList.add('hidden');
+      selectScreen.classList.remove('hidden');
+      history.pushState({ qRun: 1 }, document.title);
+      return;
+    }
+    if (!learnScreen.classList.contains('hidden')) {
+      if (surahIdx > 0 || ayahIdx > 0) {
+        prevAyah();
+      } else {
+        learnScreen.classList.add('hidden');
+        soundBtnEl.classList.add('hidden');
+        selectScreen.classList.remove('hidden');
+      }
+      history.pushState({ qRun: 1 }, document.title);
+      return;
+    }
+    // selectScreen ko'rinayotganda — normal chiqish
+  });
+
   if (synth) {
     synth.onvoiceschanged = function() { synth.getVoices(); };
   }
