@@ -516,13 +516,11 @@ main{padding:2px 12px 16px;flex:1}
     ayahTextEl.textContent = ayah.text;
     fbEl.className = 'fb';
     fbEl.textContent = '';
-    nextBtn.disabled = true;
+    nextBtn.disabled = false;
     prevBtn.disabled = (surahIdx === 0 && ayahIdx === 0);
 
     var done = completedCount(surahIdx);
-    var isDone = ayahIdx < done;
-    if (isDone) {
-      nextBtn.disabled = false;
+    if (ayahIdx < done) {
       fbEl.className = 'fb ok';
       fbEl.textContent = 'Bu oyatni allaqachon o\'rgandingiz — mashq qiling yoki keyingisiga o\'ting';
     }

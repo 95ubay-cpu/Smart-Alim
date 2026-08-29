@@ -133,7 +133,7 @@ main{padding:4px 16px 24px;flex:1}
         <div class="exp">ㄱ (g) + ㅜ (u) + ㄱ (k) = 국 (guk)</div>
       </div>
 
-      <div class="intro-text" style="margin-top:8px">Sizga harflar beriladi. Ularni to'g'ri tartibda bosib, bo'g'inni yig'asiz. Har bir bo'g'in tugagach, keyingisiga o'ting.</div>
+      <div class="intro-text" style="margin-top:8px">Sizga harflar beriladi. Ularni bosib bo'g'inni yig'asiz. Xohlasangiz, to'ldirmasdan ham keyingisiga o'tishingiz mumkin.</div>
 
       <button class="intro-btn" id="startLearnBtn">Davom etish</button>
     </div>
@@ -173,7 +173,7 @@ main{padding:4px 16px 24px;flex:1}
       <div class="ctrls">
         <button class="btn btn-w" id="prevBtn">← Oldingi</button>
         <button class="btn btn-w" id="resetBtn">Qayta</button>
-        <button class="btn btn-g" id="nextBtn" disabled>Keyingi so'z</button>
+        <button class="btn btn-g" id="nextBtn">Keyingi so'z</button>
       </div>
     </main>
   </div>
@@ -467,7 +467,7 @@ main{padding:4px 16px 24px;flex:1}
     wordTextEl.textContent = word.text + ' — ' + word.name;
     fbEl.className = 'fb';
     fbEl.textContent = '';
-    nextBtn.disabled = true;
+    nextBtn.disabled = false;
     prevBtn.disabled = (wordIdx === 0);
 
     renderProgress();
