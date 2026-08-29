@@ -97,7 +97,7 @@ main{padding:2px 12px 16px;flex:1}
 .alif-entry .info{font-size:12px;color:#EAFBF4;margin-top:4px;opacity:.9}
 
 .alif-tiles{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;padding:8px 6px;background:var(--white);border:1px solid var(--border);border-radius:var(--radius-sm)}
-.alif-tile{width:42px;height:44px;border-radius:8px;background:var(--mint-2);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:22px;font-family:'Amiri',serif;font-weight:700;color:var(--ink);cursor:pointer;touch-action:manipulation;transition:all .15s;flex-shrink:0}
+.alif-tile{width:36px;height:38px;border-radius:7px;background:var(--mint-2);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:18px;font-family:'Amiri',serif;font-weight:700;color:var(--ink);cursor:pointer;touch-action:manipulation;transition:all .15s;flex-shrink:0}
 .alif-tile:active{transform:scale(1.08);box-shadow:0 4px 14px rgba(0,0,0,.12)}
 .alif-tile.active{background:var(--green);border-color:var(--green);color:#fff}
 
@@ -105,9 +105,9 @@ main{padding:2px 12px 16px;flex:1}
 .alif-main{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:12px}
 .alif-listen{width:44px;height:44px;border-radius:50%;background:var(--green);color:#fff;border:none;font-size:18px;cursor:pointer;box-shadow:0 4px 14px rgba(14,159,110,.3);flex-shrink:0;transition:transform .15s}
 .alif-listen:active{transform:scale(.9)}
-.alif-glyph{font-size:66px;font-family:'Amiri',serif;font-weight:700;color:var(--green-deep);line-height:1}
+.alif-glyph{font-size:54px;font-family:'Amiri',serif;font-weight:700;color:var(--green-deep);line-height:1.4;padding:4px 0}
 .alif-main .meta{text-align:left}
-.alif-name{font-size:16px;font-weight:800;margin-top:4px}
+.alif-name{font-size:15px;font-weight:800;margin-top:2px}
 .alif-pron{font-size:11px;color:var(--muted);margin-top:2px}
 .alif-forms{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
 .alif-form{border:2px solid var(--border);border-radius:12px;padding:10px 6px;background:var(--mint);cursor:pointer;transition:all .15s}
@@ -115,8 +115,17 @@ main{padding:2px 12px 16px;flex:1}
 .alif-form.na{background:#F6F8F7;opacity:.55;cursor:default}
 .alif-form.na:active{transform:none;border-color:var(--border)}
 .alif-form .flabel{font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
-.alif-form .fglyph{font-size:36px;font-family:'Amiri',serif;font-weight:700;color:var(--ink);line-height:1.15}
+.alif-form .fglyph{font-size:32px;font-family:'Amiri',serif;font-weight:700;color:var(--ink);line-height:1.15}
 .alif-hint{font-size:11px;color:var(--muted);margin-top:10px;line-height:1.5;display:none}
+.alif-har{margin-top:12px}
+.alif-har-label{font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;text-align:left}
+.alif-harakats{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.harakat-tile{min-width:52px;height:38px;border-radius:8px;background:#FFF7E0;border:2px solid #F3E3AD;display:flex;align-items:center;justify-content:center;font-size:22px;font-family:'Amiri',serif;font-weight:700;color:#8A6D1D;cursor:pointer;touch-action:manipulation;transition:all .15s;line-height:1;padding:0 6px}
+.harakat-tile:active{transform:scale(1.08)}
+.harakat-tile.active{border-color:var(--green);background:#DCFCE7;box-shadow:0 0 0 3px rgba(14,159,110,.2)}
+.harakat-clear{margin-top:8px;padding:6px 14px;border:none;border-radius:8px;background:var(--mint-2);color:var(--muted);font-size:11px;font-weight:700;cursor:pointer;border:1px solid var(--border)}
+.harakat-clear:active{background:var(--mint)}
+.alif-result{font-size:11px;font-weight:800;color:var(--green-deep);margin-top:8px;min-height:16px;letter-spacing:.03em}
 .hidden{display:none!important}
 </style>
 </head>
@@ -131,7 +140,7 @@ main{padding:2px 12px 16px;flex:1}
     <div class="select-sub">O'rganmoqchi bo'lgan surangizni bosing</div>
     <div class="alif-entry" id="alifEntry">
       <div class="ar">الأبجدية</div>
-      <div class="nm">Arab alifbosi</div>
+      <div class="nm">Arab alifbosi o'qilish tartibi</div>
       <div class="info">28 ta harf · bosib, talaffuzini eshiting</div>
     </div>
 
@@ -141,7 +150,7 @@ main{padding:2px 12px 16px;flex:1}
   <div class="hidden" id="alphabetScreen">
     <div class="topbar">
       <a class="back" href="#" id="backFromAlphabet">&larr;</a>
-      <h1>Arab alifbosi</h1>
+      <h1>Arab alifbosi o'qilish tartibi</h1>
     </div>
 
     <main>
@@ -156,6 +165,15 @@ main{padding:2px 12px 16px;flex:1}
             <div class="alif-pron" id="alifPron"></div>
           </div>
         </div>
+
+        <div class="alif-har">
+          <div class="alif-har-label">Harakatni tanlang — bosing</div>
+          <div class="alif-harakats" id="alifHarakatTiles"></div>
+          <button class="harakat-clear" id="harakatClear">✕ Harakatni o'chirish</button>
+        </div>
+
+        <div class="alif-result" id="alifResult"></div>
+
         <div class="alif-forms" id="alifForms"></div>
         <div class="alif-hint" id="alifHint"></div>
       </div>
@@ -697,34 +715,44 @@ main{padding:2px 12px 16px;flex:1}
 
   // ===== Arab alifbosi =====
   var ALPHABET = [
-    { n:'Alif', iso:'\u0627', ini:'', mid:'', fin:'\uFE8E', noJoin:true },
-    { n:'Be', iso:'\u0628', ini:'\uFE91', mid:'\uFE92', fin:'\uFE90' },
-    { n:'Te', iso:'\u062A', ini:'\uFE97', mid:'\uFE98', fin:'\uFE96' },
-    { n:'Se', iso:'\u062B', ini:'\uFE9B', mid:'\uFE9C', fin:'\uFE9A' },
-    { n:'Jim', iso:'\u062C', ini:'\uFE9F', mid:'\uFEA0', fin:'\uFE9E' },
-    { n:'Xa', iso:'\u062D', ini:'\uFEA3', mid:'\uFEA4', fin:'\uFEA2' },
-    { n:'Xe', iso:'\u062E', ini:'\uFEA7', mid:'\uFEA8', fin:'\uFEA6' },
-    { n:'Dol', iso:'\u062F', ini:'', mid:'', fin:'\uFEAA', noJoin:true },
-    { n:'Zol', iso:'\u0630', ini:'', mid:'', fin:'\uFEAC', noJoin:true },
-    { n:'Ro', iso:'\u0631', ini:'', mid:'', fin:'\uFEAE', noJoin:true },
-    { n:'Ze', iso:'\u0632', ini:'', mid:'', fin:'\uFEB0', noJoin:true },
-    { n:'Sin', iso:'\u0633', ini:'\uFEB3', mid:'\uFEB4', fin:'\uFEB2' },
-    { n:'Shin', iso:'\u0634', ini:'\uFEB7', mid:'\uFEB8', fin:'\uFEB6' },
-    { n:'Sod', iso:'\u0635', ini:'\uFEBB', mid:'\uFEBC', fin:'\uFEBA' },
-    { n:'Zod', iso:'\u0636', ini:'\uFEBF', mid:'\uFEC0', fin:'\uFEBE' },
-    { n:'To', iso:'\u0637', ini:'\uFEC3', mid:'\uFEC4', fin:'\uFEC2' },
-    { n:'Zo', iso:'\u0638', ini:'\uFEC7', mid:'\uFEC8', fin:'\uFEC6' },
-    { n:'Ayn', iso:'\u0639', ini:'\uFECB', mid:'\uFECC', fin:'\uFECA' },
-    { n:'G\u0027ayn', iso:'\u063A', ini:'\uFECF', mid:'\uFED0', fin:'\uFECE' },
-    { n:'Fe', iso:'\u0641', ini:'\uFED3', mid:'\uFED4', fin:'\uFED2' },
-    { n:'Qof', iso:'\u0642', ini:'\uFED7', mid:'\uFED8', fin:'\uFED6' },
-    { n:'Kof', iso:'\u0643', ini:'\uFEDB', mid:'\uFEDC', fin:'\uFEDA' },
-    { n:'Lom', iso:'\u0644', ini:'\uFEDF', mid:'\uFEE0', fin:'\uFEDE' },
-    { n:'Mim', iso:'\u0645', ini:'\uFEE3', mid:'\uFEE4', fin:'\uFEE2' },
-    { n:'Nun', iso:'\u0646', ini:'\uFEE7', mid:'\uFEE8', fin:'\uFEE6' },
-    { n:'Ha', iso:'\u0647', ini:'\uFEEB', mid:'\uFEEC', fin:'\uFEEA' },
-    { n:'Vov', iso:'\u0648', ini:'', mid:'', fin:'\uFEEE', noJoin:true },
-    { n:'Ya', iso:'\u064A', ini:'\uFEF3', mid:'\uFEF4', fin:'\uFEF2' }
+    { n:'Alif', dlat:'a', iso:'\u0627', ini:'', mid:'', fin:'\uFE8E', noJoin:true },
+    { n:'Be', dlat:'b', iso:'\u0628', ini:'\uFE91', mid:'\uFE92', fin:'\uFE90' },
+    { n:'Te', dlat:'t', iso:'\u062A', ini:'\uFE97', mid:'\uFE98', fin:'\uFE96' },
+    { n:'Se', dlat:'s', iso:'\u062B', ini:'\uFE9B', mid:'\uFE9C', fin:'\uFE9A' },
+    { n:'Jim', dlat:'j', iso:'\u062C', ini:'\uFE9F', mid:'\uFEA0', fin:'\uFE9E' },
+    { n:'Xa', dlat:'h', iso:'\u062D', ini:'\uFEA3', mid:'\uFEA4', fin:'\uFEA2' },
+    { n:'Xe', dlat:'kh', iso:'\u062E', ini:'\uFEA7', mid:'\uFEA8', fin:'\uFEA6' },
+    { n:'Dol', dlat:'d', iso:'\u062F', ini:'', mid:'', fin:'\uFEAA', noJoin:true },
+    { n:'Zol', dlat:'z', iso:'\u0630', ini:'', mid:'', fin:'\uFEAC', noJoin:true },
+    { n:'Ro', dlat:'r', iso:'\u0631', ini:'', mid:'', fin:'\uFEAE', noJoin:true },
+    { n:'Ze', dlat:'z', iso:'\u0632', ini:'', mid:'', fin:'\uFEB0', noJoin:true },
+    { n:'Sin', dlat:'s', iso:'\u0633', ini:'\uFEB3', mid:'\uFEB4', fin:'\uFEB2' },
+    { n:'Shin', dlat:'sh', iso:'\u0634', ini:'\uFEB7', mid:'\uFEB8', fin:'\uFEB6' },
+    { n:'Sod', dlat:'s', iso:'\u0635', ini:'\uFEBB', mid:'\uFEBC', fin:'\uFEBA' },
+    { n:'Zod', dlat:'z', iso:'\u0636', ini:'\uFEBF', mid:'\uFEC0', fin:'\uFEBE' },
+    { n:'To', dlat:'t', iso:'\u0637', ini:'\uFEC3', mid:'\uFEC4', fin:'\uFEC2' },
+    { n:'Zo', dlat:'z', iso:'\u0638', ini:'\uFEC7', mid:'\uFEC8', fin:'\uFEC6' },
+    { n:'Ayn', dlat:"'", iso:'\u0639', ini:'\uFECB', mid:'\uFECC', fin:'\uFECA' },
+    { n:'G\u0027ayn', dlat:"g'", iso:'\u063A', ini:'\uFECF', mid:'\uFED0', fin:'\uFECE' },
+    { n:'Fe', dlat:'f', iso:'\u0641', ini:'\uFED3', mid:'\uFED4', fin:'\uFED2' },
+    { n:'Qof', dlat:'q', iso:'\u0642', ini:'\uFED7', mid:'\uFED8', fin:'\uFED6' },
+    { n:'Kof', dlat:'k', iso:'\u0643', ini:'\uFEDB', mid:'\uFEDC', fin:'\uFEDA' },
+    { n:'Lom', dlat:'l', iso:'\u0644', ini:'\uFEDF', mid:'\uFEE0', fin:'\uFEDE' },
+    { n:'Mim', dlat:'m', iso:'\u0645', ini:'\uFEE3', mid:'\uFEE4', fin:'\uFEE2' },
+    { n:'Nun', dlat:'n', iso:'\u0646', ini:'\uFEE7', mid:'\uFEE8', fin:'\uFEE6' },
+    { n:'Ha', dlat:'h', iso:'\u0647', ini:'\uFEEB', mid:'\uFEEC', fin:'\uFEEA' },
+    { n:'Vov', dlat:'v', iso:'\u0648', ini:'', mid:'', fin:'\uFEEE', noJoin:true },
+    { n:'Ya', dlat:'y', iso:'\u064A', ini:'\uFEF3', mid:'\uFEF4', fin:'\uFEF2' }
+  ];
+  var HARAKAT = [
+    { m:'\u064E', name:'Fatha', latin:'a', pos:'yuqori' },
+    { m:'\u0650', name:'Kasra', latin:'i', pos:'pastki' },
+    { m:'\u064F', name:'Damma', latin:'u', pos:'yuqori' },
+    { m:'\u0652', name:'Sukun', latin:'\u00b7', pos:'yuqori' },
+    { m:'\u0651', name:'Shadda', latin:'', pos:'yuqori' },
+    { m:'\u064B', name:'Tanvin fatha', latin:'an', pos:'yuqori' },
+    { m:'\u064D', name:'Tanvin kasra', latin:'in', pos:'pastki' },
+    { m:'\u064C', name:'Tanvin damma', latin:'un', pos:'yuqori' }
   ];
   var NO_JOIN_HINT = 'Bu harf keyingi harf bilan bog\'lanmaydi — faqat "alohida" va "oxirida" ko\'rinishlari bor. Harfni ko\'rsatish uchun uning ustiga bosing.';
 
@@ -771,6 +799,7 @@ main{padding:2px 12px 16px;flex:1}
   function selectAlif(idx) {
     currentAlif = idx;
     var L = ALPHABET[idx];
+    if (appliedHarakatIdx !== -1) clearHarakat();
     var tiles = alifTilesEl.children;
     for (var i = 0; i < tiles.length; i++) tiles[i].classList.toggle('active', i === idx);
     alifGlyphEl.textContent = L.iso;
@@ -797,6 +826,7 @@ main{padding:2px 12px 16px;flex:1}
     selectScreen.classList.add('hidden');
     alifScreenEl.classList.remove('hidden');
     renderAlifTiles();
+    renderHarakatTiles();
     selectAlif(0);
   });
 
@@ -809,6 +839,47 @@ main{padding:2px 12px 16px;flex:1}
   alifListenBtn.addEventListener('click', function() {
     speakLetter(currentAlif);
   });
+
+  // ===== Harakat qo'yish =====
+  var alifHarakatEl = document.getElementById('alifHarakatTiles');
+  var alifResultEl = document.getElementById('alifResult');
+  var harakatClearBtn = document.getElementById('harakatClear');
+  var appliedHarakatIdx = -1;
+
+  function renderHarakatTiles() {
+    alifHarakatEl.innerHTML = '';
+    for (var i = 0; i < HARAKAT.length; i++) {
+      (function(idx) {
+        var h = document.createElement('div');
+        h.className = 'harakat-tile';
+        h.textContent = '\u0628' + HARAKAT[idx].m;
+        h.title = HARAKAT[idx].name;
+        h.addEventListener('click', function() { applyHarakat(idx); });
+        alifHarakatEl.appendChild(h);
+      })(i);
+    }
+  }
+
+  function clearHarakat() {
+    appliedHarakatIdx = -1;
+    alifGlyphEl.textContent = ALPHABET[currentAlif].iso;
+    alifResultEl.textContent = '';
+    var tiles = alifHarakatEl.children;
+    for (var i = 0; i < tiles.length; i++) tiles[i].classList.remove('active');
+  }
+
+  function applyHarakat(idx) {
+    appliedHarakatIdx = idx;
+    var L = ALPHABET[currentAlif];
+    var H = HARAKAT[idx];
+    alifGlyphEl.textContent = L.iso + H.m;
+    var tiles = alifHarakatEl.children;
+    for (var i = 0; i < tiles.length; i++) tiles[i].classList.toggle('active', i === idx);
+    alifResultEl.textContent = (L.dlat + H.latin) + ' — ' + H.name;
+    speak(L.iso + H.m);
+  }
+
+  harakatClearBtn.addEventListener('click', clearHarakat);
 
   if (synth) {
     synth.onvoiceschanged = function() { synth.getVoices(); };
