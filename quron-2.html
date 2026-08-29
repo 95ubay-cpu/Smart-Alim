@@ -299,6 +299,26 @@ main{padding:2px 12px 16px;flex:1}
   var surahCards = document.getElementById('surahCards');
   var soundBtnEl = document.getElementById('soundBtn');
   var backToSelectBtn = document.getElementById('backToSelect');
+
+  // ===== Progress saqlash (localStorage) =====
+  var STORE_KEY = 'qurun_progress_v1';
+  var progress = {};
+  try { progress = JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch(e) { progress = {}; }
+
+  function saveProgress() {
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(progress)); } catch(e) {}
+  }
+
+  function completedCount(idx) {
+    return (progress[idx] && progress[idx].n) || 0;
+  }
+
+  function noteCurPos() {
+    if (!progress[surahIdx]) progress[surahIdx] = { n: 0, last: 0 };
+    progress[surahIdx].last = ayahIdx;
+    saveProgress();
+  }
+
   var surahCardEls = [];
 
   SURAHS.forEach(function(surah, idx) {
@@ -394,25 +414,6 @@ main{padding:2px 12px 16px;flex:1}
   var placedHarakat = [];
   var soundOn = true;
   var synth = window.speechSynthesis || null;
-
-  // ===== Progress saqlash (localStorage) =====
-  var STORE_KEY = 'qurun_progress_v1';
-  var progress = {};
-  try { progress = JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch(e) { progress = {}; }
-
-  function saveProgress() {
-    try { localStorage.setItem(STORE_KEY, JSON.stringify(progress)); } catch(e) {}
-  }
-
-  function completedCount(idx) {
-    return (progress[idx] && progress[idx].n) || 0;
-  }
-
-  function noteCurPos() {
-    if (!progress[surahIdx]) progress[surahIdx] = { n: 0, last: 0 };
-    progress[surahIdx].last = ayahIdx;
-    saveProgress();
-  }
 
   var slotsEl = document.getElementById('slots');
   var poolEl = document.getElementById('pool');
