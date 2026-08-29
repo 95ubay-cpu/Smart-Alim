@@ -331,9 +331,7 @@ main{padding:2px 12px 16px;flex:1}
 
   backToSelectBtn.addEventListener('click', function(e) {
     e.preventDefault();
-    learnScreen.classList.add('hidden');
-    soundBtnEl.classList.add('hidden');
-    selectScreen.classList.remove('hidden');
+    prevAyah();
     refreshSurahCards();
   });
 
