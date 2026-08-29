@@ -89,6 +89,34 @@ main{padding:2px 12px 16px;flex:1}
 .surah-card .ar{font-size:32px;font-family:'Amiri',serif;font-weight:700;margin-bottom:8px}
 .surah-card .nm{font-size:16px;font-weight:700;color:var(--ink)}
 .surah-card .info{font-size:12px;color:var(--muted);margin-top:4px}
+
+.alif-entry{background:linear-gradient(135deg,var(--green),var(--green-deep));border:2px solid var(--green-deep);border-radius:var(--radius);padding:22px 20px;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:16px}
+.alif-entry:active{transform:scale(.97)}
+.alif-entry .ar{font-size:30px;font-family:'Amiri',serif;font-weight:700;color:#fff;margin-bottom:6px}
+.alif-entry .nm{font-size:16px;font-weight:700;color:#fff}
+.alif-entry .info{font-size:12px;color:#EAFBF4;margin-top:4px;opacity:.9}
+
+.alif-tiles{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;padding:8px 6px;background:var(--white);border:1px solid var(--border);border-radius:var(--radius-sm)}
+.alif-tile{width:42px;height:44px;border-radius:8px;background:var(--mint-2);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:22px;font-family:'Amiri',serif;font-weight:700;color:var(--ink);cursor:pointer;touch-action:manipulation;transition:all .15s;flex-shrink:0}
+.alif-tile:active{transform:scale(1.08);box-shadow:0 4px 14px rgba(0,0,0,.12)}
+.alif-tile.active{background:var(--green);border-color:var(--green);color:#fff}
+
+.alif-detail{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;margin-top:8px;text-align:center}
+.alif-main{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:12px}
+.alif-listen{width:44px;height:44px;border-radius:50%;background:var(--green);color:#fff;border:none;font-size:18px;cursor:pointer;box-shadow:0 4px 14px rgba(14,159,110,.3);flex-shrink:0;transition:transform .15s}
+.alif-listen:active{transform:scale(.9)}
+.alif-glyph{font-size:66px;font-family:'Amiri',serif;font-weight:700;color:var(--green-deep);line-height:1}
+.alif-main .meta{text-align:left}
+.alif-name{font-size:16px;font-weight:800;margin-top:4px}
+.alif-pron{font-size:11px;color:var(--muted);margin-top:2px}
+.alif-forms{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.alif-form{border:2px solid var(--border);border-radius:12px;padding:10px 6px;background:var(--mint);cursor:pointer;transition:all .15s}
+.alif-form:active{transform:scale(.97);border-color:var(--green)}
+.alif-form.na{background:#F6F8F7;opacity:.55;cursor:default}
+.alif-form.na:active{transform:none;border-color:var(--border)}
+.alif-form .flabel{font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+.alif-form .fglyph{font-size:36px;font-family:'Amiri',serif;font-weight:700;color:var(--ink);line-height:1.15}
+.alif-hint{font-size:11px;color:var(--muted);margin-top:10px;line-height:1.5;display:none}
 .hidden{display:none!important}
 </style>
 </head>
@@ -101,7 +129,37 @@ main{padding:2px 12px 16px;flex:1}
     </div>
     <div class="select-title">Sura tanlang</div>
     <div class="select-sub">O'rganmoqchi bo'lgan surangizni bosing</div>
+    <div class="alif-entry" id="alifEntry">
+      <div class="ar">الأبجدية</div>
+      <div class="nm">Arab alifbosi</div>
+      <div class="info">28 ta harf · bosib, talaffuzini eshiting</div>
+    </div>
+
     <div class="surah-cards" id="surahCards"></div>
+  </div>
+
+  <div class="hidden" id="alphabetScreen">
+    <div class="topbar">
+      <a class="back" href="#" id="backFromAlphabet">&larr;</a>
+      <h1>Arab alifbosi</h1>
+    </div>
+
+    <main>
+      <div class="alif-tiles" id="alifTiles"></div>
+
+      <div class="alif-detail">
+        <div class="alif-main">
+          <button class="alif-listen" id="alifListen" title="Ovoz chalish">🔊</button>
+          <div class="meta">
+            <div class="alif-glyph" id="alifGlyph"></div>
+            <div class="alif-name" id="alifName"></div>
+            <div class="alif-pron" id="alifPron"></div>
+          </div>
+        </div>
+        <div class="alif-forms" id="alifForms"></div>
+        <div class="alif-hint" id="alifHint"></div>
+      </div>
+    </main>
   </div>
 
   <div class="hidden" id="learnScreen">
@@ -636,6 +694,121 @@ main{padding:2px 12px 16px;flex:1}
     if (txt) speak(applyWaqf(txt));
   });
   overlayCloseBtn.addEventListener('click', closeOverlay);
+
+  // ===== Arab alifbosi =====
+  var ALPHABET = [
+    { n:'Alif', iso:'\u0627', ini:'', mid:'', fin:'\uFE8E', noJoin:true },
+    { n:'Be', iso:'\u0628', ini:'\uFE91', mid:'\uFE92', fin:'\uFE90' },
+    { n:'Te', iso:'\u062A', ini:'\uFE97', mid:'\uFE98', fin:'\uFE96' },
+    { n:'Se', iso:'\u062B', ini:'\uFE9B', mid:'\uFE9C', fin:'\uFE9A' },
+    { n:'Jim', iso:'\u062C', ini:'\uFE9F', mid:'\uFEA0', fin:'\uFE9E' },
+    { n:'Xa', iso:'\u062D', ini:'\uFEA3', mid:'\uFEA4', fin:'\uFEA2' },
+    { n:'Xe', iso:'\u062E', ini:'\uFEA7', mid:'\uFEA8', fin:'\uFEA6' },
+    { n:'Dol', iso:'\u062F', ini:'', mid:'', fin:'\uFEAA', noJoin:true },
+    { n:'Zol', iso:'\u0630', ini:'', mid:'', fin:'\uFEAC', noJoin:true },
+    { n:'Ro', iso:'\u0631', ini:'', mid:'', fin:'\uFEAE', noJoin:true },
+    { n:'Ze', iso:'\u0632', ini:'', mid:'', fin:'\uFEB0', noJoin:true },
+    { n:'Sin', iso:'\u0633', ini:'\uFEB3', mid:'\uFEB4', fin:'\uFEB2' },
+    { n:'Shin', iso:'\u0634', ini:'\uFEB7', mid:'\uFEB8', fin:'\uFEB6' },
+    { n:'Sod', iso:'\u0635', ini:'\uFEBB', mid:'\uFEBC', fin:'\uFEBA' },
+    { n:'Zod', iso:'\u0636', ini:'\uFEBF', mid:'\uFEC0', fin:'\uFEBE' },
+    { n:'To', iso:'\u0637', ini:'\uFEC3', mid:'\uFEC4', fin:'\uFEC2' },
+    { n:'Zo', iso:'\u0638', ini:'\uFEC7', mid:'\uFEC8', fin:'\uFEC6' },
+    { n:'Ayn', iso:'\u0639', ini:'\uFECB', mid:'\uFECC', fin:'\uFECA' },
+    { n:'G\u0027ayn', iso:'\u063A', ini:'\uFECF', mid:'\uFED0', fin:'\uFECE' },
+    { n:'Fe', iso:'\u0641', ini:'\uFED3', mid:'\uFED4', fin:'\uFED2' },
+    { n:'Qof', iso:'\u0642', ini:'\uFED7', mid:'\uFED8', fin:'\uFED6' },
+    { n:'Kof', iso:'\u0643', ini:'\uFEDB', mid:'\uFEDC', fin:'\uFEDA' },
+    { n:'Lom', iso:'\u0644', ini:'\uFEDF', mid:'\uFEE0', fin:'\uFEDE' },
+    { n:'Mim', iso:'\u0645', ini:'\uFEE3', mid:'\uFEE4', fin:'\uFEE2' },
+    { n:'Nun', iso:'\u0646', ini:'\uFEE7', mid:'\uFEE8', fin:'\uFEE6' },
+    { n:'Ha', iso:'\u0647', ini:'\uFEEB', mid:'\uFEEC', fin:'\uFEEA' },
+    { n:'Vov', iso:'\u0648', ini:'', mid:'', fin:'\uFEEE', noJoin:true },
+    { n:'Ya', iso:'\u064A', ini:'\uFEF3', mid:'\uFEF4', fin:'\uFEF2' }
+  ];
+  var NO_JOIN_HINT = 'Bu harf keyingi harf bilan bog\'lanmaydi — faqat "alohida" va "oxirida" ko\'rinishlari bor. Harfni ko\'rsatish uchun uning ustiga bosing.';
+
+  var alifScreenEl = document.getElementById('alphabetScreen');
+  var alifEntryEl = document.getElementById('alifEntry');
+  var alifTilesEl = document.getElementById('alifTiles');
+  var alifGlyphEl = document.getElementById('alifGlyph');
+  var alifNameEl = document.getElementById('alifName');
+  var alifPronEl = document.getElementById('alifPron');
+  var alifFormsEl = document.getElementById('alifForms');
+  var alifHintEl = document.getElementById('alifHint');
+  var alifListenBtn = document.getElementById('alifListen');
+  var currentAlif = 0;
+
+  function speakLetter(idx) {
+    speak(ALPHABET[idx].iso + '\u064E');
+  }
+
+  function renderAlifForms(idx) {
+    var L = ALPHABET[idx];
+    var cells = [
+      { label:'Alohida', glyph:L.iso, ok:true },
+      { label:'Boshida', glyph:L.ini, ok:!!L.ini },
+      { label:'O\u0027rtasida', glyph:L.mid, ok:!!L.mid },
+      { label:'Oxirida', glyph:L.fin, ok:true }
+    ];
+    alifFormsEl.innerHTML = '';
+    for (var i = 0; i < cells.length; i++) {
+      var c = document.createElement('div');
+      c.className = 'alif-form' + (cells[i].ok ? '' : ' na');
+      c.innerHTML = '<div class="flabel">' + cells[i].label + '</div>' +
+                    '<div class="fglyph">' + (cells[i].ok ? cells[i].glyph : '\u2014') + '</div>';
+      if (cells[i].ok) {
+        (function(li) {
+          c.addEventListener('click', function() { speakLetter(li); });
+        })(idx);
+      }
+      alifFormsEl.appendChild(c);
+    }
+    alifHintEl.style.display = L.noJoin ? '' : 'none';
+    alifHintEl.textContent = NO_JOIN_HINT;
+  }
+
+  function selectAlif(idx) {
+    currentAlif = idx;
+    var L = ALPHABET[idx];
+    var tiles = alifTilesEl.children;
+    for (var i = 0; i < tiles.length; i++) tiles[i].classList.toggle('active', i === idx);
+    alifGlyphEl.textContent = L.iso;
+    alifNameEl.textContent = L.n + ' harfi';
+    alifPronEl.textContent = 'Ovozini eshitish uchun bosing';
+    renderAlifForms(idx);
+    speakLetter(idx);
+  }
+
+  function renderAlifTiles() {
+    alifTilesEl.innerHTML = '';
+    for (var i = 0; i < ALPHABET.length; i++) {
+      (function(idx) {
+        var t = document.createElement('div');
+        t.className = 'alif-tile' + (idx === currentAlif ? ' active' : '');
+        t.textContent = ALPHABET[idx].iso;
+        t.addEventListener('click', function() { selectAlif(idx); });
+        alifTilesEl.appendChild(t);
+      })(i);
+    }
+  }
+
+  alifEntryEl.addEventListener('click', function() {
+    selectScreen.classList.add('hidden');
+    alifScreenEl.classList.remove('hidden');
+    renderAlifTiles();
+    selectAlif(0);
+  });
+
+  document.getElementById('backFromAlphabet').addEventListener('click', function(e) {
+    e.preventDefault();
+    alifScreenEl.classList.add('hidden');
+    selectScreen.classList.remove('hidden');
+  });
+
+  alifListenBtn.addEventListener('click', function() {
+    speakLetter(currentAlif);
+  });
 
   if (synth) {
     synth.onvoiceschanged = function() { synth.getVoices(); };
