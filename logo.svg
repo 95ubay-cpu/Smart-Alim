@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <defs>
+    <!-- nur (glow) uchun radial gradient -->
+    <radialGradient id="glow" cx="50%" cy="38%" r="65%">
+      <stop offset="0%" stop-color="#FFE9A8" stop-opacity="0.85"/>
+      <stop offset="45%" stop-color="#FFD86B" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#FFD86B" stop-opacity="0"/>
+    </radialGradient>
+    <!-- kitob sahifalari gradienti -->
+    <linearGradient id="page" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#24C48F"/>
+      <stop offset="55%" stop-color="#12A87A"/>
+      <stop offset="100%" stop-color="#0B7A54"/>
+    </linearGradient>
+    <linearGradient id="pageL" x1="1" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2ED39A"/>
+      <stop offset="55%" stop-color="#14AE80"/>
+      <stop offset="100%" stop-color="#0C8059"/>
+    </linearGradient>
+    <linearGradient id="cover" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0B7A54"/>
+      <stop offset="100%" stop-color="#085A40"/>
+    </linearGradient>
+    <!-- kabutarga yumshoq soya -->
+    <filter id="dshadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#0B5B40" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <!-- nurli fon (yumshoq yorug'lik olasi) -->
+  <circle cx="200" cy="190" r="190" fill="url(#glow)"/>
+  <circle cx="200" cy="190" r="120" fill="none" stroke="#FFD86B" stroke-opacity="0.25" stroke-width="1.5"/>
+
+  <!-- kitobdan chiqayotgan nurlar (rays) -->
+  <g stroke="#FFD458" stroke-opacity="0.5" stroke-width="3" stroke-linecap="round">
+    <line x1="200" y1="105" x2="120" y2="38"/>
+    <line x1="200" y1="95"  x2="200" y2="22"/>
+    <line x1="200" y1="105" x2="280" y2="38"/>
+    <line x1="200" y1="118" x2="78"  y2="86"/>
+    <line x1="200" y1="118" x2="322" y2="86"/>
+  </g>
+
+  <!-- ===== OCHILGAN QUR'ON KITOBI ===== -->
+  <g filter="url(#dshadow)">
+    <!-- chap qanot-sahifa -->
+    <path d="M96 120 C136 64, 180 96, 198 128 L198 176 C178 142, 132 118, 96 168 Z" fill="url(#pageL)"/>
+    <!-- o'ng qanot-sahifa -->
+    <path d="M304 120 C264 64, 220 96, 202 128 L202 176 C222 142, 268 118, 304 168 Z" fill="url(#page)"/>
+    <!-- muqova/o'rta (spine) -->
+    <path d="M198 128 C201 172, 199 176, 202 176 C205 176, 202 146, 202 128 Z" fill="url(#cover)"/>
+    <!-- sahifadagi qatorlar / margri -->
+    <g stroke="#EAFBF4" stroke-opacity="0.5" stroke-width="1.6" fill="none">
+      <path d="M150 150 C166 140, 178 145, 188 152"/>
+      <path d="M250 150 C234 140, 222 145, 212 152"/>
+      <path d="M148 163 C164 153, 178 158, 189 165"/>
+      <path d="M252 163 C236 153, 222 158, 211 165"/>
+    </g>
+    <!-- kitob chetida oltin qirra -->
+    <path d="M96 120 C136 64, 180 96, 198 128" fill="none" stroke="#F0C04A" stroke-opacity="0.7" stroke-width="2"/>
+    <path d="M304 120 C264 64, 220 96, 202 128" fill="none" stroke="#F0C04A" stroke-opacity="0.7" stroke-width="2"/>
+  </g>
+
+  <!-- ===== KABUTAR ===== -->
+  <g filter="url(#dshadow)">
+    <!-- chap qanot (yuqoriga yoyilgan) -->
+    <path d="M196 238 C150 190, 96 176, 40 168
+             C74 200, 120 214, 168 230 Z"
+          fill="#FFFFFF" stroke="#C9DCD3" stroke-width="1.5"/>
+    <!-- o'ng qanot -->
+    <path d="M204 238 C250 190, 304 176, 360 168
+             C326 200, 280 214, 232 230 Z"
+          fill="#FFFFFF" stroke="#C9DCD3" stroke-width="1.5"/>
+    <!-- qanot patlari (nozik chiziqlar) -->
+    <g stroke="#B7CFC3" stroke-opacity="0.8" stroke-width="1.4" fill="none">
+      <path d="M172 220 C146 202, 118 196, 92 194"/>
+      <path d="M228 220 C254 202, 282 196, 308 194"/>
+    </g>
+    <!-- dum patlari -->
+    <path d="M168 302 C142 322, 128 338, 118 350 C160 340, 180 330, 200 316 Z" fill="#FFFFFF" stroke="#C9DCD3" stroke-width="1.4"/>
+    <path d="M232 302 C258 322, 272 338, 282 350 C240 340, 220 330, 200 316 Z" fill="#FFFFFF" stroke="#C9DCD3" stroke-width="1.4"/>
+    <!-- gavda -->
+    <path d="M200 208 C226 240, 224 292, 200 316 C176 292, 174 240, 200 208 Z" fill="#FFFFFF" stroke="#C9DCD3" stroke-width="1.5"/>
+    <!-- bosh -->
+    <circle cx="200" cy="196" r="20" fill="#FFFFFF" stroke="#C9DCD3" stroke-width="1.5"/>
+    <!-- tumshuq (to'q sariq) -->
+    <path d="M216 190 L236 194 L216 199 Z" fill="#F0A33A"/>
+    <!-- ko'z -->
+    <circle cx="212" cy="192" r="2.6" fill="#2C4A3D"/>
+  </g>
+</svg>
