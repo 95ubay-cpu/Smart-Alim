@@ -49,7 +49,7 @@ main{padding:2px 12px 16px;flex:1}
 .slot-area .label{font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px}
 .slots{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;direction:rtl;min-height:38px;padding:6px 5px;background:var(--white);border:2px dashed var(--border);border-radius:var(--radius-sm);transition:border-color .2s}
 .slots.flash{border-color:var(--green)}
-.slot{width:36px;height:36px;border-radius:8px;background:var(--mint-2);border:2px dashed var(--border);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;font-family:'Amiri',serif;color:var(--green-deep);direction:rtl;transition:all .2s;cursor:pointer;position:relative}
+.slot{min-width:40px;height:36px;border-radius:8px;background:var(--mint-2);border:2px dashed var(--border);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;font-family:'Amiri',serif;color:var(--green-deep);direction:rtl;transition:all .2s;cursor:pointer;position:relative;padding:0 3px}
 .slot.filled{background:var(--green);color:#fff;border:2px solid var(--green);animation:pop .25s ease}
 .slot .slot-x{position:absolute;top:-6px;right:-6px;width:20px;height:20px;border-radius:50%;background:#ef4444;color:#fff;font-size:11px;font-weight:800;display:none;align-items:center;justify-content:center;line-height:1;cursor:pointer;z-index:2;font-family:'Inter',sans-serif}
 .slot.filled .slot-x{display:flex}
@@ -61,7 +61,7 @@ main{padding:2px 12px 16px;flex:1}
 .pool-area{margin-bottom:8px}
 .pool-area .label{font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px}
 .pool{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;padding:6px 5px;background:var(--white);border:1px solid var(--border);border-radius:var(--radius-sm);direction:rtl}
-.letter{width:36px;height:36px;border-radius:8px;background:var(--mint-2);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;font-family:'Amiri',serif;color:var(--ink);direction:rtl;cursor:pointer;touch-action:manipulation;transition:all .15s}
+.letter{min-width:40px;height:36px;border-radius:8px;background:var(--mint-2);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;font-family:'Amiri',serif;color:var(--ink);direction:rtl;cursor:pointer;touch-action:manipulation;transition:all .15s;padding:0 3px}
 .letter:active{transform:scale(1.1);box-shadow:0 4px 14px rgba(0,0,0,.12)}
 .letter.used{opacity:.25;pointer-events:none;transform:scale(.85)}
 .harakat{width:32px;height:32px;border-radius:8px;background:#FFF7E0;border:2px solid #F3E3AD;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;font-family:'Amiri',serif;color:#8A6D1D;direction:rtl;cursor:pointer;touch-action:manipulation;transition:all .15s}
@@ -513,6 +513,67 @@ main{padding:2px 12px 16px;flex:1}
     return result;
   }
 
+  // ===== Arab harflarining Qur'ondagi shakllari (alohida / boshida / o'rtasida / oxirida) =====
+  // Bu xarita har bir harfning 4 xil ko'rinishini beradi. Shu sababli o'yinda harflar
+  // Qur'ondagidek bog'langan (boshida/o'rtasida/oxirida) ko'rinishda chiqadi.
+  var SHAPE = {};
+  function addShape(iso, ini, mid, fin) {
+    SHAPE[iso] = { iso: iso, ini: ini, mid: mid, fin: fin };
+  }
+  addShape('\u0627','','','\uFE8E');                    // Alif
+  addShape('\u0628','\uFE91','\uFE92','\uFE90');       // Be
+  addShape('\u062A','\uFE97','\uFE98','\uFE96');       // Te
+  addShape('\u062B','\uFE9B','\uFE9C','\uFE9A');       // Se
+  addShape('\u062C','\uFE9F','\uFEA0','\uFE9E');       // Jim
+  addShape('\u062D','\uFEA3','\uFEA4','\uFEA2');       // Xa
+  addShape('\u062E','\uFEA7','\uFEA8','\uFEA6');       // Xe
+  addShape('\u062F','','','\uFEAA');                    // Dol
+  addShape('\u0630','','','\uFEAC');                    // Zol
+  addShape('\u0631','','','\uFEAE');                    // Ro
+  addShape('\u0632','','','\uFEB0');                    // Ze
+  addShape('\u0633','\uFEB3','\uFEB4','\uFEB2');       // Sin
+  addShape('\u0634','\uFEB7','\uFEB8','\uFEB6');       // Shin
+  addShape('\u0635','\uFEBB','\uFEBC','\uFEBA');       // Sod
+  addShape('\u0636','\uFEBF','\uFEC0','\uFEBE');       // Zod
+  addShape('\u0637','\uFEC3','\uFEC4','\uFEC2');       // To
+  addShape('\u0638','\uFEC7','\uFEC8','\uFEC6');       // Zo
+  addShape('\u0639','\uFECB','\uFECC','\uFECA');       // Ayn
+  addShape('\u063A','\uFECF','\uFED0','\uFECE');       // G'ayn
+  addShape('\u0641','\uFED3','\uFED4','\uFED2');       // Fe
+  addShape('\u0642','\uFED7','\uFED8','\uFED6');       // Qof
+  addShape('\u0643','\uFEDB','\uFEDC','\uFEDA');       // Kof
+  addShape('\u0644','\uFEDF','\uFEE0','\uFEDE');       // Lom
+  addShape('\u0645','\uFEE3','\uFEE4','\uFEE2');       // Mim
+  addShape('\u0646','\uFEE7','\uFEE8','\uFEE6');       // Nun
+  addShape('\u0647','\uFEEB','\uFEEC','\uFEEA');       // Ha
+  addShape('\u0648','','','\uFEEE');                    // Vov
+  addShape('\u064A','\uFEF3','\uFEF4','\uFEF2');       // Ya
+  addShape('\u0621','','','\u0621');                    // Hamza
+  addShape('\u0622','','','\uFE82');                    // Alef madda
+  addShape('\u0623','','','\u0623');                    // Alef hamza ustida
+  addShape('\u0624','','','\uFE86');                    // Vov hamza ustida
+  addShape('\u0625','','','\u0625');                    // Alef hamza ostida
+  addShape('\u0626','\uFE8A','\uFE8B','\uFE8C');       // Ya hamza ustida
+  addShape('\u0629','','','\uFE94');                    // Te marbuta
+  addShape('\u0649','','','\uFEF0');                    // Alef maqsura
+
+  // Berilgan harf o'z joyiga qarab Qur'ondagi ko'rinishini beradi
+  // Qur'onda harf o'z turiga qarab 4 xil yoziladi:
+  //   alohida / boshida (bog'lanib boshlanadi) / o'rtasida / oxirida
+  function shapedGlyph(ayah, idx) {
+    var tokens = letterTokens(ayah);
+    var base = tokens[idx] ? tokens[idx].base : '';
+    var S = SHAPE[base];
+    if (!S) return base;
+    if (S.ini === '') return S.iso;              // bog'lanmaydigan harf (ا،إ،أ...) — doim alohida
+    var hasPrev = idx > 0;
+    var hasNext = idx < tokens.length - 1;
+    if (hasPrev && hasNext) return S.mid;         // o'rtasida
+    if (hasPrev && !hasNext) return S.fin;        // oxirida
+    if (!hasPrev && hasNext) return S.ini;        // boshida
+    return S.iso;                                 // alohida
+  }
+
   function currentSurah() {
     return SURAHS[surahIdx];
   }
@@ -608,6 +669,7 @@ main{padding:2px 12px 16px;flex:1}
 
   function renderLetterPool(tokens) {
     poolEl.innerHTML = '';
+    var ayah = currentAyah();
     var idx = 0;
     for (var i = 0; i < tokens.length; i++) {
       if (tokens[i] === ' ') {
@@ -619,7 +681,7 @@ main{padding:2px 12px 16px;flex:1}
       }
       var t = document.createElement('div');
       t.className = 'letter';
-      t.textContent = tokens[i].base;
+      t.textContent = shapedGlyph(ayah, idx);
       t.setAttribute('data-idx', idx);
       t.addEventListener('click', function(tile) { return function() { placeBaseLetter(tile); }; }(t));
       poolEl.appendChild(t);
@@ -667,12 +729,14 @@ main{padding:2px 12px 16px;flex:1}
 
   function updateSlotDisplay(idx) {
     var slot = slotsEl.children[idx];
-    var txt = currentSlotText(idx);
-    if (!txt) {
+    var base = placedLetter[idx];
+    if (!base && !placedHarakat[idx]) {
       slot.innerHTML = '';
       slot.classList.remove('filled');
       return;
     }
+    var txt = base ? shapedGlyph(currentAyah(), idx) : DOTTED;
+    if (placedHarakat[idx]) txt += placedHarakat[idx];
     slot.innerHTML = txt + '<span class="slot-x">\u2715</span>';
     slot.classList.add('filled');
   }
