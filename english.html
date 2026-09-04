@@ -95,6 +95,20 @@ main{padding:4px 16px 24px;flex:1}
 .intro-example .exp{font-size:12px;color:var(--blue);text-align:center;margin-top:4px;font-weight:600}
 .intro-btn{width:100%;max-width:380px;padding:14px;border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:700;cursor:pointer;margin-top:16px;background:var(--blue);color:#fff}
 .intro-btn:active{background:var(--blue-deep)}
+
+.quiz-wrap{display:none}
+.quiz-wrap.show{display:block}
+.quiz-q-box{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;text-align:center;margin-bottom:12px}
+.quiz-q-box .label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.quiz-q-box .q{font-size:20px;font-weight:800;color:var(--blue-deep)}
+.options{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
+.option{background:var(--white);border:2px solid var(--border);border-radius:var(--radius-sm);padding:14px;font-size:15px;font-weight:700;cursor:pointer;transition:all .1s;text-align:center}
+.option:active{transform:scale(.97)}
+.option.ok{background:#dcfce7;border-color:#22c55e;color:#15803d}
+.option.bad{background:#fee2e2;border-color:#ef4444;color:#b91c1c;animation:shake .3s ease}
+.option.reveal{background:#e0e7ff;border-color:var(--blue);color:var(--blue-deep)}
+.reveal-btn{position:fixed;left:16px;bottom:16px;padding:10px 18px;border:none;border-radius:50px;background:var(--white);border:1px solid var(--border);color:var(--blue-deep);font-weight:700;font-size:13px;box-shadow:0 4px 12px rgba(0,0,0,.12);cursor:pointer;transition:all .2s;z-index:30}
+.reveal-btn:active{transform:scale(.93);background:var(--sky-2)}
 </style>
 </head>
 <body>
@@ -166,6 +180,15 @@ main{padding:4px 16px 24px;flex:1}
         <div class="pool" id="pool"></div>
       </div>
 
+      <div class="quiz-wrap" id="quizWrap">
+        <div class="quiz-q-box">
+          <div class="label">8 variantdan to'g'risini tanlang</div>
+          <div class="q" id="quizQuestion"></div>
+        </div>
+        <div class="options" id="quizOptions"></div>
+        <div class="fb" id="quizFb"></div>
+      </div>
+
       <div class="ctrls">
         <button class="btn btn-w" id="prevBtn">← Oldingi</button>
         <button class="btn btn-w" id="resetBtn">Qayta</button>
@@ -175,6 +198,7 @@ main{padding:4px 16px 24px;flex:1}
   </div>
 
   <button class="sound-btn hidden" id="soundBtn" title="Ovoz chalish">🔊</button>
+  <button class="reveal-btn hidden" id="revealBtn" title="To'g'ri javobni ko'rsatish">To'g'ri javob</button>
 
   <div class="overlay" id="overlay">
     <div class="overlay-card">
@@ -373,6 +397,12 @@ main{padding:4px 16px 24px;flex:1}
   var soundBtn = document.getElementById('soundBtn');
   var overlayEl = document.getElementById('overlay');
   var overlayCloseBtn = document.getElementById('overlayCloseBtn');
+  var revealBtn = document.getElementById('revealBtn');
+  var quizWrapEl = document.getElementById('quizWrap');
+  var quizQuestionEl = document.getElementById('quizQuestion');
+  var quizOptionsEl = document.getElementById('quizOptions');
+  var quizFbEl = document.getElementById('quizFb');
+  var quizMode = false;
 
   PARTS.forEach(function(part, idx) {
     var card = document.createElement('div');
@@ -484,6 +514,9 @@ main{padding:4px 16px 24px;flex:1}
     var word = WORDS[wordIdx];
     placed = [];
     finishedFlag = false;
+    quizMode = false;
+    quizWrapEl.classList.remove('show');
+    revealBtn.classList.remove('hidden');
 
     wordNameEl.textContent = PARTS[currentPart].name;
     wordHintEl.textContent = word.name;
@@ -492,6 +525,7 @@ main{padding:4px 16px 24px;flex:1}
     fbEl.textContent = '';
     nextBtn.disabled = false;
     prevBtn.disabled = (wordIdx === 0);
+    nextBtn.textContent = 'Keyingi so\'z';
 
     renderProgress();
     renderSlots(word.letters.length);
@@ -585,7 +619,101 @@ main{padding:4px 16px 24px;flex:1}
 
   function reset() { render(); }
 
+  function shuffleArr(arr) {
+    for (var i = arr.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = arr[i]; arr[i] = arr[j]; arr[j] = t;
+    }
+    return arr;
+  }
+
+  function showQuiz() {
+    quizMode = true;
+    var word = WORDS[wordIdx];
+    quizQuestionEl.textContent = word.name + ' so\'zining inglizchasi qaysi?';
+    quizWrapEl.classList.add('show');
+    quizFbEl.className = 'fb';
+    quizFbEl.textContent = '';
+    nextBtn.disabled = true;
+    revealBtn.classList.remove('hidden');
+
+    var opts = [word.text];
+    var pool = [];
+    for (var i = 0; i < WORDS.length; i++) {
+      if (WORDS[i].text !== word.text) pool.push(WORDS[i].text);
+    }
+    for (var k = 0; k < 7 && pool.length > 0; k++) {
+      var ri = Math.floor(Math.random() * pool.length);
+      opts.push(pool[ri]);
+      pool.splice(ri, 1);
+    }
+    opts = shuffleArr(opts);
+    quizOptionsEl.innerHTML = '';
+    for (var o = 0; o < opts.length; o++) {
+      (function(txt) {
+        var d = document.createElement('div');
+        d.className = 'option';
+        d.textContent = txt;
+        d.setAttribute('data-ans', txt);
+        d.addEventListener('click', function() {
+          if (d.classList.contains('ok')) return;
+          if (txt === word.text) {
+            d.classList.add('ok');
+            quizFbEl.className = 'fb ok';
+            quizFbEl.textContent = 'To\'g\'ri! Keyingi so\'zga o\'tilmoqda...';
+            speak(word.text);
+            setTimeout(function() {
+              if (wordIdx < WORDS.length - 1) {
+                wordIdx++;
+                render();
+              } else {
+                overlayEl.classList.add('show');
+              }
+            }, 900);
+          } else {
+            d.classList.add('bad');
+            setTimeout(function() { d.classList.remove('bad'); }, 400);
+          }
+        });
+        quizOptionsEl.appendChild(d);
+      })(opts[o]);
+    }
+  }
+
+  function revealAnswer() {
+    if (quizMode) {
+      var word = WORDS[wordIdx];
+      var opts = quizOptionsEl.children;
+      for (var i = 0; i < opts.length; i++) {
+        if (opts[i].getAttribute('data-ans') === word.text) {
+          opts[i].classList.add('reveal');
+          break;
+        }
+      }
+    } else if (finishedFlag) {
+      // slot'dagi to'g'ri javobni ochib ko'rsatish
+      var w = WORDS[wordIdx];
+      wordHintEl.textContent = w.name;
+      fbEl.className = 'fb ok';
+      fbEl.textContent = 'To\'g\'ri javob: ' + w.text;
+    } else {
+      // yig'ilmagan bo'lsa, to'g'ri javobni slotlarga to'ldirish
+      var w2 = WORDS[wordIdx];
+      for (var j = 0; j < w2.letters.length; j++) {
+        if (!placed[j]) placed.push(w2.letters[j]);
+      }
+      for (var m = 0; m < placed.length; m++) updateSlotDisplay(m);
+      finishedFlag = true;
+      finishWord();
+    }
+  }
+
   function nextWord() {
+    if (quizMode) return;
+    if (finishedFlag && !quizMode) {
+      showQuiz();
+      return;
+    }
     if (wordIdx < WORDS.length - 1) {
       wordIdx++;
       render();
@@ -595,6 +723,10 @@ main{padding:4px 16px 24px;flex:1}
   }
 
   function prevWord() {
+    if (quizMode) {
+      render();
+      return;
+    }
     if (wordIdx > 0) {
       wordIdx--;
       render();
@@ -615,6 +747,7 @@ main{padding:4px 16px 24px;flex:1}
   resetBtn.addEventListener('click', reset);
   prevBtn.addEventListener('click', prevWord);
   nextBtn.addEventListener('click', nextWord);
+  revealBtn.addEventListener('click', revealAnswer);
   soundBtn.addEventListener('click', function() {
     // oxirgi to'ldirilgan bo'g'inlarni o'qish yoki so'zni
     if (placed.length) speak(placed.join(''));
