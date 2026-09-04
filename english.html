@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Ingliz tili — So'z yig'ish</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=Inter:wght@400;500;600&family=Noto+Sans+KR:wght@500;700;800&display=swap');
+
+:root{
+  --blue:#2563EB;--blue-deep:#1D4ED8;--sky:#EAF1FB;--sky-2:#D9E6FA;
+  --white:#FFFFFF;--ink:#16241F;--muted:#5B6B65;--border:#DCE4EF;
+  --radius:18px;--radius-sm:12px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;color:var(--ink);background:var(--sky);min-height:100vh;-webkit-user-select:none;user-select:none}
+
+.app{max-width:480px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;background:var(--sky)}
+.topbar{display:flex;align-items:center;gap:10px;padding:12px 16px 10px;background:var(--sky);position:sticky;top:0;z-index:10}
+.topbar .back{width:34px;height:34px;border-radius:50%;background:var(--white);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;text-decoration:none;color:var(--ink)}
+.topbar h1{font-size:17px;font-weight:800;margin:0;flex:1;text-align:center}
+main{padding:4px 16px 24px;flex:1}
+
+.surah-header{text-align:center;background:linear-gradient(135deg,var(--blue),var(--blue-deep));border-radius:var(--radius);padding:16px 16px;margin-bottom:12px;color:#fff}
+.surah-header .kr{font-size:28px;font-weight:800;font-family:'Inter',sans-serif;letter-spacing:.5px;min-height:38px}
+.surah-header .name{font-size:14px;opacity:.85;font-weight:600;margin-top:4px}
+.surah-header .num{font-size:11px;opacity:.6;margin-top:2px}
+
+.ayah-box{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 12px;text-align:center;margin-bottom:12px}
+.ayah-box .label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.ayah-box .text{font-size:22px;line-height:1.5;font-weight:700;color:var(--blue-deep)}
+
+.slot-area{margin-bottom:12px}
+.slot-area .label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.slots{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;min-height:50px;padding:10px 8px;background:var(--white);border:2px dashed var(--border);border-radius:var(--radius-sm);transition:border-color .2s}
+.slots.flash{border-color:var(--blue)}
+.slots.shake{animation:shake .3s ease}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.slot{width:42px;height:48px;border-radius:12px;background:var(--sky-2);border:2px dashed var(--border);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;position:relative;cursor:pointer}
+.slot.filled{background:var(--blue);color:#fff;border:2px solid var(--blue);animation:pop .25s ease}
+.slot.done{background:var(--blue-deep)}
+.slot .slot-x{position:absolute;top:-6px;right:-6px;width:20px;height:20px;border-radius:50%;background:#ef4444;color:#fff;font-size:11px;font-weight:800;display:none;align-items:center;justify-content:center;cursor:pointer}
+.slot.filled .slot-x{display:flex}
+@keyframes pop{0%{transform:scale(.4);opacity:0}100%{transform:scale(1);opacity:1}}
+
+.pool-area{margin-bottom:12px}
+.pool-area .label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.pool{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;padding:10px 8px;background:var(--white);border:1px solid var(--border);border-radius:var(--radius-sm)}
+.jamo{width:42px;height:48px;border-radius:12px;background:var(--sky-2);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;cursor:pointer;transition:all .1s}
+.jamo:active{transform:scale(1.1);box-shadow:0 4px 14px rgba(0,0,0,.12)}
+.jamo.wrong{background:#fee2e2;border-color:#ef4444;animation:shake .3s ease}
+.jamo.used{opacity:.25;pointer-events:none;transform:scale(.85)}
+
+.fb{text-align:center;padding:10px;border-radius:var(--radius-sm);margin-bottom:10px;font-weight:700;font-size:13px;display:none}
+.fb.ok{display:block;background:#dcfce7;color:#15803d}
+
+.ctrls{display:flex;gap:8px}
+.btn{flex:1;padding:10px;border:none;border-radius:var(--radius-sm);font-size:13px;font-weight:700;cursor:pointer}
+.btn-g{background:var(--blue);color:#fff}.btn-g:active{background:var(--blue-deep)}
+.btn-w{background:var(--white);border:1px solid var(--border);color:var(--ink)}.btn-w:active{background:var(--sky-2)}
+.btn:disabled{opacity:.4;pointer-events:none}
+
+.sound-btn{position:fixed;bottom:16px;right:16px;width:42px;height:42px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 4px 12px rgba(37,99,235,.3);cursor:pointer;transition:all .2s;border:none}
+.sound-btn:active{transform:scale(.9)}
+
+.progress{display:flex;gap:5px;justify-content:center;margin-bottom:10px}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--border);transition:background .2s;cursor:pointer}
+.dot.done{background:var(--blue)}
+.dot.current{background:var(--blue-deep);box-shadow:0 0 0 3px rgba(37,99,235,.25)}
+
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:50}
+.overlay.show{display:flex}
+.overlay-card{background:var(--white);border-radius:var(--radius);padding:32px 24px;text-align:center;max-width:340px;width:90%;animation:pop .3s ease}
+.overlay-card .emoji{font-size:52px;margin-bottom:12px}
+.overlay-card h2{font-size:22px;font-weight:800;margin-bottom:6px}
+.overlay-card p{font-size:14px;color:var(--muted);margin-bottom:20px;line-height:1.5}
+
+.select-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:20px}
+.select-title{font-size:22px;font-weight:800;margin-bottom:6px;text-align:center}
+.select-sub{font-size:14px;color:var(--muted);margin-bottom:28px;text-align:center}
+.part-cards{display:flex;flex-direction:column;gap:16px;width:100%;max-width:360px}
+.part-card{background:var(--white);border:2px solid var(--border);border-radius:var(--radius);padding:24px 20px;text-align:center;cursor:pointer;transition:all .2s}
+.part-card:active{transform:scale(.97);border-color:var(--blue);background:var(--sky-2)}
+.part-card .kr{font-size:28px;font-family:'Inter',sans-serif;font-weight:800;margin-bottom:8px}
+.part-card .nm{font-size:16px;font-weight:700;color:var(--ink)}
+.part-card .info{font-size:12px;color:var(--muted);margin-top:4px}
+.hidden{display:none!important}
+
+.intro-screen{display:flex;flex-direction:column;align-items:center;min-height:100vh;padding:20px;overflow-y:auto}
+.intro-title{font-size:20px;font-weight:800;margin-bottom:16px;text-align:center}
+.intro-text{font-size:14px;color:var(--muted);line-height:1.7;text-align:center;max-width:380px;margin-bottom:20px}
+.intro-example{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;margin-bottom:12px;width:100%;max-width:380px}
+.intro-example .kr{font-size:28px;font-weight:700;text-align:center;margin-bottom:4px;letter-spacing:2px}
+.intro-example .uz{font-size:13px;color:var(--muted);text-align:center}
+.intro-example .exp{font-size:12px;color:var(--blue);text-align:center;margin-top:4px;font-weight:600}
+.intro-btn{width:100%;max-width:380px;padding:14px;border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:700;cursor:pointer;margin-top:16px;background:var(--blue);color:#fff}
+.intro-btn:active{background:var(--blue-deep)}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="select-screen" id="selectScreen">
+    <div class="surah-header" style="width:100%;max-width:360px;margin-bottom:28px">
+      <div class="kr">English</div>
+      <div class="name">Ingliz tili</div>
+    </div>
+    <div class="select-title">Bo'lim tanlang</div>
+    <div class="select-sub">O'rganmoqchi bo'lgan bo'limingizni bosing</div>
+    <div class="part-cards" id="partCards"></div>
+  </div>
+
+  <div class="hidden" id="introScreen">
+    <div class="topbar">
+      <a class="back" href="#" id="backToIntro">&larr;</a>
+      <h1 id="introTitle">1-qism</h1>
+    </div>
+    <div class="intro-screen">
+      <div class="intro-title">Ingliz tilini o'rganamiz!</div>
+      <div class="intro-text">Sizga so'zning o'zbekcha ma'nosi ko'rsatiladi. Quyidagi harflar orasidan inglizcha so'zni harfma-harf yig'ing. Diqqat: orasida keraksiz (chalg'ituvchi) harflar ham bor!</div>
+
+      <div class="intro-example">
+        <div class="kr">H E L L O</div>
+        <div class="uz">Salom</div>
+        <div class="exp">hello — harflarni ketma-ket bosasiz</div>
+      </div>
+
+      <div class="intro-example">
+        <div class="kr">W A T E R</div>
+        <div class="uz">Suv</div>
+        <div class="exp">Havzada o'rin yo'q harflar ham bo'ladi — ehtiyot bo'ling!</div>
+      </div>
+
+      <div class="intro-text" style="margin-top:8px">Xatolik bo'lsa chalg'ituvchi harf silkinadi va javob olib tashlangani to'g'rilanmaydi. Xohlasangiz, to'ldirmasdan ham keyingisiga o'tishingiz mumkin.</div>
+
+      <button class="intro-btn" id="startLearnBtn">Davom etish</button>
+    </div>
+  </div>
+
+  <div class="hidden" id="learnScreen">
+    <div class="topbar">
+      <a class="back" href="#" id="backToSelect">&larr;</a>
+      <h1>Ingliz tili</h1>
+    </div>
+
+    <main>
+      <div class="surah-header">
+        <div class="name" id="wordName"></div>
+        <div class="num" id="wordNum"></div>
+      </div>
+
+      <div class="ayah-box">
+        <div class="label">So'z ni toping</div>
+        <div class="text" id="wordHint"></div>
+      </div>
+
+      <div class="progress" id="progress"></div>
+
+      <div class="fb" id="fb"></div>
+
+      <div class="slot-area">
+        <div class="slots" id="slots"></div>
+      </div>
+
+      <div class="pool-area">
+        <div class="label">Harflarni (önli) bosing</div>
+        <div class="pool" id="pool"></div>
+      </div>
+
+      <div class="ctrls">
+        <button class="btn btn-w" id="prevBtn">← Oldingi</button>
+        <button class="btn btn-w" id="resetBtn">Qayta</button>
+        <button class="btn btn-g" id="nextBtn">Keyingi so'z</button>
+      </div>
+    </main>
+  </div>
+
+  <button class="sound-btn hidden" id="soundBtn" title="Ovoz chalish">🔊</button>
+
+  <div class="overlay" id="overlay">
+    <div class="overlay-card">
+      <div class="emoji">🎉</div>
+      <h2>Tabriklaymiz!</h2>
+      <p>Hamma so'zlarni<br>mukammal o'rgandingiz!</p>
+      <button class="btn btn-g" id="overlayCloseBtn" style="width:100%">Yaxshi!</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var PARTS = [
+    {
+      name: "1-qism",
+      desc: "Asosiy so'zlar",
+      words: [
+        { text: "hello", name: "Salom" },
+        { text: "thank", name: "Rahmat" },
+        { text: "sorry", name: "Kechirasiz" },
+        { text: "please", name: "Iltimos" },
+        { text: "yes", name: "Ha" },
+        { text: "no", name: "Yo'q" },
+        { text: "water", name: "Suv" },
+        { text: "food", name: "Ovqat" },
+        { text: "person", name: "Odam" },
+        { text: "school", name: "Maktab" },
+        { text: "friend", name: "Do'st" },
+        { text: "family", name: "Oila" },
+        { text: "mother", name: "Ona" },
+        { text: "father", name: "Ota" },
+        { text: "sister", name: "Opa / Singil" },
+        { text: "brother", name: "Aka / Uka" },
+        { text: "country", name: "Davlat" },
+        { text: "city", name: "Shahar" },
+        { text: "time", name: "Vaqt" },
+        { text: "today", name: "Bugun" },
+        { text: "tomorrow", name: "Ertaga" },
+        { text: "yesterday", name: "Kecha" },
+        { text: "morning", name: "Ertalab" },
+        { text: "evening", name: "Kechqurun" },
+        { text: "love", name: "Sevgi" },
+        { text: "happy", name: "Baxtli" },
+        { text: "student", name: "O'quvchi" },
+        { text: "teacher", name: "O'qituvchi" },
+        { text: "company", name: "Kompaniya" },
+        { text: "hospital", name: "Kasalxona" },
+        { text: "park", name: "Bog'" },
+        { text: "meal", name: "Taom" },
+        { text: "coffee", name: "Kofe" },
+        { text: "apple", name: "Olma" },
+        { text: "banana", name: "Banan" },
+        { text: "cat", name: "Mushuk" },
+        { text: "dog", name: "It" },
+        { text: "sky", name: "Osmon" },
+        { text: "sea", name: "Dengiz" },
+        { text: "tree", name: "Daraxt" },
+        { text: "one", name: "Bir" },
+        { text: "two", name: "Ikki" },
+        { text: "three", name: "Uch" },
+        { text: "red", name: "Qizil" },
+        { text: "blue", name: "Ko'k" },
+        { text: "yellow", name: "Sariq" },
+        { text: "green", name: "Yashil" },
+        { text: "heart", name: "Yurak" },
+        { text: "day", name: "Kun" },
+        { text: "night", name: "Tun" },
+        { text: "star", name: "Yulduz" },
+        { text: "moon", name: "Oy" },
+        { text: "sun", name: "Quyosh" },
+        { text: "mountain", name: "Tog'" },
+        { text: "river", name: "Daryo" },
+        { text: "flower", name: "Gul" },
+        { text: "house", name: "Uy" },
+        { text: "door", name: "Eshik" },
+        { text: "window", name: "Deraza" },
+        { text: "table", name: "Stol" },
+        { text: "chair", name: "Stul" },
+        { text: "book", name: "Kitob" },
+        { text: "pencil", name: "Qalam" },
+        { text: "paper", name: "Qog'oz" },
+        { text: "shop", name: "Do'kon" },
+        { text: "money", name: "Pul" },
+        { text: "price", name: "Narx" },
+        { text: "cheap", name: "Arzon" },
+        { text: "expensive", name: "Qimmat" },
+        { text: "beautiful", name: "Chiroyli" },
+        { text: "big", name: "Katta" },
+        { text: "small", name: "Kichik" },
+        { text: "long", name: "Uzun" },
+        { text: "short", name: "Qisqa" },
+        { text: "hot", name: "Issiq" },
+        { text: "cold", name: "Sovuq" },
+        { text: "warm", name: "Iliq" },
+        { text: "spring", name: "Bahor" },
+        { text: "summer", name: "Yoz" },
+        { text: "winter", name: "Qish" },
+        { text: "road", name: "Yo'l" },
+        { text: "car", name: "Mashina" },
+        { text: "bus", name: "Avtobus" },
+        { text: "train", name: "Poyezd" },
+        { text: "ship", name: "Kema" },
+        { text: "plane", name: "Samolyot" },
+        { text: "bike", name: "Velosiped" },
+        { text: "hand", name: "Qo'l" },
+        { text: "foot", name: "Oyoq" },
+        { text: "eye", name: "Ko'z" },
+        { text: "mouth", name: "Og'iz" },
+        { text: "ear", name: "Quloq" },
+        { text: "head", name: "Bosh" },
+        { text: "face", name: "Yuz" },
+        { text: "nose", name: "Burun" },
+        { text: "tooth", name: "Tish" },
+        { text: "leg", name: "Oyoq (oyoq)" },
+        { text: "arm", name: "Qo'l (bilak)" },
+        { text: "good", name: "Yaxshi" },
+        { text: "bad", name: "Yomon" },
+        { text: "new", name: "Yangi" },
+        { text: "old", name: "Eski" },
+        { text: "right", name: "To'g'ri / O'ng" },
+        { text: "left", name: "Chap" }
+      ]
+    }
+  ];
+
+  var DISTRACTOR_POOL = ['b','c','d','f','g','h','j','k','l','m','n','p','q','r','s','t','v','w','x','y','z','a','e','i','o','u'];
+
+  var selectScreen = document.getElementById('selectScreen');
+  var introScreen = document.getElementById('introScreen');
+  var learnScreen = document.getElementById('learnScreen');
+  var partCards = document.getElementById('partCards');
+  var soundBtnEl = document.getElementById('soundBtn');
+  var backToIntroBtn = document.getElementById('backToIntro');
+  var startLearnBtn = document.getElementById('startLearnBtn');
+  var backToSelectBtn = document.getElementById('backToSelect');
+  var introTitleEl = document.getElementById('introTitle');
+  var wordNameEl = document.getElementById('wordName');
+  var wordNumEl = document.getElementById('wordNum');
+  var wordHintEl = document.getElementById('wordHint');
+
+  function shuffle(arr) {
+    for (var i = arr.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = arr[i]; arr[i] = arr[j]; arr[j] = t;
+    }
+    return arr;
+  }
+
+  function normalPool() {
+    // deterministik chalg'ituvchi harflar: wo'dning harflariga qo'shilmaydi
+    var letters = {};
+    var cnt = 0;
+    return function(word) {
+      var used = {};
+      var chars = word.split('');
+      var pool = [];
+      for (var i = 0; i < chars.length; i++) { pool.push(chars[i]); used[chars[i]] = true; }
+      // 2-3 ta chalg'ituvchi harf
+      var n = 2 + Math.floor(Math.random() * 2);
+      var extras = shuffle(DISTRACTOR_POOL.slice());
+      for (var j = 0; j < extras.length && cnt < 100; j++) {
+        if (!used[extras[j]]) { pool.push(extras[j]); n--; if (n <= 0) break; }
+      }
+      return shuffle(pool);
+    };
+  }
+
+  var getPool = normalPool();
+
+  function buildWordPool(word) {
+    return getPool(word.text);
+  }
+
+  PARTS.forEach(function(part) {
+    part.words.forEach(function(w) {
+      w.letters = w.text.split('');
+    });
+  });
+
+  var currentPart = 0;
+  var WORDS = PARTS[0].words;
+  var wordIdx = 0;
+  var placed = [];
+  var finishedFlag = false;
+  var soundOn = true;
+  var synth = window.speechSynthesis || null;
+
+  var slotsEl = document.getElementById('slots');
+  var poolEl = document.getElementById('pool');
+  var fbEl = document.getElementById('fb');
+  var progressEl = document.getElementById('progress');
+  var nextBtn = document.getElementById('nextBtn');
+  var prevBtn = document.getElementById('prevBtn');
+  var resetBtn = document.getElementById('resetBtn');
+  var soundBtn = document.getElementById('soundBtn');
+  var overlayEl = document.getElementById('overlay');
+  var overlayCloseBtn = document.getElementById('overlayCloseBtn');
+
+  PARTS.forEach(function(part, idx) {
+    var card = document.createElement('div');
+    card.className = 'part-card';
+    card.innerHTML = '<div class="kr">EN</div>' +
+                     '<div class="nm">' + part.name + '</div>' +
+                     '<div class="info">' + part.words.length + ' ta so\'z</div>';
+    card.addEventListener('click', function() {
+      selectScreen.classList.add('hidden');
+      introScreen.classList.remove('hidden');
+      currentPart = idx;
+      introTitleEl.textContent = part.name;
+    });
+    partCards.appendChild(card);
+  });
+
+  backToIntroBtn.addEventListener('click', function(e) {
+    e.preventDefault();
+    introScreen.classList.add('hidden');
+    selectScreen.classList.remove('hidden');
+  });
+
+  startLearnBtn.addEventListener('click', function() {
+    introScreen.classList.add('hidden');
+    learnScreen.classList.remove('hidden');
+    soundBtnEl.classList.remove('hidden');
+    wordIdx = 0;
+    render();
+  });
+
+  backToSelectBtn.addEventListener('click', function(e) {
+    e.preventDefault();
+    learnScreen.classList.add('hidden');
+    soundBtnEl.classList.add('hidden');
+    introScreen.classList.remove('hidden');
+  });
+
+  function speak(txt) {
+    if (!soundOn || !synth || !txt || !txt.trim()) return;
+    try {
+      synth.cancel();
+      setTimeout(function() {
+        var u = new SpeechSynthesisUtterance(txt);
+        u.lang = 'en-US';
+        u.rate = 0.8;
+        u.pitch = 1;
+        var voices = synth.getVoices();
+        var enVoice = null;
+        for (var i = 0; i < voices.length; i++) {
+          if (voices[i].lang && voices[i].lang.indexOf('en') === 0) {
+            enVoice = voices[i];
+            break;
+          }
+        }
+        if (enVoice) u.voice = enVoice;
+        synth.speak(u);
+      }, 50);
+    } catch(e) {}
+  }
+
+  function renderProgress() {
+    var html = '';
+    for (var i = 0; i < WORDS.length; i++) {
+      var cls = 'dot';
+      if (i < wordIdx) cls += ' done';
+      else if (i === wordIdx) cls += ' current';
+      html += '<div class="' + cls + '" data-i="' + i + '"></div>';
+    }
+    progressEl.innerHTML = html;
+    var dots = progressEl.children;
+    for (var j = 0; j < dots.length; j++) {
+      if (j <= wordIdx) {
+        dots[j].style.cursor = 'pointer';
+        dots[j].addEventListener('click', function(i) { return function() { goToWord(i); }; }(j));
+      }
+    }
+  }
+
+  function goToWord(i) {
+    if (i === wordIdx) return;
+    wordIdx = i;
+    render();
+  }
+
+  function renderSlots(n) {
+    slotsEl.innerHTML = '';
+    for (var i = 0; i < n; i++) {
+      var s = document.createElement('div');
+      s.className = 'slot';
+      s.setAttribute('data-i', i);
+      slotsEl.appendChild(s);
+    }
+  }
+
+  function renderPool(lst) {
+    poolEl.innerHTML = '';
+    for (var i = 0; i < lst.length; i++) {
+      var t = document.createElement('div');
+      t.className = 'jamo';
+      t.textContent = lst[i];
+      t.setAttribute('data-ch', lst[i]);
+      t.addEventListener('click', function(tile, ch) { return function() { placeLetter(tile, ch); }; }(t, lst[i]));
+      poolEl.appendChild(t);
+    }
+  }
+
+  function render() {
+    WORDS = PARTS[currentPart].words;
+    var word = WORDS[wordIdx];
+    placed = [];
+    finishedFlag = false;
+
+    wordNameEl.textContent = PARTS[currentPart].name;
+    wordHintEl.textContent = word.name;
+    wordNumEl.textContent = (wordIdx + 1) + ' / ' + WORDS.length;
+    fbEl.className = 'fb';
+    fbEl.textContent = '';
+    nextBtn.disabled = false;
+    prevBtn.disabled = (wordIdx === 0);
+
+    renderProgress();
+    renderSlots(word.letters.length);
+    renderPool(buildWordPool(word));
+  }
+
+  function updateSlotDisplay(idx) {
+    var word = WORDS[wordIdx];
+    var slot = slotsEl.children[idx];
+    if (!placed[idx]) {
+      slot.innerHTML = '';
+      slot.classList.remove('filled', 'done');
+      return;
+    }
+    slot.textContent = placed[idx];
+    slot.classList.add('filled');
+    if (word.letters.slice(0, idx + 1).join('') === placed.slice(0, idx + 1).join('') && placed[idx] === word.letters[idx]) {
+      slot.classList.add('done');
+    } else {
+      slot.classList.remove('done');
+    }
+    slot.innerHTML = placed[idx] + '<span class="slot-x">✕</span>';
+  }
+
+  function placeLetter(tile, ch) {
+    if (tile.classList.contains('used') || finishedFlag) return;
+    var word = WORDS[wordIdx];
+    var idx = placed.length; // keyingi bo'sh slot
+
+    if (ch !== word.letters[idx]) {
+      // xato harf
+      tile.classList.add('wrong');
+      slotsEl.classList.add('shake');
+      setTimeout(function() {
+        tile.classList.remove('wrong');
+        slotsEl.classList.remove('shake');
+      }, 300);
+      return;
+    }
+
+    placed.push(ch);
+    tile.classList.add('used');
+    updateSlotDisplay(idx);
+    flashSlots();
+    speak(ch);
+
+    if (placed.length === word.letters.length) {
+      checkAllDone();
+    }
+  }
+
+  function flashSlots() {
+    slotsEl.classList.add('flash');
+    setTimeout(function() { slotsEl.classList.remove('flash'); }, 250);
+  }
+
+  function checkAllDone() {
+    finishedFlag = true;
+    setTimeout(finishWord, 300);
+  }
+
+  function finishWord() {
+    var slots = slotsEl.children;
+    for (var i = 0; i < slots.length; i++) slots[i].classList.add('done');
+    var word = WORDS[wordIdx];
+    fbEl.className = 'fb ok';
+    fbEl.textContent = 'Mukammal! To\'g\'ri: ' + word.text;
+    nextBtn.disabled = false;
+    wordNameEl.textContent = PARTS[currentPart].name + ' · ' + word.text;
+    speak(word.text);
+  }
+
+  function removeLast() {
+    if (placed.length === 0 || finishedFlag) return;
+    var idx = placed.length - 1;
+    var word = WORDS[wordIdx];
+    placed.pop();
+    updateSlotDisplay(idx);
+    fbEl.className = 'fb';
+    fbEl.textContent = '';
+
+    var tiles = poolEl.children;
+    for (var i = 0; i < tiles.length; i++) {
+      if (tiles[i].classList.contains('jamo') &&
+          tiles[i].getAttribute('data-ch') === word.letters[idx]) {
+        tiles[i].classList.remove('used');
+        break;
+      }
+    }
+  }
+
+  function reset() { render(); }
+
+  function nextWord() {
+    if (wordIdx < WORDS.length - 1) {
+      wordIdx++;
+      render();
+    } else {
+      overlayEl.classList.add('show');
+    }
+  }
+
+  function prevWord() {
+    if (wordIdx > 0) {
+      wordIdx--;
+      render();
+    } else {
+      learnScreen.classList.add('hidden');
+      soundBtnEl.classList.add('hidden');
+      introScreen.classList.remove('hidden');
+    }
+  }
+
+  function closeOverlay() {
+    overlayEl.classList.remove('show');
+    learnScreen.classList.add('hidden');
+    soundBtnEl.classList.add('hidden');
+    introScreen.classList.remove('hidden');
+  }
+
+  resetBtn.addEventListener('click', reset);
+  prevBtn.addEventListener('click', prevWord);
+  nextBtn.addEventListener('click', nextWord);
+  soundBtn.addEventListener('click', function() {
+    // oxirgi to'ldirilgan bo'g'inlarni o'qish yoki so'zni
+    if (placed.length) speak(placed.join(''));
+    else speak(WORDS[wordIdx].text);
+  });
+
+  // slot bosilganda: X bo'lsa oxirgi harfni qaytarish, aks holda yig'ilgan so'zni o'qish
+  document.getElementById('slots').addEventListener('click', function(e) {
+    e.preventDefault();
+    var t = e.target;
+    if (t.classList.contains('slot-x')) {
+      removeLast();
+      return;
+    }
+    var txt = placed.join('');
+    if (txt) speak(txt);
+  });
+
+  overlayCloseBtn.addEventListener('click', closeOverlay);
+
+  // ===== Telefonning orqa tugmasi (browser back) =====
+  history.pushState({ hRun: 1 }, document.title);
+  window.addEventListener('popstate', function() {
+    if (!learnScreen.classList.contains('hidden')) {
+      if (wordIdx > 0) {
+        prevWord();
+      } else {
+        learnScreen.classList.add('hidden');
+        soundBtnEl.classList.add('hidden');
+        introScreen.classList.remove('hidden');
+      }
+      history.pushState({ hRun: 1 }, document.title);
+      return;
+    }
+    if (!introScreen.classList.contains('hidden')) {
+      introScreen.classList.add('hidden');
+      selectScreen.classList.remove('hidden');
+      history.pushState({ hRun: 1 }, document.title);
+      return;
+    }
+  });
+
+  if (synth) {
+    synth.onvoiceschanged = function() { synth.getVoices(); };
+  }
+
+  render();
+})();
+</script>
+</body>
+</html>
