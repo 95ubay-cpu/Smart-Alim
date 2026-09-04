@@ -35,7 +35,7 @@ const LUGAT_MAXSUS = [
   // Huquq
   ["contract", "shartnoma"],
   ["court", "sud"],
-  ["judge", "sudyа"],
+  ["judge", "sudya"],
   ["lawyer", "advokat"],
   ["verdict", "hukm"],
   ["evidence", "dalil"],

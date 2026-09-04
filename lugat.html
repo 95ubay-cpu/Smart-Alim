@@ -31,9 +31,15 @@
   }
   .tab-btn.active{background:var(--white);color:var(--main-green);}
 
-  .section-tabs{display:flex;gap:8px;margin-bottom:10px;}
+  .section-tabs{
+    display:flex;gap:8px;margin-bottom:10px;
+    overflow-x:auto;padding-bottom:4px;
+    scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.4) transparent;
+  }
+  .section-tabs::-webkit-scrollbar{height:4px;}
+  .section-tabs::-webkit-scrollbar-thumb{background:rgba(255,255,255,.4);border-radius:4px;}
   .section-btn{
-    flex:1;padding:10px 8px;border:2px solid var(--border);border-radius:10px;
+    flex:0 0 auto;min-width:96px;padding:10px 8px;border:2px solid var(--border);border-radius:10px;
     background:var(--white);color:var(--gray-text);
     font-size:13px;font-weight:700;cursor:pointer;transition:.2s;
   }
@@ -92,20 +98,7 @@
 
 <div class="topbar">
   <h1>📖 Lug'atlar</h1>
-  <div class="section-tabs">
-    <button class="section-btn active" data-section="oson" id="secOson">
-      1-qism
-      <small>Boshlang'ich lug'at</small>
-    </button>
-    <button class="section-btn" data-section="qiyin" id="secQiyin">
-      2-qism
-      <small>Keyingi lug'at</small>
-    </button>
-    <button class="section-btn" data-section="maxsus" id="secMaxsus">
-      3-qism
-      <small>Maxsus atamalar</small>
-    </button>
-  </div>
+  <div class="section-tabs" id="sectionTabs"></div>
   <div class="tabs">
     <button class="tab-btn active" data-dir="en-uz" id="tabEnUz">Ingliz → O'zbek</button>
     <button class="tab-btn" data-dir="uz-en" id="tabUzEn">O'zbek → Ingliz</button>
@@ -127,15 +120,53 @@
   <div class="nav-item">📨<br>Murojaatlar</div>
 </div>
 
-<script src="lugat_oson_data.js?v=2"></script>
-<script src="lugat_qiyin_data.js?v=2"></script>
-<script src="lugat_maxsus_data.js?v=1"></script>
+<script src="lugat_oson_data.js?v=3"></script>
+<script src="lugat_qiyin_data.js?v=3"></script>
+<script src="lugat_maxsus_data.js?v=2"></script>
+<script src="lugat_food_data.js?v=1"></script>
+<script src="lugat_health_data.js?v=1"></script>
+<script src="lugat_house_data.js?v=1"></script>
+<script src="lugat_job_data.js?v=1"></script>
+<script src="lugat_sport_data.js?v=1"></script>
+<script src="lugat_travel_data.js?v=1"></script>
+<script src="lugat_nature_data.js?v=1"></script>
+<script src="lugat_clothes_data.js?v=1"></script>
+<script src="lugat_emotions_data.js?v=1"></script>
 <script>
-const LUGAT_BOLIMLAR = {
-  oson: typeof LUGAT_OSON !== 'undefined' ? LUGAT_OSON : [],
-  qiyin: typeof LUGAT_QIYIN !== 'undefined' ? LUGAT_QIYIN : [],
-  maxsus: typeof LUGAT_MAXSUS !== 'undefined' ? LUGAT_MAXSUS : []
+const BOLIMLAR = [
+  { key: "oson",   nomi: "1-qism",  label: "Boshlang'ich" },
+  { key: "qiyin",  nomi: "2-qism",  label: "Keyingi" },
+  { key: "maxsus", nomi: "3-qism",  label: "Maxsus atamalar" },
+  { key: "food",   nomi: "4-qism",  label: "Oziq-ovqat" },
+  { key: "health", nomi: "5-qism",  label: "Tana va salomatlik" },
+  { key: "house",  nomi: "6-qism",  label: "Uy va jihozlar" },
+  { key: "job",    nomi: "7-qism",  label: "Kasb va ish" },
+  { key: "sport",  nomi: "8-qism",  label: "Sport va dam olish" },
+  { key: "travel", nomi: "9-qism",  label: "Sayohat va transport" },
+  { key: "nature", nomi: "10-qism", label: "Tabiat" },
+  { key: "clothes",nomi: "11-qism", label: "Kiyim-kechak" },
+  { key: "emotions",nomi: "12-qism",label: "Hissiyot va muloqot" }
+];
+
+const DATA_MAP = {
+  oson: LUGAT_OSON,
+  qiyin: LUGAT_QIYIN,
+  maxsus: LUGAT_MAXSUS,
+  food: LUGAT_FOOD,
+  health: LUGAT_HEALTH,
+  house: LUGAT_HOUSE,
+  job: LUGAT_JOB,
+  sport: LUGAT_SPORT,
+  travel: LUGAT_TRAVEL,
+  nature: LUGAT_NATURE,
+  clothes: LUGAT_CLOTHES,
+  emotions: LUGAT_EMOTIONS
 };
+
+const LUGAT_BOLIMLAR = {};
+BOLIMLAR.forEach((b) => {
+  LUGAT_BOLIMLAR[b.key] = typeof DATA_MAP[b.key] !== 'undefined' ? DATA_MAP[b.key] : [];
+});
 
 let currentSection = "oson";
 let currentDir = "en-uz";
@@ -186,11 +217,24 @@ function render(filter=""){
     card.addEventListener("click", speakFn);
   });
 
-  const bolimNomi = currentSection === "oson" ? "1-qism" : currentSection === "qiyin" ? "2-qism" : "3-qism";
-  countEl.textContent = shown ? `${bolimNomi} · ${getWords().length} ta so'z` : "";
+  const bolim = BOLIMLAR.find((b) => b.key === currentSection) || BOLIMLAR[0];
+  countEl.textContent = shown ? `${bolim.nomi} · ${bolim.label} — ${getWords().length} ta so'z` : "";
   if (shown === 0){
     listEl.innerHTML = `<div class="empty-state">Hech narsa topilmadi 🔍</div>`;
   }
+}
+
+function buildSectionTabs(){
+  const tabsEl = document.getElementById("sectionTabs");
+  tabsEl.innerHTML = "";
+  BOLIMLAR.forEach((b) => {
+    const btn = document.createElement("button");
+    btn.className = "section-btn" + (b.key === currentSection ? " active" : "");
+    btn.dataset.section = b.key;
+    btn.innerHTML = `${b.nomi}<small>${b.label}</small>`;
+    btn.addEventListener("click", () => setSection(b.key));
+    tabsEl.appendChild(btn);
+  });
 }
 
 function speak(text, lang, btn){
@@ -225,14 +269,12 @@ document.getElementById("tabUzEn").addEventListener("click", ()=>{
 });
 function setSection(sec){
   currentSection = sec;
-  document.getElementById("secOson").classList.toggle("active", sec === "oson");
-  document.getElementById("secQiyin").classList.toggle("active", sec === "qiyin");
-  document.getElementById("secMaxsus").classList.toggle("active", sec === "maxsus");
+  document.querySelectorAll(".section-btn").forEach((el) => {
+    el.classList.toggle("active", el.dataset.section === sec);
+  });
   render(searchInput.value);
 }
-document.getElementById("secOson").addEventListener("click", ()=> setSection("oson"));
-document.getElementById("secQiyin").addEventListener("click", ()=> setSection("qiyin"));
-document.getElementById("secMaxsus").addEventListener("click", ()=> setSection("maxsus"));
+buildSectionTabs();
 searchInput.addEventListener("input", (e)=> render(e.target.value));
 
 render();
