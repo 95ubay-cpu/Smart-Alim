@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <script src="auth-gate.js?v=2"></script>
+<script src="tts.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Arab yozuvi — oʻrganish</title>
 
@@ -432,26 +433,8 @@ var AR_DATA = [[["مَرْحَبًا","salom"],["السَّلَامِ عَلَي
   });
 
   function speak(txt) {
-    if (!soundOn || !synth || !txt || !txt.trim()) return;
-    try {
-      synth.cancel();
-      setTimeout(function() {
-        var u = new SpeechSynthesisUtterance(txt);
-        u.lang = 'ar-SA';
-        u.rate = 0.75;
-        u.pitch = 1;
-        var voices = synth.getVoices();
-        var arVoice = null;
-        for (var i = 0; i < voices.length; i++) {
-          if (voices[i].lang && voices[i].lang.indexOf('ar') === 0) {
-            arVoice = voices[i];
-            break;
-          }
-        }
-        if (arVoice) u.voice = arVoice;
-        synth.speak(u);
-      }, 50);
-    } catch(e) {}
+    if (!soundOn || !txt || !txt.trim()) return;
+    try { smartTTS.speak(txt, 'ar-SA'); } catch(e) {}
   }
 
   function renderProgress() {
@@ -715,7 +698,7 @@ var AR_DATA = [[["مَرْحَبًا","salom"],["السَّلَامِ عَلَي
   });
 
   if (synth) {
-    synth.onvoiceschanged = function() { synth.getVoices(); };
+    if (synth) synth.onvoiceschanged = function() { synth.getVoices(); };
   }
 
   render();

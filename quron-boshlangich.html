@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<script src="tts.js"></script>
 <title>Qur'on o'qishni o'rganing — boshlang'ichlar uchun</title>
 
   <link rel="icon" type="image/png" href="favicon.png">
@@ -242,10 +243,8 @@ body{font-family:'Inter','Segoe UI',sans-serif;color:var(--ink);background:var(-
 (function(){
   var synth = window.speechSynthesis || null;
   function speak(txt){
-    if(!synth || !txt) return;
-    try{synth.cancel();var u=new SpeechSynthesisUtterance(txt);u.lang='ar-SA';u.rate=0.7;
-      var vs=synth.getVoices();for(var i=0;i<vs.length;i++){if(vs[i].lang&&vs[i].lang.indexOf('ar')===0){u.voice=vs[i];break;}}
-      synth.speak(u);}catch(e){}
+    if(!txt) return;
+    try{smartTTS.speak(txt,'ar-SA');}catch(e){}
   }
 
   /* ---- Arab harflari + shakllari ---- */

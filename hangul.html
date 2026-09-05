@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 
 <script src="auth-gate.js?v=2"></script>
+<script src="tts.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Koreys yozuvi — Hangul</title>
   <link rel="icon" type="image/png" href="favicon.png">
@@ -1375,26 +1376,8 @@ main{padding:4px 16px 24px;flex:1}
   var overlayCloseBtn = document.getElementById('overlayCloseBtn');
 
   function speak(txt) {
-    if (!soundOn || !synth || !txt || !txt.trim()) return;
-    try {
-      synth.cancel();
-      setTimeout(function() {
-        var u = new SpeechSynthesisUtterance(txt);
-        u.lang = 'ko-KR';
-        u.rate = 0.75;
-        u.pitch = 1;
-        var voices = synth.getVoices();
-        var krVoice = null;
-        for (var i = 0; i < voices.length; i++) {
-          if (voices[i].lang && voices[i].lang.indexOf('ko') === 0) {
-            krVoice = voices[i];
-            break;
-          }
-        }
-        if (krVoice) u.voice = krVoice;
-        synth.speak(u);
-      }, 50);
-    } catch(e) {}
+    if (!soundOn || !txt || !txt.trim()) return;
+    try { smartTTS.speak(txt, 'ko-KR'); } catch(e) {}
   }
 
   function renderProgress() {
@@ -1650,7 +1633,7 @@ main{padding:4px 16px 24px;flex:1}
   });
 
   if (synth) {
-    synth.onvoiceschanged = function() { synth.getVoices(); };
+    if (synth) synth.onvoiceschanged = function() { synth.getVoices(); };
   }
 
   render();

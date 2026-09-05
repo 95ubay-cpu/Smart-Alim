@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 
 <script src="auth-gate.js?v=2"></script>
+<script src="tts.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Lug'atlar — Smart Ta'lim</title>
   <link rel="icon" type="image/png" href="favicon.png">
@@ -314,17 +315,24 @@ function buildSectionTabs(){
 }
 
 function speak(text, lang, btn){
+  if (!text) return;
+  if (btn) btn.classList.add("playing");
+  if (window.smartTTS && window.smartTTS.hasNative){
+    try {
+      window.smartTTS.speak(text, lang);
+      if (btn) setTimeout(() => btn.classList.remove("playing"), 1000);
+      return;
+    } catch(e){}
+  }
   if (!('speechSynthesis' in window)){
-    alert("Kechirasiz, bu qurilmada ovoz chiqarish funksiyasi ishlamaydi.");
+    if (btn) btn.classList.remove("playing");
     return;
   }
   window.speechSynthesis.cancel();
   const utter = new SpeechSynthesisUtterance(text);
   utter.lang = lang;
   utter.rate = 0.9;
-
   if (btn){
-    btn.classList.add("playing");
     utter.onend = () => btn.classList.remove("playing");
     utter.onerror = () => btn.classList.remove("playing");
   }

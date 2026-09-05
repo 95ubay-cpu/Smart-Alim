@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <script src="auth-gate.js?v=2"></script>
+<script src="tts.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Fransuz tili — So'z yig'ish</title>
 
@@ -386,26 +387,8 @@ main{padding:4px 16px 24px;flex:1}
   });
 
   function speak(txt) {
-    if (!soundOn || !synth || !txt || !txt.trim()) return;
-    try {
-      synth.cancel();
-      setTimeout(function() {
-        var u = new SpeechSynthesisUtterance(txt);
-        u.lang = 'fr-FR';
-        u.rate = 0.8;
-        u.pitch = 1;
-        var voices = synth.getVoices();
-        var deVoice = null;
-        for (var i = 0; i < voices.length; i++) {
-          if (voices[i].lang && voices[i].lang.indexOf('fr') === 0) {
-            deVoice = voices[i];
-            break;
-          }
-        }
-        if (deVoice) u.voice = deVoice;
-        synth.speak(u);
-      }, 50);
-    } catch(e) {}
+    if (!soundOn || !txt || !txt.trim()) return;
+    try { smartTTS.speak(txt, 'fr-FR'); } catch(e) {}
   }
 
   function renderProgress() {
@@ -731,7 +714,7 @@ main{padding:4px 16px 24px;flex:1}
   });
 
   if (synth) {
-    synth.onvoiceschanged = function() { synth.getVoices(); };
+    if (synth) synth.onvoiceschanged = function() { synth.getVoices(); };
   }
 
   render();
