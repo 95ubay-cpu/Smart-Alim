@@ -13,8 +13,7 @@
 
 ```bash
 npm install
-npx cap add android
-npx cap sync android
+npx cap sync android   # android/ loyihasi allaqachon repo'da bor
 npx cap open android   # Android Studio ochiladi
 ```
 

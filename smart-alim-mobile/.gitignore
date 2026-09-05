@@ -1,5 +1,4 @@
 node_modules/
-android/
 .platform/
 .DS_Store
 *.log
