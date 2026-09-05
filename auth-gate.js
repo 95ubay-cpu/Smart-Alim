@@ -1,6 +1,9 @@
 // Smart Ta'lim — sayt bo'ylab avtorizatsiya darvozasi
-// Foydalanuvchi tizimga kirmagan bo'lsa, har qanday sahifada /kirish.html ga yo'naltiradi.
+// VAQTINCHA O'CHIRILGAN: Supabase loyihalari qayta yaratilib, yangi kalit kiritilgach
+// quyidagi "if (!DARVOZA) return;" qatorini olib tashlang (yoki DARVOZA = true).
 (function(){
+  const DARVOZA = false;
+  if (!DARVOZA) return;
   try {
     var cur = location.pathname.split('/').pop() || 'index.html';
     var ochiq = ['kirish.html','royxatdan-otish.html','404.html','maxfiylik.html'];
