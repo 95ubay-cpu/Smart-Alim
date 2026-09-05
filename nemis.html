@@ -496,7 +496,7 @@ main{padding:4px 16px 24px;flex:1}
     tile.classList.add('used');
     updateSlotDisplay(idx);
     flashSlots();
-    speak(ch);
+    speak(placed.join(''));
 
     if (placed.length === word.letters.length) {
       checkAllDone();
@@ -684,8 +684,9 @@ main{padding:4px 16px 24px;flex:1}
       removeLast();
       return;
     }
-    var txt = placed.join('');
-    if (txt) speak(txt);
+    var slotEl = t.classList.contains('slot') ? t : t.parentElement;
+    var idx = parseInt(slotEl.getAttribute('data-i'), 10);
+    if (!isNaN(idx) && placed[idx]) speak(placed[idx]);
   });
 
   overlayCloseBtn.addEventListener('click', closeOverlay);
