@@ -1,0 +1,12 @@
+{
+  "appId": "uz.smartalim.app",
+  "appName": "Smart Ta'lim",
+  "webDir": "www",
+  "server": {
+    "url": "https://smartalim.com",
+    "cleartext": false
+  },
+  "android": {
+    "allowMixedContent": false
+  }
+}

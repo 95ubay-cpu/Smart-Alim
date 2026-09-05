@@ -1,0 +1,16 @@
+{
+  "name": "smart-alim-mobile",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Smart Ta'lim — rasmiy Android ilovasi (WebView)",
+  "scripts": {
+    "sync": "npx cap sync android",
+    "open:android": "npx cap open android",
+    "build:android": "npx cap build android"
+  },
+  "dependencies": {
+    "@capacitor/android": "^6.2.0",
+    "@capacitor/cli": "^6.2.0",
+    "@capacitor/core": "^6.2.0"
+  }
+}
