@@ -4,6 +4,8 @@ import android.content.Context;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.webkit.JavascriptInterface;
+import android.webkit.WebView;
+import androidx.activity.OnBackPressedCallback;
 import com.getcapacitor.BridgeActivity;
 import java.util.Locale;
 
@@ -18,6 +20,18 @@ public class MainActivity extends BridgeActivity {
     try {
       getBridge().getWebView().addJavascriptInterface(ttsBridge, "SmartAlimTts");
     } catch (Exception ignored) {}
+
+    getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+      @Override
+      public void handleOnBackPressed() {
+        WebView wv = getBridge() != null ? getBridge().getWebView() : null;
+        if (wv != null && wv.canGoBack()) {
+          wv.goBack();
+        } else {
+          moveTaskToBack(true);
+        }
+      }
+    });
   }
 
   public static class TtsBridge {
