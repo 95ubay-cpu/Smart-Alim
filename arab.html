@@ -191,21 +191,189 @@ main{padding:4px 16px 24px;flex:1}
   </div>
 </div>
 
-<script src="lugat_ar1_data.js"></script>
-<script src="lugat_ar2_data.js"></script>
-<script src="lugat_ar3_data.js"></script>
-<script src="lugat_ar4_data.js"></script>
-<script src="lugat_ar5_data.js"></script>
-<script src="lugat_ar6_data.js"></script>
-<script src="lugat_ar7_data.js"></script>
-<script src="lugat_ar8_data.js"></script>
-<script src="lugat_ar9_data.js"></script>
-<script src="lugat_ar10_data.js"></script>
-<script src="lugat_ar11_data.js"></script>
-<script src="lugat_ar12_data.js"></script>
-<script src="lugat_ar13_data.js"></script>
-<script src="lugat_ar14_data.js"></script>
-<script src="lugat_ar15_data.js"></script>
+<script>
+var LUGAT_AR1 = [
+  ["سَلَامٌ", "Salom"],
+  ["شُكْرًا", "Rahmat"],
+  ["نَعَمْ", "Ha"],
+  ["لَا", "Yo'q"],
+  ["مِنْ فَضْلِكَ", "Iltimos"],
+  ["عَفْوًا", "Kechirasiz"],
+  ["مَاءٌ", "Suv"],
+  ["خُبْزٌ", "Non"],
+  ["بَيْتٌ", "Uy"],
+  ["كِتَابٌ", "Kitob"],
+  ["قَلَمٌ", "Qalam"],
+  ["بَابٌ", "Eshik"]
+];
+var LUGAT_AR2 = [
+  ["أَبٌ", "Ota"],
+  ["أُمٌّ", "Ona"],
+  ["أَخٌ", "Aka / Uka"],
+  ["أُخْتٌ", "Opa / Singil"],
+  ["ابْنٌ", "O'g'il"],
+  ["ابْنَةٌ", "Qiz"],
+  ["جَدٌّ", "Bobo"],
+  ["جَدَّةٌ", "Buvi"],
+  ["صَدِيقٌ", "Do'st"],
+  ["رَجُلٌ", "Erkak"],
+  ["امْرَأَةٌ", "Ayol"],
+  ["طِفْلٌ", "Bola"]
+];
+var LUGAT_AR3 = [
+  ["رَأْسٌ", "Bosh"],
+  ["عَيْنٌ", "Ko'z"],
+  ["أُذُنٌ", "Quloq"],
+  ["أَنْفٌ", "Burun"],
+  ["فَمٌ", "Og'iz"],
+  ["يَدٌ", "Qo'l"],
+  ["رِجْلٌ", "Oyoq"],
+  ["قَلْبٌ", "Yurak"],
+  ["شَعْرٌ", "Soch"],
+  ["إِصْبَعٌ", "Barmoq"]
+];
+var LUGAT_AR4 = [
+  ["وَاحِدٌ", "Bir"],
+  ["اثْنَانِ", "Ikki"],
+  ["ثَلَاثَةٌ", "Uch"],
+  ["أَرْبَعَةٌ", "To'rt"],
+  ["خَمْسَةٌ", "Besh"],
+  ["يَوْمٌ", "Kun"],
+  ["لَيْلَةٌ", "Tun"],
+  ["سَاعَةٌ", "Soat"],
+  ["أُسْبُوعٌ", "Hafta"],
+  ["شَهْرٌ", "Oy"],
+  ["سَنَةٌ", "Yil"]
+];
+var LUGAT_AR5 = [
+  ["مَدْرَسَةٌ", "Maktab"],
+  ["مُعَلِّمٌ", "O'qituvchi"],
+  ["طَالِبٌ", "O'quvchi"],
+  ["دَفْتَرٌ", "Daftar"],
+  ["مِسْطَرَةٌ", "Chizg'ich"],
+  ["عِلْمٌ", "Ilm / Fan"],
+  ["جَامِعَةٌ", "Universitet"],
+  ["دَرْسٌ", "Dars"],
+  ["امْتِحَانٌ", "Imtihon"],
+  ["فَصْلٌ", "Sinf"]
+];
+var LUGAT_AR6 = [
+  ["أَرُزٌّ", "Guruch"],
+  ["لَحْمٌ", "Go'sht"],
+  ["سَمَكٌ", "Baliq"],
+  ["تُفَّاحٌ", "Olma"],
+  ["مَوْزٌ", "Banan"],
+  ["حَلِيبٌ", "Sut"],
+  ["شَايٌ", "Choy"],
+  ["قَهْوَةٌ", "Kofe"],
+  ["عَسَلٌ", "Asal"],
+  ["سُكَّرٌ", "Shakar"],
+  ["مِلْحٌ", "Tuz"]
+];
+var LUGAT_AR7 = [
+  ["غُرْفَةٌ", "Xona"],
+  ["طَاوِلَةٌ", "Stol"],
+  ["كُرْسِيٌّ", "Stul"],
+  ["سَرِيرٌ", "Karavot"],
+  ["نَافِذَةٌ", "Deraza"],
+  ["مِرْآةٌ", "Oyna"],
+  ["مِصْبَاحٌ", "Chiroq"],
+  ["مَطْبَخٌ", "Oshxona"]
+];
+var LUGAT_AR8 = [
+  ["قَمِيصٌ", "Ko'ylak"],
+  ["بَنْطَلُونٌ", "Shim"],
+  ["حِذَاءٌ", "Poyabzal"],
+  ["جَوْرَبٌ", "Paypoq"],
+  ["مِعْطَفٌ", "Palto"],
+  ["قُبَّعَةٌ", "Shlyapa"],
+  ["ثَوْبٌ", "Kiyim / Libos"]
+];
+var LUGAT_AR9 = [
+  ["شَمْسٌ", "Quyosh"],
+  ["قَمَرٌ", "Oy (osmondagi)"],
+  ["نَجْمَةٌ", "Yulduz"],
+  ["سَمَاءٌ", "Osmon"],
+  ["أَرْضٌ", "Yer"],
+  ["بَحْرٌ", "Dengiz"],
+  ["نَهْرٌ", "Daryo"],
+  ["جَبَلٌ", "Tog'"],
+  ["شَجَرَةٌ", "Daraxt"],
+  ["زَهْرَةٌ", "Gul"],
+  ["مَطَرٌ", "Yomg'ir"],
+  ["رِيحٌ", "Shamol"],
+  ["ثَلْجٌ", "Qor"]
+];
+var LUGAT_AR10 = [
+  ["قِطَّةٌ", "Mushuk"],
+  ["كَلْبٌ", "It"],
+  ["أَسَدٌ", "Sher"],
+  ["فِيلٌ", "Fil"],
+  ["حِصَانٌ", "Ot"],
+  ["طَيْرٌ", "Qush"],
+  ["سَمَكَةٌ", "Baliq (bitta)"],
+  ["جَمَلٌ", "Tuya"],
+  ["خَرُوفٌ", "Qo'y"],
+  ["دَجَاجَةٌ", "Tovuq"]
+];
+var LUGAT_AR11 = [
+  ["طَبِيبٌ", "Shifokor"],
+  ["مُهَنْدِسٌ", "Muhandis"],
+  ["مُمَرِّضٌ", "Hamshira"],
+  ["شُرْطِيٌّ", "Politsiya"],
+  ["طَبَّاخٌ", "Oshpaz"],
+  ["سَائِقٌ", "Haydovchi"],
+  ["عَامِلٌ", "Ishchi"],
+  ["تَاجِرٌ", "Savdogar"],
+  ["مُحَامٍ", "Advokat"]
+];
+var LUGAT_AR12 = [
+  ["كُرَةُ الْقَدَمِ", "Futbol"],
+  ["سِبَاحَةٌ", "Suzish"],
+  ["جَرْيٌ", "Yugurish"],
+  ["لَعِبٌ", "O'yin"],
+  ["فَرِيقٌ", "Jamoa"],
+  ["مُبَارَاةٌ", "Musobaqa"],
+  ["فَوْزٌ", "G'alaba"],
+  ["رِيَاضَةٌ", "Sport"]
+];
+var LUGAT_AR13 = [
+  ["سَيَّارَةٌ", "Mashina"],
+  ["طَائِرَةٌ", "Samolyot"],
+  ["قِطَارٌ", "Poyezd"],
+  ["سَفِينَةٌ", "Kema"],
+  ["دَرَّاجَةٌ", "Velosiped"],
+  ["مَطَارٌ", "Aeroport"],
+  ["طَرِيقٌ", "Yo'l"],
+  ["حَقِيبَةٌ", "Sumka / Chamadon"],
+  ["سَفَرٌ", "Sayohat"]
+];
+var LUGAT_AR14 = [
+  ["اللَّهُ", "Alloh"],
+  ["الْقُرْآنُ", "Qur'on"],
+  ["صَلَاةٌ", "Namoz"],
+  ["صَوْمٌ", "Ro'za"],
+  ["زَكَاةٌ", "Zakot"],
+  ["حَجٌّ", "Haj"],
+  ["مَسْجِدٌ", "Masjid"],
+  ["إِيمَانٌ", "Iymon"],
+  ["نَبِيٌّ", "Payg'ambar"],
+  ["دُعَاءٌ", "Duo"]
+];
+var LUGAT_AR15 = [
+  ["سَعِيدٌ", "Xursand"],
+  ["حَزِينٌ", "G'amgin"],
+  ["غَاضِبٌ", "Jahldor"],
+  ["خَائِفٌ", "Qo'rqqan"],
+  ["جَمِيلٌ", "Chiroyli"],
+  ["كَبِيرٌ", "Katta"],
+  ["صَغِيرٌ", "Kichik"],
+  ["طَوِيلٌ", "Uzun / Baland"],
+  ["قَصِيرٌ", "Qisqa / Past"],
+  ["جَدِيدٌ", "Yangi"],
+  ["قَدِيمٌ", "Eski"]
+];
+</script>
 
 <script>
 (function(){
@@ -318,13 +486,24 @@ main{padding:4px 16px 24px;flex:1}
 
   // Harf so'zidagi holatiga qarab bog'langan ko'rinishini beradi
   function shapedGlyph(word, wi, li) {
-    var tok = word.WORDS[wi][li];
+    var toks = word.WORDS[wi];
+    var tok = toks[li];
     var base = tok.base;
     var S = SHAPE[base];
     if (!S) return base;
-    if (S.ini === '') return S.iso;
-    var hasPrev = li > 0;
-    var hasNext = li < word.WORDS[wi].length - 1;
+
+    // Oldingi harf mavjud va u "keyingisiga bog'lanadigan" turdagi harf bo'lsagina
+    // joriy harf oldingi harfdan kelayotgan bog'lanishni oladi.
+    // (ا، د، ذ، ر، ز، و kabi harflar hech qachon o'zidan keyingi harfga bog'lanmaydi.)
+    var prevS = li > 0 ? SHAPE[toks[li - 1].base] : null;
+    var hasPrev = !!(prevS && prevS.ini !== '');
+    var hasNext = li < toks.length - 1;
+
+    if (S.ini === '') {
+      // Faqat oldingi harfga bog'lanadigan, o'zidan keyingisiga bog'lanmaydigan harf
+      return hasPrev ? S.fin : S.iso;
+    }
+
     if (hasPrev && hasNext) return S.mid;
     if (hasPrev && !hasNext) return S.fin;
     if (!hasPrev && hasNext) return S.ini;
