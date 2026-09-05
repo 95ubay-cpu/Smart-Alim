@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Arab yozuvi — oʻrganish</title>
+<style>
+:root{
+  --green:#0E9F6E;--green-deep:#057A53;--green-sky:#E6F6EF;--green-sky-2:#CDEFE0;
+  --white:#FFFFFF;--ink:#16241F;--muted:#5B6B65;--border:#DCE4EF;
+  --radius:18px;--radius-sm:12px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;color:var(--ink);background:var(--green-sky);min-height:100vh;-webkit-user-select:none;user-select:none}
+.ar{font-family:'Noto Naskh Arabic','Amiri','Traditional Arabic','Scheherazade New','Segoe UI',serif}
+
+.app{max-width:480px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;background:var(--green-sky)}
+.topbar{display:flex;align-items:center;gap:10px;padding:12px 16px 10px;background:var(--green-sky);position:sticky;top:0;z-index:10}
+.topbar .back{width:34px;height:34px;border-radius:50%;background:var(--white);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;text-decoration:none;color:var(--ink)}
+.topbar h1{font-size:17px;font-weight:800;margin:0;flex:1;text-align:center}
+main{padding:4px 16px 24px;flex:1}
+
+.surah-header{text-align:center;background:linear-gradient(135deg,var(--green),var(--green-deep));border-radius:var(--radius);padding:16px 16px;margin-bottom:12px;color:#fff}
+.surah-header .kr{font-size:30px;font-weight:800;direction:rtl}
+.surah-header .name{font-size:14px;opacity:.85;font-weight:600;margin-top:4px}
+.surah-header .num{font-size:11px;opacity:.6;margin-top:2px}
+
+.ayah-box{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 12px;text-align:center;margin-bottom:12px}
+.ayah-box .label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.ayah-box .text{font-size:26px;line-height:1.6;font-weight:700;color:var(--green-deep);direction:rtl}
+
+.slot-area{margin-bottom:12px}
+.slot-area .label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.slots{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;min-height:50px;padding:10px 8px;background:var(--white);border:2px dashed var(--border);border-radius:var(--radius-sm);transition:border-color .2s;direction:rtl}
+.slots.flash{border-color:var(--green)}
+.slot{min-width:44px;height:48px;padding:0 3px;border-radius:12px;background:var(--green-sky-2);border:2px dashed var(--border);display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:700;position:relative;cursor:pointer}
+.slot.filled{background:var(--green);color:#fff;border:2px solid var(--green);animation:pop .25s ease}
+.slot.done{background:var(--green-deep)}
+.slot .slot-x{position:absolute;top:-6px;right:-6px;width:20px;height:20px;border-radius:50%;background:#ef4444;color:#fff;font-size:11px;font-weight:800;display:none;align-items:center;justify-content:center;cursor:pointer}
+.slot.filled .slot-x{display:flex}
+.space-dot{width:8px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:12px}
+@keyframes pop{0%{transform:scale(.4);opacity:0}100%{transform:scale(1);opacity:1}}
+
+.pool-area{margin-bottom:12px}
+.pool-area .label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.pool{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;padding:10px 8px;background:var(--white);border:1px solid var(--border);border-radius:var(--radius-sm);direction:rtl}
+.jamo{min-width:44px;height:48px;padding:0 3px;border-radius:12px;background:var(--green-sky-2);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:700;cursor:pointer;transition:all .1s}
+.jamo:active{transform:scale(1.1);box-shadow:0 4px 14px rgba(0,0,0,.12)}
+.jamo.used{opacity:.25;pointer-events:none;transform:scale(.85)}
+.group-gap{width:10px}
+
+.fb{text-align:center;padding:10px;border-radius:var(--radius-sm);margin-bottom:10px;font-weight:700;font-size:13px;display:none}
+.fb.ok{display:block;background:#dcfce7;color:#166534}
+
+.ctrls{display:flex;gap:8px}
+.btn{flex:1;padding:10px;border:none;border-radius:var(--radius-sm);font-size:13px;font-weight:700;cursor:pointer}
+.btn-g{background:var(--green);color:#fff}.btn-g:active{background:var(--green-deep)}
+.btn-w{background:var(--white);border:1px solid var(--border);color:var(--ink)}.btn-w:active{background:var(--green-sky-2)}
+.btn:disabled{opacity:.4;pointer-events:none}
+
+.sound-btn{position:fixed;bottom:16px;right:16px;width:42px;height:42px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 4px 12px rgba(14,159,110,.3);cursor:pointer;transition:all .2s;border:none}
+.sound-btn:active{transform:scale(.9)}
+
+.progress{display:flex;gap:5px;justify-content:center;margin-bottom:10px}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--border);transition:background .2s;cursor:pointer}
+.dot.done{background:var(--green)}
+.dot.current{background:var(--green-deep);box-shadow:0 0 0 3px rgba(14,159,110,.25)}
+
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:50}
+.overlay.show{display:flex}
+.overlay-card{background:var(--white);border-radius:var(--radius);padding:32px 24px;text-align:center;max-width:340px;width:90%;animation:pop .3s ease}
+.overlay-card .emoji{font-size:52px;margin-bottom:12px}
+.overlay-card h2{font-size:22px;font-weight:800;margin-bottom:6px}
+.overlay-card p{font-size:14px;color:var(--muted);margin-bottom:20px;line-height:1.5}
+
+.select-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:20px}
+.select-title{font-size:22px;font-weight:800;margin-bottom:6px;text-align:center}
+.select-sub{font-size:14px;color:var(--muted);margin-bottom:28px;text-align:center}
+.part-cards{display:flex;flex-direction:column;gap:16px;width:100%;max-width:360px}
+.part-card{background:var(--white);border:2px solid var(--border);border-radius:var(--radius);padding:24px 20px;text-align:center;cursor:pointer;transition:all .2s}
+.part-card:active{transform:scale(.97);border-color:var(--green);background:var(--green-sky-2)}
+.part-card .kr{font-size:28px;font-weight:700;margin-bottom:8px;direction:rtl}
+.part-card .nm{font-size:16px;font-weight:700;color:var(--ink)}
+.part-card .info{font-size:12px;color:var(--muted);margin-top:4px}
+.hidden{display:none!important}
+
+.intro-screen{display:flex;flex-direction:column;align-items:center;min-height:100vh;padding:20px;overflow-y:auto}
+.intro-title{font-size:20px;font-weight:800;margin-bottom:16px;text-align:center}
+.intro-text{font-size:14px;color:var(--muted);line-height:1.7;text-align:center;max-width:380px;margin-bottom:20px}
+.intro-example{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;margin-bottom:12px;width:100%;max-width:380px}
+.intro-example .kr{font-size:28px;font-weight:700;text-align:center;margin-bottom:4px;direction:rtl}
+.intro-example .uz{font-size:13px;color:var(--muted);text-align:center}
+.intro-example .exp{font-size:12px;color:var(--green);text-align:center;margin-top:4px;font-weight:600}
+.intro-btn{width:100%;max-width:380px;padding:14px;border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:700;cursor:pointer;margin-top:16px;background:var(--green);color:#fff}
+.intro-btn:active{background:var(--green-deep)}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="select-screen" id="selectScreen">
+    <div class="surah-header" style="width:100%;max-width:360px;margin-bottom:28px">
+      <div class="kr">العربية</div>
+      <div class="name">Arab tili</div>
+    </div>
+    <div class="select-title">Bo'lim tanlang</div>
+    <div class="select-sub">O'rganmoqchi bo'lgan bo'limingizni bosing</div>
+    <div class="part-cards" id="partCards"></div>
+  </div>
+
+  <div class="hidden" id="introScreen">
+    <div class="topbar">
+      <a class="back" href="#" id="backToIntro">&larr;</a>
+      <h1 id="introTitle">1-qism</h1>
+    </div>
+    <div class="intro-screen">
+      <div class="intro-title">Arab tilini o'rganamiz!</div>
+      <div class="intro-text">Arab yozuvi <b>o'ngdan chapga</b> yoziladi. So'z harflardan tashkil topadi va qo'shilib yozilganda harflar bir-biriga <b>bog'lanadi</b> (boshlanadigan, o'rtadagi, oxiridagi ko'rinishlarda). Siz harflarni ko'rib, so'zni yozishni o'rganasiz.</div>
+
+      <div class="intro-example">
+        <div class="kr">سلام</div>
+        <div class="uz">Salom</div>
+        <div class="exp">س−ل−ا−م (o'ngdan chapga o'qiladi)</div>
+      </div>
+
+      <div class="intro-example">
+        <div class="kr">كتاب</div>
+        <div class="uz">Kitob</div>
+        <div class="exp">ك−ت−ا−ب (boshdagi ك, o'rtadagi ت، oxiridagi ب)</div>
+      </div>
+
+      <div class="intro-example">
+        <div class="kr">ماء</div>
+        <div class="uz">Suv</div>
+        <div class="exp">م−ا−ء (suv)</div>
+      </div>
+
+      <div class="intro-text" style="margin-top:8px">Harflar o'ngdan chapga ketma-ket beriladi. Ularni bosib so'zni yig'asiz. Xohlasangiz, to'ldirmasdan ham keyingisiga o'tishingiz mumkin.</div>
+
+      <button class="intro-btn" id="startLearnBtn">Davom etish</button>
+    </div>
+  </div>
+
+  <div class="hidden" id="learnScreen">
+    <div class="topbar">
+      <a class="back" href="#" id="backToSelect">&larr;</a>
+      <h1>Arab yozuvi</h1>
+    </div>
+
+    <main>
+      <div class="surah-header">
+        <div class="kr" id="wordKr"></div>
+        <div class="name" id="wordName"></div>
+        <div class="num" id="wordNum"></div>
+      </div>
+
+      <div class="progress" id="progress"></div>
+
+      <div class="ayah-box">
+        <div class="label">So'z</div>
+        <div class="text" id="wordText"></div>
+      </div>
+
+      <div class="fb" id="fb"></div>
+
+      <div class="slot-area">
+        <div class="slots" id="slots"></div>
+      </div>
+
+      <div class="pool-area">
+        <div class="label">Harflarni o'ngdan chapga bosing</div>
+        <div class="pool" id="pool"></div>
+      </div>
+
+      <div class="ctrls">
+        <button class="btn btn-w" id="prevBtn">← Oldingi</button>
+        <button class="btn btn-w" id="resetBtn">Qayta</button>
+        <button class="btn btn-g" id="nextBtn">Keyingi so'z</button>
+      </div>
+    </main>
+  </div>
+
+  <button class="sound-btn hidden" id="soundBtn" title="Ovoz chalish">🔊</button>
+
+  <div class="overlay" id="overlay">
+    <div class="overlay-card">
+      <div class="emoji">🎉</div>
+      <h2>Tabriklaymiz!</h2>
+      <p>Siz so'zlarni<br>mukammal o'rgandingiz!</p>
+      <button class="btn btn-g" id="overlayCloseBtn" style="width:100%">Yaxshi!</button>
+    </div>
+  </div>
+</div>
+
+<script src="lugat_ar1_data.js"></script>
+<script src="lugat_ar2_data.js"></script>
+<script src="lugat_ar3_data.js"></script>
+<script src="lugat_ar4_data.js"></script>
+<script src="lugat_ar5_data.js"></script>
+<script src="lugat_ar6_data.js"></script>
+<script src="lugat_ar7_data.js"></script>
+<script src="lugat_ar8_data.js"></script>
+<script src="lugat_ar9_data.js"></script>
+<script src="lugat_ar10_data.js"></script>
+<script src="lugat_ar11_data.js"></script>
+<script src="lugat_ar12_data.js"></script>
+<script src="lugat_ar13_data.js"></script>
+<script src="lugat_ar14_data.js"></script>
+<script src="lugat_ar15_data.js"></script>
+
+<script>
+(function(){
+  var DESC = [
+    "Asosiy so'zlar",
+    "Oila va odamlar",
+    "Tana a'zolari",
+    "Raqamlar va vaqt",
+    "Ta'lim va fan",
+    "Oziq-ovqat va ichimliklar",
+    "Uy va jihozlar",
+    "Kiyim-kechak",
+    "Tabiat va ob-havo",
+    "Hayvonlar",
+    "Kasb va ish",
+    "Sport va dam olish",
+    "Sayohat va transport",
+    "Din va islom",
+    "Hissiyot va sifatlar"
+  ];
+  var DATA = [LUGAT_AR1, LUGAT_AR2, LUGAT_AR3, LUGAT_AR4, LUGAT_AR5, LUGAT_AR6, LUGAT_AR7, LUGAT_AR8, LUGAT_AR9, LUGAT_AR10, LUGAT_AR11, LUGAT_AR12, LUGAT_AR13, LUGAT_AR14, LUGAT_AR15];
+
+  var PARTS = [];
+  for (var d = 0; d < DATA.length; d++) {
+    var arr = DATA[d] || [];
+    if (!arr.length) continue;
+    PARTS.push({
+      name: (d + 1) + "-qism",
+      desc: DESC[d],
+      words: arr.map(function(p) {
+        return { text: p[0], name: p[1] };
+      })
+    });
+  }
+
+  var isLetter;
+  var isHarakat;
+  try {
+    isLetter = function(c) { return /\p{L}/u.test(c); };
+    isHarakat = function(c) { return /\p{M}/u.test(c); };
+  } catch (e) {
+    var ARLETTERS = /[\u0621-\u064A\u066E-\u06D3\u06FA-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF]/;
+    var DIAC = /[\u0610-\u061A\u064B-\u065F\u0670\u06D6-\u06ED\u08D3-\u08E1]/;
+    isLetter = function(c) { return ARLETTERS.test(c); };
+    isHarakat = function(c) { return DIAC.test(c); };
+  }
+
+  // Bitta so'zni harf+harakat tokenlariga ajratadi
+  function lettersOfWord(wd) {
+    var chars = Array.from(wd);
+    var out = [];
+    var cur = null;
+    for (var i = 0; i < chars.length; i++) {
+      var ch = chars[i];
+      if (isHarakat(ch)) {
+        if (cur) cur.diac += ch;
+        continue;
+      }
+      if (isLetter(ch)) {
+        cur = { base: ch, diac: '' };
+        out.push(cur);
+      } else {
+        cur = null;
+      }
+    }
+    return out;
+  }
+
+  // ===== Arab harflarining Qur'ondagi shakllari (alohida / boshida / o'rtasida / oxirida) =====
+  var SHAPE = {};
+  function addShape(iso, ini, mid, fin) {
+    SHAPE[iso] = { iso: iso, ini: ini, mid: mid, fin: fin };
+  }
+  addShape('\u0627','','','\uFE8E');                    // Alif
+  addShape('\u0628','\uFE91','\uFE92','\uFE90');       // Be
+  addShape('\u062A','\uFE97','\uFE98','\uFE96');       // Te
+  addShape('\u062B','\uFE9B','\uFE9C','\uFE9A');       // Se
+  addShape('\u062C','\uFE9F','\uFEA0','\uFE9E');       // Jim
+  addShape('\u062D','\uFEA3','\uFEA4','\uFEA2');       // Xa
+  addShape('\u062E','\uFEA7','\uFEA8','\uFEA6');       // Xe
+  addShape('\u062F','','','\uFEAA');                    // Dol
+  addShape('\u0630','','','\uFEAC');                    // Zol
+  addShape('\u0631','','','\uFEAE');                    // Ro
+  addShape('\u0632','','','\uFEB0');                    // Ze
+  addShape('\u0633','\uFEB3','\uFEB4','\uFEB2');       // Sin
+  addShape('\u0634','\uFEB7','\uFEB8','\uFEB6');       // Shin
+  addShape('\u0635','\uFEBB','\uFEBC','\uFEBA');       // Sod
+  addShape('\u0636','\uFEBF','\uFEC0','\uFEBE');       // Zod
+  addShape('\u0637','\uFEC3','\uFEC4','\uFEC2');       // To
+  addShape('\u0638','\uFEC7','\uFEC8','\uFEC6');       // Zo
+  addShape('\u0639','\uFECB','\uFECC','\uFECA');       // Ayn
+  addShape('\u063A','\uFECF','\uFED0','\uFECE');       // G'ayn
+  addShape('\u0641','\uFED3','\uFED4','\uFED2');       // Fe
+  addShape('\u0642','\uFED7','\uFED8','\uFED6');       // Qof
+  addShape('\u0643','\uFEDB','\uFEDC','\uFEDA');       // Kof
+  addShape('\u0644','\uFEDF','\uFEE0','\uFEDE');       // Lom
+  addShape('\u0645','\uFEE3','\uFEE4','\uFEE2');       // Mim
+  addShape('\u0646','\uFEE7','\uFEE8','\uFEE6');       // Nun
+  addShape('\u0647','\uFEEB','\uFEEC','\uFEEA');       // Ha
+  addShape('\u0648','','','\uFEEE');                    // Vov
+  addShape('\u064A','\uFEF3','\uFEF4','\uFEF2');       // Ya
+  addShape('\u0621','','','\u0621');                    // Hamza
+  addShape('\u0622','','','\uFE82');                    // Alef madda
+  addShape('\u0623','','','\u0623');                    // Alef hamza ustida
+  addShape('\u0624','','','\uFE86');                    // Vov hamza ustida
+  addShape('\u0625','','','\u0625');                    // Alef hamza ostida
+  addShape('\u0626','\uFE8A','\uFE8B','\uFE8C');       // Ya hamza ustida
+  addShape('\u0629','','','\uFE94');                    // Te marbuta
+  addShape('\u0649','','','\uFEF0');                    // Alef maqsura
+
+  // Harf so'zidagi holatiga qarab bog'langan ko'rinishini beradi
+  function shapedGlyph(word, wi, li) {
+    var tok = word.WORDS[wi][li];
+    var base = tok.base;
+    var S = SHAPE[base];
+    if (!S) return base;
+    if (S.ini === '') return S.iso;
+    var hasPrev = li > 0;
+    var hasNext = li < word.WORDS[wi].length - 1;
+    if (hasPrev && hasNext) return S.mid;
+    if (hasPrev && !hasNext) return S.fin;
+    if (!hasPrev && hasNext) return S.ini;
+    return S.iso;
+  }
+
+  // Ma'lumotlarni tayyorlash: har so'z uchun so'z-so'z tokenlar va tekis ro'yxat
+  PARTS.forEach(function(part) {
+    part.words.forEach(function(w) {
+      w.WORDS = w.text.split(/\s+/).filter(Boolean).map(lettersOfWord).filter(function(ws) { return ws.length > 0; });
+      w.FLAT = [];
+      w.WORD_OF = [];
+      w.POS_IN = [];
+      for (var wi = 0; wi < w.WORDS.length; wi++) {
+        for (var li = 0; li < w.WORDS[wi].length; li++) {
+          w.FLAT.push({ wi: wi, li: li });
+          w.WORD_OF.push(wi);
+          w.POS_IN.push(li);
+        }
+      }
+    });
+  });
+
+  var selectScreen = document.getElementById('selectScreen');
+  var introScreen = document.getElementById('introScreen');
+  var learnScreen = document.getElementById('learnScreen');
+  var partCards = document.getElementById('partCards');
+  var soundBtnEl = document.getElementById('soundBtn');
+  var backToIntroBtn = document.getElementById('backToIntro');
+  var startLearnBtn = document.getElementById('startLearnBtn');
+  var backToSelectBtn = document.getElementById('backToSelect');
+  var introTitleEl = document.getElementById('introTitle');
+  var wordKrEl = document.getElementById('wordKr');
+  var wordNameEl = document.getElementById('wordName');
+  var wordNumEl = document.getElementById('wordNum');
+
+  var currentPart = 0;
+  var WORDS = PARTS[0].words;
+  var wordIdx = 0;
+  var placedComps = [];
+  var slotEls = [];
+  var soundOn = true;
+  var synth = window.speechSynthesis || null;
+
+  var slotsEl = document.getElementById('slots');
+  var poolEl = document.getElementById('pool');
+  var fbEl = document.getElementById('fb');
+  var wordTextEl = document.getElementById('wordText');
+  var progressEl = document.getElementById('progress');
+  var nextBtn = document.getElementById('nextBtn');
+  var prevBtn = document.getElementById('prevBtn');
+  var resetBtn = document.getElementById('resetBtn');
+  var soundBtn = document.getElementById('soundBtn');
+  var overlayEl = document.getElementById('overlay');
+  var overlayCloseBtn = document.getElementById('overlayCloseBtn');
+
+  PARTS.forEach(function(part, idx) {
+    var card = document.createElement('div');
+    card.className = 'part-card';
+    card.innerHTML = '<div class="nm">' + part.name + '</div>' +
+                     '<div class="info">' + part.desc + ' · ' + part.words.length + ' ta so\'z</div>';
+    card.addEventListener('click', function() {
+      selectScreen.classList.add('hidden');
+      introScreen.classList.remove('hidden');
+      currentPart = idx;
+      introTitleEl.textContent = part.name;
+    });
+    partCards.appendChild(card);
+  });
+
+  backToIntroBtn.addEventListener('click', function(e) {
+    e.preventDefault();
+    introScreen.classList.add('hidden');
+    selectScreen.classList.remove('hidden');
+  });
+
+  startLearnBtn.addEventListener('click', function() {
+    introScreen.classList.add('hidden');
+    learnScreen.classList.remove('hidden');
+    soundBtnEl.classList.remove('hidden');
+    wordIdx = 0;
+    render();
+  });
+
+  backToSelectBtn.addEventListener('click', function(e) {
+    e.preventDefault();
+    learnScreen.classList.add('hidden');
+    soundBtnEl.classList.add('hidden');
+    introScreen.classList.remove('hidden');
+  });
+
+  function speak(txt) {
+    if (!soundOn || !synth || !txt || !txt.trim()) return;
+    try {
+      synth.cancel();
+      setTimeout(function() {
+        var u = new SpeechSynthesisUtterance(txt);
+        u.lang = 'ar-SA';
+        u.rate = 0.75;
+        u.pitch = 1;
+        var voices = synth.getVoices();
+        var arVoice = null;
+        for (var i = 0; i < voices.length; i++) {
+          if (voices[i].lang && voices[i].lang.indexOf('ar') === 0) {
+            arVoice = voices[i];
+            break;
+          }
+        }
+        if (arVoice) u.voice = arVoice;
+        synth.speak(u);
+      }, 50);
+    } catch(e) {}
+  }
+
+  function renderProgress() {
+    var html = '';
+    for (var i = 0; i < WORDS.length; i++) {
+      var cls = 'dot';
+      if (i < wordIdx) cls += ' done';
+      else if (i === wordIdx) cls += ' current';
+      html += '<div class="' + cls + '" data-i="' + i + '"></div>';
+    }
+    progressEl.innerHTML = html;
+    var dots = progressEl.children;
+    for (var j = 0; j < dots.length; j++) {
+      if (j <= wordIdx) {
+        dots[j].style.cursor = 'pointer';
+        dots[j].addEventListener('click', function(i) { return function() { goToWord(i); }; }(j));
+      }
+    }
+  }
+
+  function goToWord(i) {
+    if (i === wordIdx) return;
+    wordIdx = i;
+    render();
+  }
+
+  function render() {
+    WORDS = PARTS[currentPart].words;
+    var word = WORDS[wordIdx];
+    placedComps = [];
+    slotEls = [];
+    for (var i = 0; i < word.FLAT.length; i++) placedComps.push(null);
+
+    wordKrEl.textContent = word.text;
+    wordNameEl.textContent = PARTS[currentPart].name + ' · ' + word.name;
+    wordNumEl.textContent = (wordIdx + 1) + ' / ' + WORDS.length;
+    wordTextEl.textContent = word.text + ' — ' + word.name;
+    fbEl.className = 'fb';
+    fbEl.textContent = '';
+    nextBtn.disabled = false;
+    prevBtn.disabled = (wordIdx === 0);
+
+    renderProgress();
+    renderSlots(word);
+    renderPool(word);
+  }
+
+  function renderSlots(word) {
+    slotsEl.innerHTML = '';
+    slotEls = [];
+    for (var wi = 0; wi < word.WORDS.length; wi++) {
+      if (wi > 0) {
+        var gap = document.createElement('div');
+        gap.className = 'space-dot';
+        gap.textContent = '\u00B7';
+        slotsEl.appendChild(gap);
+      }
+      var toks = word.WORDS[wi];
+      for (var li = 0; li < toks.length; li++) {
+        var s = document.createElement('div');
+        s.className = 'slot';
+        s.setAttribute('data-fl', slotEls.length);
+        s.addEventListener('click', createSlotClick(slotEls.length));
+        slotEls.push(s);
+        slotsEl.appendChild(s);
+      }
+    }
+  }
+
+  function createSlotClick(idx) {
+    return function(e) {
+      if (e.target && e.target.classList && e.target.classList.contains('slot-x')) {
+        e.stopPropagation();
+        removeLetter(idx);
+        return;
+      }
+      var txt = placedComps[idx];
+      if (txt) speak(txt);
+    };
+  }
+
+  function renderPool(word) {
+    poolEl.innerHTML = '';
+    for (var wi = 0; wi < word.WORDS.length; wi++) {
+      if (wi > 0) {
+        var gap = document.createElement('div');
+        gap.className = 'space-dot';
+        gap.textContent = '\u00B7';
+        poolEl.appendChild(gap);
+      }
+      var toks = word.WORDS[wi];
+      for (var li = 0; li < toks.length; li++) {
+        var fl = word.FLAT.length === 0 ? -1 : (wi === 0 ? li : 0);
+        var t = document.createElement('div');
+        t.className = 'jamo';
+        fl = flatIndex(word, wi, li);
+        t.textContent = shapedGlyph(word, wi, li) + toks[li].diac;
+        t.setAttribute('data-fl', fl);
+        t.addEventListener('click', function(tile) { return function() { placeLetter(tile); }; }(t));
+        poolEl.appendChild(t);
+      }
+    }
+  }
+
+  function flatIndex(word, wi, li) {
+    var idx = 0;
+    for (var w = 0; w < wi; w++) idx += word.WORDS[w].length;
+    return idx + li;
+  }
+
+  function currentLetters() {
+    return WORDS[wordIdx];
+  }
+
+  function nextEmptyInWord(word, wi) {
+    var toks = word.WORDS[wi];
+    for (var li = 0; li < toks.length; li++) {
+      var fl = flatIndex(word, wi, li);
+      if (!placedComps[fl]) return fl;
+    }
+    return -1;
+  }
+
+  function placeLetter(tile) {
+    if (tile.classList.contains('used')) return;
+    var word = currentLetters();
+    var fl = parseInt(tile.getAttribute('data-fl'), 10);
+    if (placedComps[fl]) return;
+
+    var wi = word.WORD_OF[fl];
+    var li = word.POS_IN[fl];
+    if (nextEmptyInWord(word, wi) !== fl) return;
+
+    var tok = word.WORDS[wi][li];
+    placedComps[fl] = shapedGlyph(word, wi, li) + tok.diac;
+    tile.classList.add('used');
+
+    updateSlotDisplay(fl);
+    flashSlots();
+    speak(tok.base + tok.diac);
+
+    checkAllDone(word);
+  }
+
+  function flashSlots() {
+    slotsEl.classList.add('flash');
+    setTimeout(function() { slotsEl.classList.remove('flash'); }, 250);
+  }
+
+  function checkAllDone(word) {
+    for (var i = 0; i < placedComps.length; i++) {
+      if (!placedComps[i]) return;
+    }
+    setTimeout(finishWord, 400);
+  }
+
+  function finishWord() {
+    for (var i = 0; i < slotEls.length; i++) slotEls[i].classList.add('done');
+    var word = WORDS[wordIdx];
+    fbEl.className = 'fb ok';
+    fbEl.textContent = 'Mukammal! To\'g\'ri!';
+    nextBtn.disabled = false;
+    speak(word.text);
+  }
+
+  function removeLetter(idx) {
+    var word = currentLetters();
+    if (!placedComps[idx]) return;
+    placedComps[idx] = null;
+    updateSlotDisplay(idx);
+
+    var tiles = poolEl.children;
+    for (var i = 0; i < tiles.length; i++) {
+      if (tiles[i].classList.contains('jamo') &&
+          parseInt(tiles[i].getAttribute('data-fl'), 10) === idx) {
+        tiles[i].classList.remove('used');
+      }
+    }
+  }
+
+  function updateSlotDisplay(idx) {
+    var slot = slotEls[idx];
+    var txt = placedComps[idx];
+
+    if (!txt) {
+      slot.innerHTML = '';
+      slot.classList.remove('filled', 'done');
+      return;
+    }
+
+    slot.innerHTML = txt + '<span class="slot-x">\u2715</span>';
+    slot.classList.add('filled', 'done');
+  }
+
+  function getSlotsText() {
+    var result = '';
+    for (var i = 0; i < placedComps.length; i++) {
+      if (placedComps[i]) result += shapedGlyph(WORDS[wordIdx], WORDS[wordIdx].WORD_OF[i], WORDS[wordIdx].POS_IN[i]) + WORDS[wordIdx].WORDS[WORDS[wordIdx].WORD_OF[i]][WORDS[wordIdx].POS_IN[i]].diac;
+    }
+    return result;
+  }
+
+  function reset() { render(); }
+
+  function nextWord() {
+    if (wordIdx < WORDS.length - 1) {
+      wordIdx++;
+      render();
+    } else {
+      overlayEl.classList.add('show');
+    }
+  }
+
+  function prevWord() {
+    if (wordIdx > 0) {
+      wordIdx--;
+      render();
+    } else {
+      learnScreen.classList.add('hidden');
+      soundBtnEl.classList.add('hidden');
+      introScreen.classList.remove('hidden');
+    }
+  }
+
+  function closeOverlay() {
+    overlayEl.classList.remove('show');
+    learnScreen.classList.add('hidden');
+    soundBtnEl.classList.add('hidden');
+    introScreen.classList.remove('hidden');
+  }
+
+  resetBtn.addEventListener('click', reset);
+  prevBtn.addEventListener('click', prevWord);
+  nextBtn.addEventListener('click', nextWord);
+  soundBtn.addEventListener('click', function() {
+    var txt = getSlotsText().trim();
+    if (txt) speak(txt);
+  });
+  overlayCloseBtn.addEventListener('click', closeOverlay);
+
+  // ===== Telefonning orqa tugmasi (browser back) =====
+  history.pushState({ hRun: 1 }, document.title);
+  window.addEventListener('popstate', function() {
+    if (!learnScreen.classList.contains('hidden')) {
+      if (wordIdx > 0) {
+        prevWord();
+      } else {
+        learnScreen.classList.add('hidden');
+        soundBtnEl.classList.add('hidden');
+        introScreen.classList.remove('hidden');
+      }
+      history.pushState({ hRun: 1 }, document.title);
+      return;
+    }
+    if (!introScreen.classList.contains('hidden')) {
+      introScreen.classList.add('hidden');
+      selectScreen.classList.remove('hidden');
+      history.pushState({ hRun: 1 }, document.title);
+      return;
+    }
+  });
+
+  if (synth) {
+    synth.onvoiceschanged = function() { synth.getVoices(); };
+  }
+
+  render();
+})();
+</script>
+</body>
+</html>
