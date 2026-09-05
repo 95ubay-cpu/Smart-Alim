@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Nemis tili — So'z yig'ish</title>
+<style>
+:root{
+  --amber:#F59E0B;--amber-deep:#B45309;--gold:#FFF8EC;--gold-2:#FDEBCB;
+  --white:#FFFFFF;--ink:#16241F;--muted:#5B6B65;--border:#EBDDC4;
+  --radius:18px;--radius-sm:12px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;color:var(--ink);background:var(--gold);min-height:100vh;-webkit-user-select:none;user-select:none}
+
+.app{max-width:480px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;background:var(--gold)}
+.topbar{display:flex;align-items:center;gap:10px;padding:12px 16px 10px;background:var(--gold);position:sticky;top:0;z-index:10}
+.topbar .back{width:34px;height:34px;border-radius:50%;background:var(--white);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;text-decoration:none;color:var(--ink)}
+.topbar h1{font-size:17px;font-weight:800;margin:0;flex:1;text-align:center}
+main{padding:4px 16px 24px;flex:1}
+
+.surah-header{text-align:center;background:linear-gradient(135deg,var(--amber),var(--amber-deep));border-radius:var(--radius);padding:16px 16px;margin-bottom:12px;color:#fff}
+.surah-header .kr{font-size:28px;font-weight:800;font-family:system-ui,sans-serif;letter-spacing:.5px;min-height:38px}
+.surah-header .name{font-size:14px;opacity:.85;font-weight:600;margin-top:4px}
+.surah-header .num{font-size:11px;opacity:.6;margin-top:2px}
+
+.ayah-box{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 12px;text-align:center;margin-bottom:12px}
+.ayah-box .label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.ayah-box .text{font-size:22px;line-height:1.5;font-weight:700;color:var(--amber-deep)}
+
+.slot-area{margin-bottom:12px}
+.slot-area .label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.slots{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;min-height:50px;padding:10px 8px;background:var(--white);border:2px dashed var(--border);border-radius:var(--radius-sm);transition:border-color .2s}
+.slots.flash{border-color:var(--amber)}
+.slots.shake{animation:shake .3s ease}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.slot{width:42px;height:48px;border-radius:12px;background:var(--gold-2);border:2px dashed var(--border);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;position:relative;cursor:pointer}
+.slot.filled{background:var(--amber);color:#fff;border:2px solid var(--amber);animation:pop .25s ease}
+.slot.done{background:var(--amber-deep)}
+.slot .slot-x{position:absolute;top:-6px;right:-6px;width:20px;height:20px;border-radius:50%;background:#ef4444;color:#fff;font-size:11px;font-weight:800;display:none;align-items:center;justify-content:center;cursor:pointer}
+.slot.filled .slot-x{display:flex}
+@keyframes pop{0%{transform:scale(.4);opacity:0}100%{transform:scale(1);opacity:1}}
+
+.pool-area{margin-bottom:12px}
+.pool-area .label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.pool{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;padding:10px 8px;background:var(--white);border:1px solid var(--border);border-radius:var(--radius-sm)}
+.jamo{width:42px;height:48px;border-radius:12px;background:var(--gold-2);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;cursor:pointer;transition:all .1s}
+.jamo:active{transform:scale(1.1);box-shadow:0 4px 14px rgba(0,0,0,.12)}
+.jamo.wrong{background:#fee2e2;border-color:#ef4444;animation:shake .3s ease}
+.jamo.used{opacity:.25;pointer-events:none;transform:scale(.85)}
+
+.fb{text-align:center;padding:10px;border-radius:var(--radius-sm);margin-bottom:10px;font-weight:700;font-size:13px;display:none}
+.fb.ok{display:block;background:#dcfce7;color:#15803d}
+
+.ctrls{display:flex;gap:8px}
+.btn{flex:1;padding:10px;border:none;border-radius:var(--radius-sm);font-size:13px;font-weight:700;cursor:pointer}
+.btn-g{background:var(--amber);color:#fff}.btn-g:active{background:var(--amber-deep)}
+.btn-w{background:var(--white);border:1px solid var(--border);color:var(--ink)}.btn-w:active{background:var(--gold-2)}
+.btn:disabled{opacity:.4;pointer-events:none}
+
+.sound-btn{position:fixed;bottom:16px;right:16px;width:42px;height:42px;border-radius:50%;background:var(--amber);color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 4px 12px rgba(245,158,11,.3);cursor:pointer;transition:all .2s;border:none}
+.sound-btn:active{transform:scale(.9)}
+
+.progress{display:flex;gap:5px;justify-content:center;margin-bottom:10px}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--border);transition:background .2s;cursor:pointer}
+.dot.done{background:var(--amber)}
+.dot.current{background:var(--amber-deep);box-shadow:0 0 0 3px rgba(245,158,11,.25)}
+
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:50}
+.overlay.show{display:flex}
+.overlay-card{background:var(--white);border-radius:var(--radius);padding:32px 24px;text-align:center;max-width:340px;width:90%;animation:pop .3s ease}
+.overlay-card .emoji{font-size:52px;margin-bottom:12px}
+.overlay-card h2{font-size:22px;font-weight:800;margin-bottom:6px}
+.overlay-card p{font-size:14px;color:var(--muted);margin-bottom:20px;line-height:1.5}
+
+.select-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:20px}
+.select-title{font-size:22px;font-weight:800;margin-bottom:6px;text-align:center}
+.select-sub{font-size:14px;color:var(--muted);margin-bottom:28px;text-align:center}
+.part-cards{display:flex;flex-direction:column;gap:16px;width:100%;max-width:360px}
+.part-card{background:var(--white);border:2px solid var(--border);border-radius:var(--radius);padding:24px 20px;text-align:center;cursor:pointer;transition:all .2s}
+.part-card:active{transform:scale(.97);border-color:var(--amber);background:var(--gold-2)}
+.part-card .kr{font-size:28px;font-family:system-ui,sans-serif;font-weight:800;margin-bottom:8px}
+.part-card .nm{font-size:16px;font-weight:700;color:var(--ink)}
+.part-card .info{font-size:12px;color:var(--muted);margin-top:4px}
+.hidden{display:none!important}
+
+.intro-screen{display:flex;flex-direction:column;align-items:center;min-height:100vh;padding:20px;overflow-y:auto}
+.intro-title{font-size:20px;font-weight:800;margin-bottom:16px;text-align:center}
+.intro-text{font-size:14px;color:var(--muted);line-height:1.7;text-align:center;max-width:380px;margin-bottom:20px}
+.intro-example{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;margin-bottom:12px;width:100%;max-width:380px}
+.intro-example .kr{font-size:28px;font-weight:700;text-align:center;margin-bottom:4px;letter-spacing:2px}
+.intro-example .uz{font-size:13px;color:var(--muted);text-align:center}
+.intro-example .exp{font-size:12px;color:var(--amber-deep);text-align:center;margin-top:4px;font-weight:600}
+.intro-btn{width:100%;max-width:380px;padding:14px;border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:700;cursor:pointer;margin-top:16px;background:var(--amber);color:#fff}
+.intro-btn:active{background:var(--amber-deep)}
+
+.quiz-wrap{display:none}
+.quiz-wrap.show{display:block}
+.quiz-q-box{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;text-align:center;margin-bottom:12px}
+.quiz-q-box .label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.quiz-q-box .q{font-size:20px;font-weight:800;color:var(--amber-deep)}
+.options{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
+.option{background:var(--white);border:2px solid var(--border);border-radius:var(--radius-sm);padding:14px;font-size:15px;font-weight:700;cursor:pointer;transition:all .1s;text-align:center}
+.option:active{transform:scale(.97)}
+.option.ok{background:#dcfce7;border-color:#22c55e;color:#15803d}
+.option.bad{background:#fee2e2;border-color:#ef4444;color:#b91c1c;animation:shake .3s ease}
+.option.reveal{background:#fde68a;border-color:var(--amber);color:var(--amber-deep)}
+.reveal-btn{position:fixed;left:16px;bottom:16px;padding:10px 18px;border:none;border-radius:50px;background:var(--white);border:1px solid var(--border);color:var(--amber-deep);font-weight:700;font-size:13px;box-shadow:0 4px 12px rgba(0,0,0,.12);cursor:pointer;transition:all .2s;z-index:30}
+.reveal-btn:active{transform:scale(.93);background:var(--gold-2)}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="select-screen" id="selectScreen">
+    <div class="surah-header" style="width:100%;max-width:360px;margin-bottom:28px">
+      <div class="kr">Deutsch</div>
+      <div class="name">Nemis tili</div>
+    </div>
+    <div class="select-title">Bo'lim tanlang</div>
+    <div class="select-sub">O'rganmoqchi bo'lgan bo'limingizni bosing</div>
+    <div class="part-cards" id="partCards"></div>
+  </div>
+
+  <div class="hidden" id="introScreen">
+    <div class="topbar">
+      <a class="back" href="#" id="backToIntro">&larr;</a>
+      <h1 id="introTitle">1-qism</h1>
+    </div>
+    <div class="intro-screen">
+      <div class="intro-title">Nemis tilini o'rganamiz!</div>
+      <div class="intro-text">Sizga so'zning o'zbekcha ma'nosi ko'rsatiladi. Quyidagi harflar orasidan nemischa so'zni harfma-harf yig'ing. Diqqat: orasida keraksiz (chalg'ituvchi) harflar ham bor!</div>
+
+      <div class="intro-example">
+        <div class="kr">H A L L O</div>
+        <div class="uz">Salom</div>
+        <div class="exp">hallo — harflarni ketma-ket bosasiz</div>
+      </div>
+
+      <div class="intro-example">
+        <div class="kr">W A S S E R</div>
+        <div class="uz">Suv</div>
+        <div class="exp">Havzada o'rin yo'q harflar ham bo'ladi — ehtiyot bo'ling!</div>
+      </div>
+
+      <div class="intro-text" style="margin-top:8px">Nemis harflari: ä, ö, ü va ß ham ishlatiladi. Xatolik bo'lsa chalg'ituvchi harf silkinadi va o'rin to'ldirilmaydi. Xohlasangiz, to'ldirmasdan ham keyingisiga o'tishingiz mumkin.</div>
+
+      <button class="intro-btn" id="startLearnBtn">Davom etish</button>
+    </div>
+  </div>
+
+  <div class="hidden" id="learnScreen">
+    <div class="topbar">
+      <a class="back" href="#" id="backToSelect">&larr;</a>
+      <h1>Nemis tili</h1>
+    </div>
+
+    <main>
+      <div class="surah-header">
+        <div class="name" id="wordName"></div>
+        <div class="num" id="wordNum"></div>
+      </div>
+
+      <div class="ayah-box">
+        <div class="label">So'zni toping</div>
+        <div class="text" id="wordHint"></div>
+      </div>
+
+      <div class="progress" id="progress"></div>
+
+      <div class="fb" id="fb"></div>
+
+      <div class="slot-area">
+        <div class="slots" id="slots"></div>
+      </div>
+
+      <div class="pool-area">
+        <div class="label">Harflarni ketma-ket bosing</div>
+        <div class="pool" id="pool"></div>
+      </div>
+
+      <div class="quiz-wrap" id="quizWrap">
+        <div class="quiz-q-box">
+          <div class="label">8 variantdan to'g'risini tanlang</div>
+          <div class="q" id="quizQuestion"></div>
+        </div>
+        <div class="options" id="quizOptions"></div>
+        <div class="fb" id="quizFb"></div>
+      </div>
+
+      <div class="ctrls">
+        <button class="btn btn-w" id="prevBtn">← Oldingi</button>
+        <button class="btn btn-w" id="resetBtn">Qayta</button>
+        <button class="btn btn-g" id="nextBtn">Keyingi so'z</button>
+      </div>
+    </main>
+  </div>
+
+  <button class="sound-btn hidden" id="soundBtn" title="Ovoz chalish">🔊</button>
+  <button class="reveal-btn hidden" id="revealBtn" title="To'g'ri javobni ko'rsatish">To'g'ri javob</button>
+
+  <div class="overlay" id="overlay">
+    <div class="overlay-card">
+      <div class="emoji">🎉</div>
+      <h2>Tabriklaymiz!</h2>
+      <p>Hamma so'zlarni<br>mukammal o'rgandingiz!</p>
+      <button class="btn btn-g" id="overlayCloseBtn" style="width:100%">Yaxshi!</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var DESC = [
+    "Asosiy so'zlar",
+    "Oila va odamlar",
+    "Tana a'zolari",
+    "Raqamlar va vaqt",
+    "Ta'lim va fan",
+    "Oziq-ovqat va ichimliklar",
+    "Uy va jihozlar",
+    "Kiyim-kechak",
+    "Tabiat va ob-havo",
+    "Hayvonlar",
+    "Kasb va ish",
+    "Sport va dam olish",
+    "Sayohat va transport",
+    "Din va islom",
+    "Hissiyot va sifatlar"
+  ];
+
+  var WORD_LISTS = [
+    [["hallo","Salom"],["danke","Rahmat"],["bitte","Iltimos"],["ja","Ha"],["nein","Yo'q"],["tschuss","Xayr"],["gern","Xursand bo'lib"],["wasser","Suv"],["brot","Non"],["haus","Uy"],["buch","Kitob"],["essen","Yemoq"]],
+    [["vater","Ota"],["mutter","Ona"],["bruder","Aka / Uka"],["schwester","Opa / Singil"],["sohn","O'g'il"],["tochter","Qiz"],["grossvater","Bobo"],["grossmutter","Buvi"],["freund","Do'st"],["mann","Erkak"],["frau","Ayol"],["kind","Bola"]],
+    [["kopf","Bosh"],["auge","Ko'z"],["ohr","Quloq"],["nase","Burun"],["mund","Og'iz"],["hand","Qo'l"],["fuss","Oyoq"],["herz","Yurak"],["haar","Soch"],["finger","Barmoq"],["zahn","Tish"],["arm","Qo'l (bilak)"]],
+    [["eins","Bir"],["zwei","Ikki"],["drei","Uch"],["vier","To'rt"],["funf","Besh"],["heute","Bugun"],["morgen","Ertaga"],["gestern","Kecha"],["nacht","Tun"],["tag","Kun"],["woche","Hafta"],["jahr","Yil"]],
+    [["schule","Maktab"],["lehrer","O'qituvchi"],["schuler","O'quvchi"],["heft","Daftar"],["stift","Qalam"],["klasse","Sinf"],["prufung","Imtihon"],["wissen","Ilm / Bilim"],["universitat","Universitet"],["frage","Savol"]],
+    [["reis","Guruch"],["fleisch","Go'sht"],["fisch","Baliq"],["apfel","Olma"],["banane","Banan"],["milch","Sut"],["tee","Choy"],["kaffee","Kofe"],["honig","Asal"],["zucker","Shakar"],["salz","Tuz"],["ei","Tuxum"]],
+    [["zimmer","Xona"],["tisch","Stol"],["stuhl","Stul"],["bett","Karavot"],["fenster","Deraza"],["spiegel","Oyna"],["lampe","Chiroq"],["kuche","Oshxona"],["sofa","Divan"],["wand","Devor"],["treppe","Zina"],["schrank","Shkaf"]],
+    [["hemd","Ko'ylak"],["hose","Shim"],["schuhe","Poyabzal"],["socken","Paypoq"],["mantel","Palto"],["mutze","Shlyapa"],["kleid","Kiyim / Libos"],["jacke","Kurtka"],["rock","Yubka"],["tasche","Sumka"]],
+    [["sonne","Quyosh"],["mond","Oy (osmondagi)"],["stern","Yulduz"],["himmel","Osmon"],["erde","Yer"],["meer","Dengiz"],["fluss","Daryo"],["berg","Tog'"],["baum","Daraxt"],["blume","Gul"],["regen","Yomg'ir"],["wind","Shamol"],["schnee","Qor"],["wetter","Ob-havo"]],
+    [["katze","Mushuk"],["hund","It"],["lowe","Sher"],["elefant","Fil"],["pferd","Ot"],["vogel","Qush"],["schaf","Qo'y"],["huhn","Tovuq"],["kamel","Tuya"],["maus","Sichqon"]],
+    [["arzt","Shifokor"],["ingenieur","Muhandis"],["pfleger","Hamshira"],["polizist","Politsiya"],["koch","Oshpaz"],["fahrer","Haydovchi"],["arbeiter","Ishchi"],["kaufmann","Savdogar"],["verkufer","Sotuvchi"],["bauer","Dehqon"],["schneider","Tikuvchi"]],
+    [["fussball","Futbol"],["schwimmen","Suzish"],["laufen","Yugurish"],["spiel","O'yin"],["team","Jamoa"],["rennen","Musobaqa"],["sieg","G'alaba"],["sport","Sport"],["tanzen","Raqs"],["lesen","O'qish"]],
+    [["auto","Mashina"],["flugzeug","Samolyot"],["zug","Poyezd"],["schiff","Kema"],["fahrrad","Velosiped"],["flughafen","Aeroport"],["strasse","Yo'l"],["koffer","Chamadon"],["reise","Sayohat"],["bus","Avtobus"]],
+    [["allah","Alloh"],["koran","Qur'on"],["gebet","Namoz"],["fasten","Ro'za"],["zakat","Zakot"],["haj","Haj"],["moschee","Masjid"],["glaube","Iymon"],["prophet","Payg'ambar"],["dua","Duo"]],
+    [["glucklich","Xursand"],["traurig","G'amgin"],["wutend","Jahldor"],["bange","Qo'rqqan"],["schon","Chiroyli"],["gross","Katta"],["klein","Kichik"],["lang","Uzun"],["kurz","Qisqa"],["neu","Yangi"],["alt","Eski"],["gut","Yaxshi"],["schlecht","Yomon"]]
+  ];
+
+  var PARTS = [];
+  for (var d = 0; d < WORD_LISTS.length; d++) {
+    PARTS.push({
+      name: (d + 1) + "-qism",
+      desc: DESC[d],
+      words: WORD_LISTS[d].map(function(p) { return { text: p[0], name: p[1] }; })
+    });
+  }
+
+  var DISTRACTOR_POOL = ['b','c','d','f','g','h','j','k','l','m','n','p','q','r','s','t','v','w','x','z','a','e','i','o','u','ä','ö','ü','ß'];
+
+  var selectScreen = document.getElementById('selectScreen');
+  var introScreen = document.getElementById('introScreen');
+  var learnScreen = document.getElementById('learnScreen');
+  var partCards = document.getElementById('partCards');
+  var soundBtnEl = document.getElementById('soundBtn');
+  var backToIntroBtn = document.getElementById('backToIntro');
+  var startLearnBtn = document.getElementById('startLearnBtn');
+  var backToSelectBtn = document.getElementById('backToSelect');
+  var introTitleEl = document.getElementById('introTitle');
+  var wordNameEl = document.getElementById('wordName');
+  var wordNumEl = document.getElementById('wordNum');
+  var wordHintEl = document.getElementById('wordHint');
+
+  function shuffle(arr) {
+    for (var i = arr.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = arr[i]; arr[i] = arr[j]; arr[j] = t;
+    }
+    return arr;
+  }
+
+  function normalPool() {
+    var cnt = 0;
+    return function(word) {
+      var used = {};
+      var chars = word.split('');
+      var pool = [];
+      for (var i = 0; i < chars.length; i++) { pool.push(chars[i]); used[chars[i]] = true; }
+      var n = 2 + Math.floor(Math.random() * 2);
+      var extras = shuffle(DISTRACTOR_POOL.slice());
+      for (var j = 0; j < extras.length && cnt < 100; j++) {
+        if (!used[extras[j]]) { pool.push(extras[j]); n--; if (n <= 0) break; }
+      }
+      return shuffle(pool);
+    };
+  }
+
+  var getPool = normalPool();
+
+  function buildWordPool(word) {
+    return getPool(word.text);
+  }
+
+  PARTS.forEach(function(part) {
+    part.words.forEach(function(w) {
+      w.letters = w.text.split('');
+    });
+  });
+
+  var currentPart = 0;
+  var WORDS = PARTS[0].words;
+  var wordIdx = 0;
+  var placed = [];
+  var finishedFlag = false;
+  var soundOn = true;
+  var synth = window.speechSynthesis || null;
+
+  var slotsEl = document.getElementById('slots');
+  var poolEl = document.getElementById('pool');
+  var fbEl = document.getElementById('fb');
+  var progressEl = document.getElementById('progress');
+  var nextBtn = document.getElementById('nextBtn');
+  var prevBtn = document.getElementById('prevBtn');
+  var resetBtn = document.getElementById('resetBtn');
+  var soundBtn = document.getElementById('soundBtn');
+  var overlayEl = document.getElementById('overlay');
+  var overlayCloseBtn = document.getElementById('overlayCloseBtn');
+  var revealBtn = document.getElementById('revealBtn');
+  var quizWrapEl = document.getElementById('quizWrap');
+  var quizQuestionEl = document.getElementById('quizQuestion');
+  var quizOptionsEl = document.getElementById('quizOptions');
+  var quizFbEl = document.getElementById('quizFb');
+  var quizMode = false;
+
+  PARTS.forEach(function(part, idx) {
+    var card = document.createElement('div');
+    card.className = 'part-card';
+    card.innerHTML = '<div class="kr">DE</div>' +
+                     '<div class="nm">' + part.name + '</div>' +
+                     '<div class="info">' + part.desc + ' · ' + part.words.length + ' ta so\'z</div>';
+    card.addEventListener('click', function() {
+      selectScreen.classList.add('hidden');
+      introScreen.classList.remove('hidden');
+      currentPart = idx;
+      introTitleEl.textContent = part.name;
+    });
+    partCards.appendChild(card);
+  });
+
+  backToIntroBtn.addEventListener('click', function(e) {
+    e.preventDefault();
+    introScreen.classList.add('hidden');
+    selectScreen.classList.remove('hidden');
+  });
+
+  startLearnBtn.addEventListener('click', function() {
+    introScreen.classList.add('hidden');
+    learnScreen.classList.remove('hidden');
+    soundBtnEl.classList.remove('hidden');
+    wordIdx = 0;
+    render();
+  });
+
+  backToSelectBtn.addEventListener('click', function(e) {
+    e.preventDefault();
+    learnScreen.classList.add('hidden');
+    soundBtnEl.classList.add('hidden');
+    introScreen.classList.remove('hidden');
+  });
+
+  function speak(txt) {
+    if (!soundOn || !synth || !txt || !txt.trim()) return;
+    try {
+      synth.cancel();
+      setTimeout(function() {
+        var u = new SpeechSynthesisUtterance(txt);
+        u.lang = 'de-DE';
+        u.rate = 0.8;
+        u.pitch = 1;
+        var voices = synth.getVoices();
+        var deVoice = null;
+        for (var i = 0; i < voices.length; i++) {
+          if (voices[i].lang && voices[i].lang.indexOf('de') === 0) {
+            deVoice = voices[i];
+            break;
+          }
+        }
+        if (deVoice) u.voice = deVoice;
+        synth.speak(u);
+      }, 50);
+    } catch(e) {}
+  }
+
+  function renderProgress() {
+    var html = '';
+    for (var i = 0; i < WORDS.length; i++) {
+      var cls = 'dot';
+      if (i < wordIdx) cls += ' done';
+      else if (i === wordIdx) cls += ' current';
+      html += '<div class="' + cls + '" data-i="' + i + '"></div>';
+    }
+    progressEl.innerHTML = html;
+    var dots = progressEl.children;
+    for (var j = 0; j < dots.length; j++) {
+      if (j <= wordIdx) {
+        dots[j].style.cursor = 'pointer';
+        dots[j].addEventListener('click', function(i) { return function() { goToWord(i); }; }(j));
+      }
+    }
+  }
+
+  function goToWord(i) {
+    if (i === wordIdx) return;
+    wordIdx = i;
+    render();
+  }
+
+  function renderSlots(n) {
+    slotsEl.innerHTML = '';
+    for (var i = 0; i < n; i++) {
+      var s = document.createElement('div');
+      s.className = 'slot';
+      s.setAttribute('data-i', i);
+      slotsEl.appendChild(s);
+    }
+  }
+
+  function renderPool(lst) {
+    poolEl.innerHTML = '';
+    for (var i = 0; i < lst.length; i++) {
+      var t = document.createElement('div');
+      t.className = 'jamo';
+      t.textContent = lst[i];
+      t.setAttribute('data-ch', lst[i]);
+      t.addEventListener('click', function(tile, ch) { return function() { placeLetter(tile, ch); }; }(t, lst[i]));
+      poolEl.appendChild(t);
+    }
+  }
+
+  function render() {
+    WORDS = PARTS[currentPart].words;
+    var word = WORDS[wordIdx];
+    placed = [];
+    finishedFlag = false;
+    quizMode = false;
+    quizWrapEl.classList.remove('show');
+    revealBtn.classList.remove('hidden');
+
+    wordNameEl.textContent = PARTS[currentPart].name + ' · ' + PARTS[currentPart].desc;
+    wordHintEl.textContent = word.name;
+    wordNumEl.textContent = (wordIdx + 1) + ' / ' + WORDS.length;
+    fbEl.className = 'fb';
+    fbEl.textContent = '';
+    nextBtn.disabled = false;
+    prevBtn.disabled = (wordIdx === 0);
+    nextBtn.textContent = 'Keyingi so\'z';
+
+    renderProgress();
+    renderSlots(word.letters.length);
+    renderPool(buildWordPool(word));
+  }
+
+  function updateSlotDisplay(idx) {
+    var word = WORDS[wordIdx];
+    var slot = slotsEl.children[idx];
+    if (!placed[idx]) {
+      slot.innerHTML = '';
+      slot.classList.remove('filled', 'done');
+      return;
+    }
+    slot.textContent = placed[idx];
+    slot.classList.add('filled');
+    if (word.letters.slice(0, idx + 1).join('') === placed.slice(0, idx + 1).join('') && placed[idx] === word.letters[idx]) {
+      slot.classList.add('done');
+    } else {
+      slot.classList.remove('done');
+    }
+    slot.innerHTML = placed[idx] + '<span class="slot-x">✕</span>';
+  }
+
+  function placeLetter(tile, ch) {
+    if (tile.classList.contains('used') || finishedFlag) return;
+    var word = WORDS[wordIdx];
+    var idx = placed.length;
+
+    if (ch !== word.letters[idx]) {
+      tile.classList.add('wrong');
+      slotsEl.classList.add('shake');
+      setTimeout(function() {
+        tile.classList.remove('wrong');
+        slotsEl.classList.remove('shake');
+      }, 300);
+      return;
+    }
+
+    placed.push(ch);
+    tile.classList.add('used');
+    updateSlotDisplay(idx);
+    flashSlots();
+    speak(ch);
+
+    if (placed.length === word.letters.length) {
+      checkAllDone();
+    }
+  }
+
+  function flashSlots() {
+    slotsEl.classList.add('flash');
+    setTimeout(function() { slotsEl.classList.remove('flash'); }, 250);
+  }
+
+  function checkAllDone() {
+    finishedFlag = true;
+    setTimeout(finishWord, 300);
+  }
+
+  function finishWord() {
+    var slots = slotsEl.children;
+    for (var i = 0; i < slots.length; i++) slots[i].classList.add('done');
+    var word = WORDS[wordIdx];
+    fbEl.className = 'fb ok';
+    fbEl.textContent = 'Mukammal! To\'g\'ri: ' + word.text;
+    nextBtn.disabled = false;
+    wordNameEl.textContent = PARTS[currentPart].name + ' · ' + word.text;
+    speak(word.text);
+  }
+
+  function removeLast() {
+    if (placed.length === 0 || finishedFlag) return;
+    var idx = placed.length - 1;
+    var word = WORDS[wordIdx];
+    placed.pop();
+    updateSlotDisplay(idx);
+    fbEl.className = 'fb';
+    fbEl.textContent = '';
+
+    var tiles = poolEl.children;
+    for (var i = 0; i < tiles.length; i++) {
+      if (tiles[i].classList.contains('jamo') &&
+          tiles[i].getAttribute('data-ch') === word.letters[idx]) {
+        tiles[i].classList.remove('used');
+        break;
+      }
+    }
+  }
+
+  function reset() { render(); }
+
+  function shuffleArr(arr) {
+    for (var i = arr.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = arr[i]; arr[i] = arr[j]; arr[j] = t;
+    }
+    return arr;
+  }
+
+  function showQuiz() {
+    quizMode = true;
+    var word = WORDS[wordIdx];
+    quizQuestionEl.textContent = word.name + ' so\'zining nemischasi qaysi?';
+    quizWrapEl.classList.add('show');
+    quizFbEl.className = 'fb';
+    quizFbEl.textContent = '';
+    nextBtn.disabled = true;
+    revealBtn.classList.remove('hidden');
+
+    var opts = [{ t: word.text, correct: true }];
+    var pool = [];
+    for (var i = 0; i < WORDS.length; i++) {
+      if (WORDS[i].text !== word.text) pool.push(WORDS[i].text);
+    }
+    for (var k = 0; k < 7 && pool.length > 0; k++) {
+      var ri = Math.floor(Math.random() * pool.length);
+      opts.push({ t: pool[ri], correct: false });
+      pool.splice(ri, 1);
+    }
+    opts = shuffleArr(opts);
+    quizOptionsEl.innerHTML = '';
+    for (var o = 0; o < opts.length; o++) {
+      (function(txt, correct) {
+        var d = document.createElement('div');
+        d.className = 'option';
+        d.textContent = txt;
+        d.setAttribute('data-ans', txt);
+        d.addEventListener('click', function() {
+          if (d.classList.contains('ok')) return;
+          if (correct) {
+            d.classList.add('ok');
+            quizFbEl.className = 'fb ok';
+            quizFbEl.textContent = 'To\'g\'ri! Keyingi so\'zga o\'tilmoqda...';
+            speak(txt);
+            setTimeout(function() {
+              if (wordIdx < WORDS.length - 1) {
+                wordIdx++;
+                render();
+              } else {
+                overlayEl.classList.add('show');
+              }
+            }, 900);
+          } else {
+            d.classList.add('bad');
+            setTimeout(function() { d.classList.remove('bad'); }, 400);
+          }
+        });
+        quizOptionsEl.appendChild(d);
+      })(opts[o].t, opts[o].correct);
+    }
+  }
+
+  function revealAnswer() {
+    if (quizMode) {
+      var word = WORDS[wordIdx];
+      var opts = quizOptionsEl.children;
+      for (var i = 0; i < opts.length; i++) {
+        if (opts[i].getAttribute('data-ans') === word.text) {
+          opts[i].classList.add('reveal');
+          break;
+        }
+      }
+    } else if (finishedFlag) {
+      var w = WORDS[wordIdx];
+      wordHintEl.textContent = w.name;
+      fbEl.className = 'fb ok';
+      fbEl.textContent = 'To\'g\'ri javob: ' + w.text;
+    } else {
+      var w2 = WORDS[wordIdx];
+      for (var j = 0; j < w2.letters.length; j++) {
+        if (!placed[j]) placed.push(w2.letters[j]);
+      }
+      for (var m = 0; m < placed.length; m++) updateSlotDisplay(m);
+      finishedFlag = true;
+      finishWord();
+    }
+  }
+
+  function nextWord() {
+    if (quizMode) return;
+    if (finishedFlag && !quizMode) {
+      showQuiz();
+      return;
+    }
+    if (wordIdx < WORDS.length - 1) {
+      wordIdx++;
+      render();
+    } else {
+      overlayEl.classList.add('show');
+    }
+  }
+
+  function prevWord() {
+    if (quizMode) {
+      render();
+      return;
+    }
+    if (wordIdx > 0) {
+      wordIdx--;
+      render();
+    } else {
+      learnScreen.classList.add('hidden');
+      soundBtnEl.classList.add('hidden');
+      introScreen.classList.remove('hidden');
+    }
+  }
+
+  function closeOverlay() {
+    overlayEl.classList.remove('show');
+    learnScreen.classList.add('hidden');
+    soundBtnEl.classList.add('hidden');
+    introScreen.classList.remove('hidden');
+  }
+
+  resetBtn.addEventListener('click', reset);
+  prevBtn.addEventListener('click', prevWord);
+  nextBtn.addEventListener('click', nextWord);
+  revealBtn.addEventListener('click', revealAnswer);
+  soundBtn.addEventListener('click', function() {
+    if (placed.length) speak(placed.join(''));
+    else speak(WORDS[wordIdx].text);
+  });
+
+  document.getElementById('slots').addEventListener('click', function(e) {
+    e.preventDefault();
+    var t = e.target;
+    if (t.classList.contains('slot-x')) {
+      removeLast();
+      return;
+    }
+    var txt = placed.join('');
+    if (txt) speak(txt);
+  });
+
+  overlayCloseBtn.addEventListener('click', closeOverlay);
+
+  history.pushState({ hRun: 1 }, document.title);
+  window.addEventListener('popstate', function() {
+    if (!learnScreen.classList.contains('hidden')) {
+      if (wordIdx > 0) {
+        prevWord();
+      } else {
+        learnScreen.classList.add('hidden');
+        soundBtnEl.classList.add('hidden');
+        introScreen.classList.remove('hidden');
+      }
+      history.pushState({ hRun: 1 }, document.title);
+      return;
+    }
+    if (!introScreen.classList.contains('hidden')) {
+      introScreen.classList.add('hidden');
+      selectScreen.classList.remove('hidden');
+      history.pushState({ hRun: 1 }, document.title);
+      return;
+    }
+  });
+
+  if (synth) {
+    synth.onvoiceschanged = function() { synth.getVoices(); };
+  }
+
+  render();
+})();
+</script>
+</body>
+</html>
