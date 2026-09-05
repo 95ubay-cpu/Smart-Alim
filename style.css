@@ -45,7 +45,28 @@ button{ font-family:inherit; cursor:pointer; }
   background:var(--mint);
   display:flex;
   flex-direction:column;
+  position:relative;
 }
+
+/* ---------- Corner actions (home) ---------- */
+.corner-actions{
+  position:absolute;
+  top:12px; right:14px;
+  display:flex; gap:8px;
+  z-index:20;
+}
+.corner-btn{
+  width:36px; height:36px;
+  border-radius:50%;
+  background:var(--white);
+  border:1px solid var(--border);
+  box-shadow:var(--shadow);
+  display:flex; align-items:center; justify-content:center;
+  font-size:17px;
+  color:inherit;
+  transition:transform .15s ease;
+}
+.corner-btn:active{ transform:scale(.9); background:var(--mint-2); }
 
 /* ---------- Top bar ---------- */
 .topbar{
