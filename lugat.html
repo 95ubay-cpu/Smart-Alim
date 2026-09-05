@@ -23,6 +23,14 @@
   }
   .topbar h1{font-size:20px;font-weight:600;margin-bottom:10px;}
 
+  .lang-tabs{display:flex;gap:8px;margin-bottom:10px;}
+  .lang-btn{
+    flex:1;padding:9px 6px;border:none;border-radius:8px;
+    background:rgba(255,255,255,.18);color:var(--white);
+    font-size:13px;font-weight:600;cursor:pointer;transition:.2s;
+  }
+  .lang-btn.active{background:var(--white);color:var(--main-green);}
+
   .tabs{display:flex;gap:8px;margin-bottom:10px;}
   .tab-btn{
     flex:1;padding:8px 6px;border:none;border-radius:8px;
@@ -98,10 +106,14 @@
 
 <div class="topbar">
   <h1>📖 Lug'atlar</h1>
+  <div class="lang-tabs">
+    <button class="lang-btn active" id="langEn" data-lang="en">🇬🇧 Ingliz tili</button>
+    <button class="lang-btn" id="langAr" data-lang="ar">🕌 Arab tili</button>
+  </div>
   <div class="section-tabs" id="sectionTabs"></div>
   <div class="tabs">
-    <button class="tab-btn active" data-dir="en-uz" id="tabEnUz">Ingliz → O'zbek</button>
-    <button class="tab-btn" data-dir="uz-en" id="tabUzEn">O'zbek → Ingliz</button>
+    <button class="tab-btn active" data-dir="en-uz" id="tabDir1">Ingliz → O'zbek</button>
+    <button class="tab-btn" data-dir="uz-en" id="tabDir2">O'zbek → Ingliz</button>
   </div>
   <div class="search-box">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6b7a73" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -132,8 +144,23 @@
 <script src="lugat_nature_data.js?v=1"></script>
 <script src="lugat_clothes_data.js?v=1"></script>
 <script src="lugat_emotions_data.js?v=1"></script>
+<script src="lugat_ar1_data.js?v=1"></script>
+<script src="lugat_ar2_data.js?v=1"></script>
+<script src="lugat_ar3_data.js?v=1"></script>
+<script src="lugat_ar4_data.js?v=1"></script>
+<script src="lugat_ar5_data.js?v=1"></script>
+<script src="lugat_ar6_data.js?v=1"></script>
+<script src="lugat_ar7_data.js?v=1"></script>
+<script src="lugat_ar8_data.js?v=1"></script>
+<script src="lugat_ar9_data.js?v=1"></script>
+<script src="lugat_ar10_data.js?v=1"></script>
+<script src="lugat_ar11_data.js?v=1"></script>
+<script src="lugat_ar12_data.js?v=1"></script>
+<script src="lugat_ar13_data.js?v=1"></script>
+<script src="lugat_ar14_data.js?v=1"></script>
+<script src="lugat_ar15_data.js?v=1"></script>
 <script>
-const BOLIMLAR = [
+const BOLIMLAR_EN = [
   { key: "oson",   nomi: "1-qism",  label: "Boshlang'ich" },
   { key: "qiyin",  nomi: "2-qism",  label: "Keyingi" },
   { key: "maxsus", nomi: "3-qism",  label: "Maxsus atamalar" },
@@ -148,7 +175,25 @@ const BOLIMLAR = [
   { key: "emotions",nomi: "12-qism",label: "Hissiyot va muloqot" }
 ];
 
-const DATA_MAP = {
+const BOLIMLAR_AR = [
+  { key: "ar1",  nomi: "1-qism",  label: "Asosiy so'zlar" },
+  { key: "ar2",  nomi: "2-qism",  label: "Oila va odamlar" },
+  { key: "ar3",  nomi: "3-qism",  label: "Tana a'zolari" },
+  { key: "ar4",  nomi: "4-qism",  label: "Raqamlar va vaqt" },
+  { key: "ar5",  nomi: "5-qism",  label: "Ta'lim va fan" },
+  { key: "ar6",  nomi: "6-qism",  label: "Oziq-ovqat" },
+  { key: "ar7",  nomi: "7-qism",  label: "Uy va jihozlar" },
+  { key: "ar8",  nomi: "8-qism",  label: "Kiyim-kechak" },
+  { key: "ar9",  nomi: "9-qism",  label: "Tabiat va ob-havo" },
+  { key: "ar10", nomi: "10-qism", label: "Hayvonlar" },
+  { key: "ar11", nomi: "11-qism", label: "Kasb va ish" },
+  { key: "ar12", nomi: "12-qism", label: "Sport va dam olish" },
+  { key: "ar13", nomi: "13-qism", label: "Sayohat va transport" },
+  { key: "ar14", nomi: "14-qism", label: "Din va islom" },
+  { key: "ar15", nomi: "15-qism", label: "Hissiyot va sifatlar" }
+];
+
+const DATA_MAP_EN = {
   oson: LUGAT_OSON,
   qiyin: LUGAT_QIYIN,
   maxsus: LUGAT_MAXSUS,
@@ -163,11 +208,20 @@ const DATA_MAP = {
   emotions: LUGAT_EMOTIONS
 };
 
-const LUGAT_BOLIMLAR = {};
-BOLIMLAR.forEach((b) => {
-  LUGAT_BOLIMLAR[b.key] = typeof DATA_MAP[b.key] !== 'undefined' ? DATA_MAP[b.key] : [];
-});
+const DATA_MAP_AR = {
+  ar1: LUGAT_AR1,  ar2: LUGAT_AR2,  ar3: LUGAT_AR3,  ar4: LUGAT_AR4,  ar5: LUGAT_AR5,
+  ar6: LUGAT_AR6,  ar7: LUGAT_AR7,  ar8: LUGAT_AR8,  ar9: LUGAT_AR9,  ar10: LUGAT_AR10,
+  ar11: LUGAT_AR11, ar12: LUGAT_AR12, ar13: LUGAT_AR13, ar14: LUGAT_AR14, ar15: LUGAT_AR15
+};
 
+function bolimlar(){ return currentLang === "ar" ? BOLIMLAR_AR : BOLIMLAR_EN; }
+function dataMap(){ return currentLang === "ar" ? DATA_MAP_AR : DATA_MAP_EN; }
+
+const LUGAT_BOLIMLAR = {};
+BOLIMLAR_EN.forEach((b) => { LUGAT_BOLIMLAR[b.key] = typeof DATA_MAP_EN[b.key] !== 'undefined' ? DATA_MAP_EN[b.key] : []; });
+BOLIMLAR_AR.forEach((b) => { LUGAT_BOLIMLAR[b.key] = typeof DATA_MAP_AR[b.key] !== 'undefined' ? DATA_MAP_AR[b.key] : []; });
+
+let currentLang = "en";
 let currentSection = "oson";
 let currentDir = "en-uz";
 const listEl = document.getElementById("wordList");
@@ -189,17 +243,20 @@ function render(filter=""){
   }
 
   const rows = [];
+  const foreignToUz = currentDir === currentLang + "-uz";
+  const speakForeign = currentLang === "ar" ? "ar-SA" : "en-US";
   words.forEach(([en, uz]) => {
-    const main = currentDir === "en-uz" ? en : uz;
-    const sub  = currentDir === "en-uz" ? uz : en;
+    const main = foreignToUz ? en : uz;
+    const sub  = foreignToUz ? uz : en;
     if (f && !main.toLowerCase().includes(f) && !sub.toLowerCase().includes(f)) return;
 
     shown++;
+    const rtl = currentLang === "ar" && foreignToUz;
     rows.push(`
-      <div class="item-card" data-main="${main}" data-lang="${currentDir === "en-uz" ? "en-US" : "uz-UZ"}">
+      <div class="item-card" data-main="${main}" data-lang="${foreignToUz ? speakForeign : "uz-UZ"}">
         <div class="word-block">
-          <div class="word-main">${main}</div>
-          <div class="word-sub">${sub}</div>
+          <div class="word-main" ${rtl ? 'dir="rtl" style="text-align:right;font-size:17px"' : ''}>${main}</div>
+          <div class="word-sub" ${currentLang === "ar" && !foreignToUz ? 'dir="rtl" style="text-align:right"' : ''}>${sub}</div>
         </div>
         <button class="speak-btn" aria-label="Tinglash">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M3 10v4h4l5 5V5L7 10H3z"/><path d="M16.5 12a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4z"/></svg>
@@ -217,8 +274,9 @@ function render(filter=""){
     card.addEventListener("click", speakFn);
   });
 
-  const bolim = BOLIMLAR.find((b) => b.key === currentSection) || BOLIMLAR[0];
-  countEl.textContent = shown ? `${bolim.nomi} · ${bolim.label} — ${getWords().length} ta so'z` : "";
+  const bolim = bolimlar().find((b) => b.key === currentSection) || bolimlar()[0];
+  const tilNomi = currentLang === "ar" ? "Arab tili" : "Ingliz tili";
+  countEl.textContent = shown ? `${tilNomi} · ${bolim.nomi} · ${bolim.label} — ${getWords().length} ta so'z` : "";
   if (shown === 0){
     listEl.innerHTML = `<div class="empty-state">Hech narsa topilmadi 🔍</div>`;
   }
@@ -227,7 +285,7 @@ function render(filter=""){
 function buildSectionTabs(){
   const tabsEl = document.getElementById("sectionTabs");
   tabsEl.innerHTML = "";
-  BOLIMLAR.forEach((b) => {
+  bolimlar().forEach((b) => {
     const btn = document.createElement("button");
     btn.className = "section-btn" + (b.key === currentSection ? " active" : "");
     btn.dataset.section = b.key;
@@ -255,18 +313,41 @@ function speak(text, lang, btn){
   window.speechSynthesis.speak(utter);
 }
 
-document.getElementById("tabEnUz").addEventListener("click", ()=>{
-  currentDir = "en-uz";
-  document.getElementById("tabEnUz").classList.add("active");
-  document.getElementById("tabUzEn").classList.remove("active");
+function dirLabels(){
+  return currentLang === "ar"
+    ? { d1: "ar-uz", l1: "Arab → O'zbek", d2: "uz-ar", l2: "O'zbek → Arab" }
+    : { d1: "en-uz", l1: "Ingliz → O'zbek", d2: "uz-en", l2: "O'zbek → Ingliz" };
+}
+
+function setLang(lang){
+  currentLang = lang;
+  currentSection = bolimlar()[0].key;
+  currentDir = lang + "-uz";
+  document.getElementById("langEn").classList.toggle("active", lang === "en");
+  document.getElementById("langAr").classList.toggle("active", lang === "ar");
+  const labels = dirLabels();
+  document.getElementById("tabDir1").textContent = labels.l1;
+  document.getElementById("tabDir2").textContent = labels.l2;
+  document.getElementById("tabDir1").classList.add("active");
+  document.getElementById("tabDir2").classList.remove("active");
+  buildSectionTabs();
+  render(searchInput.value);
+}
+
+document.getElementById("tabDir1").addEventListener("click", ()=>{
+  currentDir = currentLang + "-uz";
+  document.getElementById("tabDir1").classList.add("active");
+  document.getElementById("tabDir2").classList.remove("active");
   render(searchInput.value);
 });
-document.getElementById("tabUzEn").addEventListener("click", ()=>{
-  currentDir = "uz-en";
-  document.getElementById("tabUzEn").classList.add("active");
-  document.getElementById("tabEnUz").classList.remove("active");
+document.getElementById("tabDir2").addEventListener("click", ()=>{
+  currentDir = "uz-" + currentLang;
+  document.getElementById("tabDir2").classList.add("active");
+  document.getElementById("tabDir1").classList.remove("active");
   render(searchInput.value);
 });
+document.getElementById("langEn").addEventListener("click", ()=> setLang("en"));
+document.getElementById("langAr").addEventListener("click", ()=> setLang("ar"));
 function setSection(sec){
   currentSection = sec;
   document.querySelectorAll(".section-btn").forEach((el) => {
