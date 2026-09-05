@@ -36,22 +36,49 @@ public class MainActivity extends BridgeActivity {
     }
 
     @JavascriptInterface
-    public void speak(String text, String lang) {
-      if (!ready || tts == null || text == null || text.trim().isEmpty()) return;
+    public boolean speak(String text, String lang) {
+      if (!ready || tts == null || text == null || text.trim().isEmpty()) return false;
       try {
-        Locale loc = new Locale("en", "US");
-        if (lang != null && !lang.isEmpty()) {
-          loc = Locale.forLanguageTag(lang.replace('_', '-'));
-          if (tts.isLanguageAvailable(loc) == TextToSpeech.LANG_MISSING_DATA) {
-            Locale base = new Locale(loc.getLanguage());
-            if (tts.isLanguageAvailable(base) == TextToSpeech.LANG_AVAILABLE) {
-              loc = base;
-            }
-          }
+        Locale loc = pickLocale(lang);
+        int result = tts.setLanguage(loc);
+        if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+          return false;
         }
-        tts.setLanguage(loc);
-        tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, "smartalim");
-      } catch (Exception ignored) {}
+        int queued = tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, "smartalim");
+        return queued >= 0;
+      } catch (Exception ignored) {
+        return false;
+      }
+    }
+
+    @JavascriptInterface
+    public boolean hasLanguage(String lang) {
+      if (tts == null) return false;
+      try {
+        Locale loc = pickLocale(lang);
+        int s = tts.isLanguageAvailable(loc);
+        return (s != TextToSpeech.LANG_MISSING_DATA && s != TextToSpeech.LANG_NOT_SUPPORTED);
+      } catch (Exception ignored) {
+        return false;
+      }
+    }
+
+    @JavascriptInterface
+    public boolean isReady() {
+      return ready;
+    }
+
+    private Locale pickLocale(String lang) {
+      Locale loc = new Locale("en", "US");
+      if (lang == null || lang.isEmpty()) return loc;
+      loc = Locale.forLanguageTag(lang.replace('_', '-'));
+      if (tts.isLanguageAvailable(loc) == TextToSpeech.LANG_MISSING_DATA) {
+        Locale base = new Locale(loc.getLanguage());
+        if (tts.isLanguageAvailable(base) != TextToSpeech.LANG_MISSING_DATA) {
+          return base;
+        }
+      }
+      return loc;
     }
 
     @JavascriptInterface
