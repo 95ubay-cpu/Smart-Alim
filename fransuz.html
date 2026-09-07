@@ -119,8 +119,14 @@ main{padding:4px 16px 24px;flex:1}
 .quiz-q-box{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;text-align:center;margin-bottom:12px}
 .quiz-q-box .label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
 .quiz-q-box .q{font-size:20px;font-weight:800;color:var(--amber-deep)}
-.options{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
-.option{background:var(--white);border:2px solid var(--border);border-radius:var(--radius-sm);padding:14px;font-size:15px;font-weight:700;cursor:pointer;transition:all .1s;text-align:center}
+#learnScreen.quiz-on .surah-header,
+#learnScreen.quiz-on .ayah-box,
+#learnScreen.quiz-on .progress,
+#learnScreen.quiz-on #fb,
+#learnScreen.quiz-on .slot-area,
+#learnScreen.quiz-on .pool-area{display:none}
+.options{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.option{background:var(--white);border:2px solid var(--border);border-radius:var(--radius-sm);padding:12px 8px;font-size:14px;font-weight:700;cursor:pointer;transition:all .1s;text-align:center}
 .option:active{transform:scale(.97)}
 .option.ok{background:#dcfce7;border-color:#22c55e;color:#15803d}
 .option.bad{background:#fee2e2;border-color:#ef4444;color:#b91c1c;animation:shake .3s ease}
@@ -444,6 +450,7 @@ main{padding:4px 16px 24px;flex:1}
     finishedFlag = false;
     quizMode = false;
     quizWrapEl.classList.remove('show');
+    learnScreen.classList.remove('quiz-on');
     revealBtn.classList.remove('hidden');
 
     wordNameEl.textContent = PARTS[currentPart].name + ' · ' + PARTS[currentPart].desc;
@@ -559,6 +566,7 @@ main{padding:4px 16px 24px;flex:1}
     var word = WORDS[wordIdx];
     quizQuestionEl.textContent = word.name + ' so\'zining fransuzchasi qaysi?';
     quizWrapEl.classList.add('show');
+    learnScreen.classList.add('quiz-on');
     quizFbEl.className = 'fb';
     quizFbEl.textContent = '';
     nextBtn.disabled = true;
