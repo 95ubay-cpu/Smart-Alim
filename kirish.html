@@ -9,6 +9,8 @@
   gtag('js', new Date());
   gtag('config', 'G-W57CJ1JB98');
 </script>
+
+
 <script src="auth-gate.js?v=2"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Kirish — Smart Ta'lim</title>
@@ -28,7 +30,46 @@
   <meta name="twitter:title" content="Kirish — Smart Ta'lim">
   <meta name="twitter:description" content="Hisobingizga kiring — Smart Ta'lim. Email va parol bilan kirish.">
   <meta name="twitter:image" content="https://smartalim.com/talim.jpg">
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Kirish — Smart Ta'lim","url":"https://smartalim.com/kirish.html","description":"Hisobingizga kiring"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Kirish — Smart Ta'lim","url":"https://smartalim.com/kirish.html","description":"Hisobingizga kiring — Smart Ta'lim. Email va parol bilan kirish.","inLanguage":"uz","isPartOf":{"@type":"WebSite","name":"Smart Ta'lim","url":"https://smartalim.com/"}}</script>
 
 <link rel="stylesheet" href="style.css">
 </head>
+<body>
+<div class="app">
+
+  <div class="topbar">
+    <a class="back" href="index.html" onclick="if(history.length>1){event.preventDefault();history.back();}">←</a>
+    <h1>Kirish</h1>
+  </div>
+
+  <main>
+    <div class="auth-hero">
+      <img src="talim.jpg" alt="Smart Ta'lim">
+      <h2>Xush kelibsiz!</h2>
+      <p>Hisobingizga kirish uchun maʼlumotlarni kiriting</p>
+    </div>
+
+    <form id="login-form">
+      <div class="form-group">
+        <label for="login-email">Email</label>
+        <input class="form-input" type="email" id="login-email" placeholder="email@misol.uz" autocomplete="email">
+      </div>
+      <div class="form-group">
+        <label for="login-pass">Parol</label>
+        <input class="form-input" type="password" id="login-pass" placeholder="Parolingiz" autocomplete="current-password">
+      </div>
+      <div class="form-error" id="login-error"></div>
+      <button class="btn-primary" type="submit">Kirish</button>
+    </form>
+
+    <div class="auth-switch">
+      Hisobingiz yoʻqmi? <a href="royxatdan-otish.html">Roʻyxatdan oʻtish</a>
+    </div>
+    <p style="text-align:center;margin-top:14px;font-size:13px;opacity:.75"><a href="maxfiylik.html">Maxfiylik siyosati</a></p>
+  </main>
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

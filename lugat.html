@@ -9,6 +9,8 @@
   gtag('js', new Date());
   gtag('config', 'G-W57CJ1JB98');
 </script>
+
+
 <script src="auth-gate.js?v=2"></script>
 <script src="tts.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -29,6 +31,368 @@
   <meta name="twitter:title" content="Lug'atlar — Smart Ta'lim">
   <meta name="twitter:description" content="Inglizcha-o'zbekcha lug'at: oson, qiyin va maxsus so'zlar to'plami bilan qidiruv. Bepul onlayn lug'at.">
   <meta name="twitter:image" content="https://smartalim.com/talim.jpg">
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"LearningResource","name":"Lug'atlar — Smart Ta'lim","url":"https://smartalim.com/lugat.html","description":"Inglizcha-o'zbekcha lug'at"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"LearningResource","name":"Lug'atlar — Smart Ta'lim","url":"https://smartalim.com/lugat.html","description":"Inglizcha-o'zbekcha lug'at: oson, qiyin va maxsus so'zlar to'plami bilan qidiruv. Bepul onlayn lug'at.","inLanguage":"uz","isPartOf":{"@type":"WebSite","name":"Smart Ta'lim","url":"https://smartalim.com/"}}</script>
 
 <style>
+  :root{
+    --main-green:#1fa363;
+    --light-green:#e8f8f0;
+    --dark-text:#1c2b25;
+    --gray-text:#6b7a73;
+    --border:#dfece6;
+    --white:#ffffff;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',Tahoma,Arial,sans-serif;}
+  body{background:var(--light-green);color:var(--dark-text);padding-bottom:80px;}
+
+  .topbar{
+    background:var(--main-green);color:var(--white);
+    padding:16px 18px;position:sticky;top:0;z-index:10;
+    box-shadow:0 2px 6px rgba(0,0,0,.08);
+  }
+  .topbar h1{font-size:20px;font-weight:600;margin-bottom:10px;}
+
+  .lang-tabs{display:flex;gap:8px;margin-bottom:10px;}
+  .lang-btn{
+    flex:1;padding:9px 6px;border:none;border-radius:8px;
+    background:rgba(255,255,255,.18);color:var(--white);
+    font-size:13px;font-weight:600;cursor:pointer;transition:.2s;
+  }
+  .lang-btn.active{background:var(--white);color:var(--main-green);}
+
+  .tabs{display:flex;gap:8px;margin-bottom:10px;}
+  .tab-btn{
+    flex:1;padding:8px 6px;border:none;border-radius:8px;
+    background:rgba(255,255,255,.18);color:var(--white);
+    font-size:13px;font-weight:600;cursor:pointer;transition:.2s;
+  }
+  .tab-btn.active{background:var(--white);color:var(--main-green);}
+
+  .section-tabs{
+    display:flex;gap:8px;margin-bottom:10px;
+    overflow-x:auto;padding-bottom:4px;
+    scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.4) transparent;
+  }
+  .section-tabs::-webkit-scrollbar{height:4px;}
+  .section-tabs::-webkit-scrollbar-thumb{background:rgba(255,255,255,.4);border-radius:4px;}
+  .section-btn{
+    flex:0 0 auto;min-width:96px;padding:10px 8px;border:2px solid var(--border);border-radius:10px;
+    background:var(--white);color:var(--gray-text);
+    font-size:13px;font-weight:700;cursor:pointer;transition:.2s;
+  }
+  .section-btn.active{background:var(--main-green);border-color:var(--main-green);color:var(--white);}
+  .section-btn small{display:block;font-size:11px;font-weight:400;opacity:.8;}
+
+  .search-box{
+    display:flex;align-items:center;background:var(--white);
+    border-radius:10px;padding:8px 12px;gap:8px;
+  }
+  .search-box input{
+    border:none;outline:none;flex:1;font-size:14px;color:var(--dark-text);background:transparent;
+  }
+  .search-box svg{flex-shrink:0;}
+
+  .count-info{
+    padding:10px 18px 4px;font-size:12px;color:var(--gray-text);
+  }
+
+  .list{padding:8px 14px;display:flex;flex-direction:column;gap:8px;}
+
+  .item-card{
+    background:var(--white);border:1px solid var(--border);
+    border-radius:12px;padding:12px 14px;
+    display:flex;align-items:center;justify-content:space-between;
+    cursor:pointer;transition:.15s;
+  }
+  .item-card:active{transform:scale(0.98);background:var(--light-green);}
+
+  .word-block{display:flex;flex-direction:column;gap:2px;}
+  .word-main{font-size:15px;font-weight:600;color:var(--dark-text);}
+  .word-sub{font-size:13px;color:var(--gray-text);}
+
+  .speak-btn{
+    width:36px;height:36px;border-radius:50%;
+    background:var(--light-green);border:none;
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;color:var(--main-green);cursor:pointer;
+  }
+  .speak-btn.playing{background:var(--main-green);color:var(--white);}
+
+  .empty-state{
+    text-align:center;color:var(--gray-text);font-size:14px;padding:40px 20px;
+  }
+
+  .bottom-nav{
+    position:fixed;bottom:0;left:0;right:0;background:var(--white);
+    border-top:1px solid var(--border);display:flex;
+    justify-content:space-around;padding:8px 0;box-shadow:0 -2px 6px rgba(0,0,0,.05);
+  }
+  .nav-item{font-size:11px;color:var(--gray-text);text-align:center;}
+  .nav-item.active{color:var(--main-green);font-weight:600;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <h1>📖 Lug'atlar</h1>
+  <div class="lang-tabs">
+    <button class="lang-btn active" id="langEn" data-lang="en">🇬🇧 Ingliz tili</button>
+    <button class="lang-btn" id="langAr" data-lang="ar">🕌 Arab tili</button>
+  </div>
+  <div class="section-tabs" id="sectionTabs"></div>
+  <div class="tabs">
+    <button class="tab-btn active" data-dir="en-uz" id="tabDir1">Ingliz → O'zbek</button>
+    <button class="tab-btn" data-dir="uz-en" id="tabDir2">O'zbek → Ingliz</button>
+  </div>
+  <div class="search-box">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6b7a73" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input type="text" id="searchInput" placeholder="So'z qidirish...">
+  </div>
+</div>
+
+<div class="count-info" id="countInfo"></div>
+<div class="list" id="wordList"></div>
+
+<div class="bottom-nav">
+  <div class="nav-item">🏠<br>Bosh sahifa</div>
+  <div class="nav-item active">📖<br>Lug'atlar</div>
+  <div class="nav-item">👤<br>Profil</div>
+</div>
+
+<script src="lugat_oson_data.js?v=3"></script>
+<script src="lugat_qiyin_data.js?v=3"></script>
+<script src="lugat_maxsus_data.js?v=2"></script>
+<script src="lugat_food_data.js?v=1"></script>
+<script src="lugat_health_data.js?v=1"></script>
+<script src="lugat_house_data.js?v=1"></script>
+<script src="lugat_job_data.js?v=1"></script>
+<script src="lugat_sport_data.js?v=1"></script>
+<script src="lugat_travel_data.js?v=1"></script>
+<script src="lugat_nature_data.js?v=1"></script>
+<script src="lugat_clothes_data.js?v=1"></script>
+<script src="lugat_emotions_data.js?v=1"></script>
+<script src="lugat_ar1_data.js?v=1"></script>
+<script src="lugat_ar2_data.js?v=1"></script>
+<script src="lugat_ar3_data.js?v=1"></script>
+<script src="lugat_ar4_data.js?v=1"></script>
+<script src="lugat_ar5_data.js?v=1"></script>
+<script src="lugat_ar6_data.js?v=1"></script>
+<script src="lugat_ar7_data.js?v=1"></script>
+<script src="lugat_ar8_data.js?v=1"></script>
+<script src="lugat_ar9_data.js?v=1"></script>
+<script src="lugat_ar10_data.js?v=1"></script>
+<script src="lugat_ar11_data.js?v=1"></script>
+<script src="lugat_ar12_data.js?v=1"></script>
+<script src="lugat_ar13_data.js?v=1"></script>
+<script src="lugat_ar14_data.js?v=1"></script>
+<script src="lugat_ar15_data.js?v=1"></script>
+<script>
+const BOLIMLAR_EN = [
+  { key: "oson",   nomi: "1-qism",  label: "Boshlang'ich" },
+  { key: "qiyin",  nomi: "2-qism",  label: "Keyingi" },
+  { key: "maxsus", nomi: "3-qism",  label: "Maxsus atamalar" },
+  { key: "food",   nomi: "4-qism",  label: "Oziq-ovqat" },
+  { key: "health", nomi: "5-qism",  label: "Tana va salomatlik" },
+  { key: "house",  nomi: "6-qism",  label: "Uy va jihozlar" },
+  { key: "job",    nomi: "7-qism",  label: "Kasb va ish" },
+  { key: "sport",  nomi: "8-qism",  label: "Sport va dam olish" },
+  { key: "travel", nomi: "9-qism",  label: "Sayohat va transport" },
+  { key: "nature", nomi: "10-qism", label: "Tabiat" },
+  { key: "clothes",nomi: "11-qism", label: "Kiyim-kechak" },
+  { key: "emotions",nomi: "12-qism",label: "Hissiyot va muloqot" }
+];
+
+const BOLIMLAR_AR = [
+  { key: "ar1",  nomi: "1-qism",  label: "Asosiy so'zlar" },
+  { key: "ar2",  nomi: "2-qism",  label: "Oila va odamlar" },
+  { key: "ar3",  nomi: "3-qism",  label: "Tana a'zolari" },
+  { key: "ar4",  nomi: "4-qism",  label: "Raqamlar va vaqt" },
+  { key: "ar5",  nomi: "5-qism",  label: "Ta'lim va fan" },
+  { key: "ar6",  nomi: "6-qism",  label: "Oziq-ovqat" },
+  { key: "ar7",  nomi: "7-qism",  label: "Uy va jihozlar" },
+  { key: "ar8",  nomi: "8-qism",  label: "Kiyim-kechak" },
+  { key: "ar9",  nomi: "9-qism",  label: "Tabiat va ob-havo" },
+  { key: "ar10", nomi: "10-qism", label: "Hayvonlar" },
+  { key: "ar11", nomi: "11-qism", label: "Kasb va ish" },
+  { key: "ar12", nomi: "12-qism", label: "Sport va dam olish" },
+  { key: "ar13", nomi: "13-qism", label: "Sayohat va transport" },
+  { key: "ar14", nomi: "14-qism", label: "Din va islom" },
+  { key: "ar15", nomi: "15-qism", label: "Hissiyot va sifatlar" }
+];
+
+const DATA_MAP_EN = {
+  oson: LUGAT_OSON,
+  qiyin: LUGAT_QIYIN,
+  maxsus: LUGAT_MAXSUS,
+  food: LUGAT_FOOD,
+  health: LUGAT_HEALTH,
+  house: LUGAT_HOUSE,
+  job: LUGAT_JOB,
+  sport: LUGAT_SPORT,
+  travel: LUGAT_TRAVEL,
+  nature: LUGAT_NATURE,
+  clothes: LUGAT_CLOTHES,
+  emotions: LUGAT_EMOTIONS
+};
+
+const DATA_MAP_AR = {
+  ar1: LUGAT_AR1,  ar2: LUGAT_AR2,  ar3: LUGAT_AR3,  ar4: LUGAT_AR4,  ar5: LUGAT_AR5,
+  ar6: LUGAT_AR6,  ar7: LUGAT_AR7,  ar8: LUGAT_AR8,  ar9: LUGAT_AR9,  ar10: LUGAT_AR10,
+  ar11: LUGAT_AR11, ar12: LUGAT_AR12, ar13: LUGAT_AR13, ar14: LUGAT_AR14, ar15: LUGAT_AR15
+};
+
+function bolimlar(){ return currentLang === "ar" ? BOLIMLAR_AR : BOLIMLAR_EN; }
+function dataMap(){ return currentLang === "ar" ? DATA_MAP_AR : DATA_MAP_EN; }
+
+const LUGAT_BOLIMLAR = {};
+BOLIMLAR_EN.forEach((b) => { LUGAT_BOLIMLAR[b.key] = typeof DATA_MAP_EN[b.key] !== 'undefined' ? DATA_MAP_EN[b.key] : []; });
+BOLIMLAR_AR.forEach((b) => { LUGAT_BOLIMLAR[b.key] = typeof DATA_MAP_AR[b.key] !== 'undefined' ? DATA_MAP_AR[b.key] : []; });
+
+let currentLang = "en";
+let currentSection = "oson";
+let currentDir = "en-uz";
+const listEl = document.getElementById("wordList");
+const countEl = document.getElementById("countInfo");
+const searchInput = document.getElementById("searchInput");
+
+function getWords(){ return LUGAT_BOLIMLAR[currentSection] || []; }
+
+function render(filter=""){
+  listEl.innerHTML = "";
+  const f = filter.trim().toLowerCase();
+  let shown = 0;
+  const words = getWords();
+
+  if (words.length === 0){
+    listEl.innerHTML = `<div class="empty-state">Lug'at ma'lumotlari yuklanmadi. Internetni tekshirib, sahifani yangilang.</div>`;
+    countEl.textContent = "";
+    return;
+  }
+
+  const rows = [];
+  const foreignToUz = currentDir === currentLang + "-uz";
+  const speakForeign = currentLang === "ar" ? "ar-SA" : "en-US";
+  words.forEach(([en, uz]) => {
+    const main = foreignToUz ? en : uz;
+    const sub  = foreignToUz ? uz : en;
+    if (f && !main.toLowerCase().includes(f) && !sub.toLowerCase().includes(f)) return;
+
+    shown++;
+    const rtl = currentLang === "ar" && foreignToUz;
+    rows.push(`
+      <div class="item-card" data-main="${main}" data-lang="${foreignToUz ? speakForeign : "uz-UZ"}">
+        <div class="word-block">
+          <div class="word-main" ${rtl ? 'dir="rtl" style="text-align:right;font-size:17px"' : ''}>${main}</div>
+          <div class="word-sub" ${currentLang === "ar" && !foreignToUz ? 'dir="rtl" style="text-align:right"' : ''}>${sub}</div>
+        </div>
+        <button class="speak-btn" aria-label="Tinglash">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M3 10v4h4l5 5V5L7 10H3z"/><path d="M16.5 12a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4z"/></svg>
+        </button>
+      </div>
+    `);
+  });
+  listEl.innerHTML = rows.join("");
+  listEl.querySelectorAll(".item-card").forEach((card) => {
+    const main = card.getAttribute("data-main");
+    const lang = card.getAttribute("data-lang");
+    const btn = card.querySelector(".speak-btn");
+    const speakFn = () => speak(main, lang, btn);
+    btn.addEventListener("click", (e)=>{ e.stopPropagation(); speakFn(); });
+    card.addEventListener("click", speakFn);
+  });
+
+  const bolim = bolimlar().find((b) => b.key === currentSection) || bolimlar()[0];
+  const tilNomi = currentLang === "ar" ? "Arab tili" : "Ingliz tili";
+  countEl.textContent = shown ? `${tilNomi} · ${bolim.nomi} · ${bolim.label} — ${getWords().length} ta so'z` : "";
+  if (shown === 0){
+    listEl.innerHTML = `<div class="empty-state">Hech narsa topilmadi 🔍</div>`;
+  }
+}
+
+function buildSectionTabs(){
+  const tabsEl = document.getElementById("sectionTabs");
+  tabsEl.innerHTML = "";
+  bolimlar().forEach((b) => {
+    const btn = document.createElement("button");
+    btn.className = "section-btn" + (b.key === currentSection ? " active" : "");
+    btn.dataset.section = b.key;
+    btn.innerHTML = `${b.nomi}<small>${b.label}</small>`;
+    btn.addEventListener("click", () => setSection(b.key));
+    tabsEl.appendChild(btn);
+  });
+}
+
+function speak(text, lang, btn){
+  if (!text) return;
+  if (btn) btn.classList.add("playing");
+  if (window.smartTTS && window.smartTTS.hasNative){
+    try {
+      window.smartTTS.speak(text, lang);
+      if (btn) setTimeout(() => btn.classList.remove("playing"), 1000);
+      return;
+    } catch(e){}
+  }
+  if (!('speechSynthesis' in window)){
+    if (btn) btn.classList.remove("playing");
+    return;
+  }
+  window.speechSynthesis.cancel();
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.lang = lang;
+  utter.rate = 0.9;
+  if (btn){
+    utter.onend = () => btn.classList.remove("playing");
+    utter.onerror = () => btn.classList.remove("playing");
+  }
+  window.speechSynthesis.speak(utter);
+}
+
+function dirLabels(){
+  return currentLang === "ar"
+    ? { d1: "ar-uz", l1: "Arab → O'zbek", d2: "uz-ar", l2: "O'zbek → Arab" }
+    : { d1: "en-uz", l1: "Ingliz → O'zbek", d2: "uz-en", l2: "O'zbek → Ingliz" };
+}
+
+function setLang(lang){
+  currentLang = lang;
+  currentSection = bolimlar()[0].key;
+  currentDir = lang + "-uz";
+  document.getElementById("langEn").classList.toggle("active", lang === "en");
+  document.getElementById("langAr").classList.toggle("active", lang === "ar");
+  const labels = dirLabels();
+  document.getElementById("tabDir1").textContent = labels.l1;
+  document.getElementById("tabDir2").textContent = labels.l2;
+  document.getElementById("tabDir1").classList.add("active");
+  document.getElementById("tabDir2").classList.remove("active");
+  buildSectionTabs();
+  render(searchInput.value);
+}
+
+document.getElementById("tabDir1").addEventListener("click", ()=>{
+  currentDir = currentLang + "-uz";
+  document.getElementById("tabDir1").classList.add("active");
+  document.getElementById("tabDir2").classList.remove("active");
+  render(searchInput.value);
+});
+document.getElementById("tabDir2").addEventListener("click", ()=>{
+  currentDir = "uz-" + currentLang;
+  document.getElementById("tabDir2").classList.add("active");
+  document.getElementById("tabDir1").classList.remove("active");
+  render(searchInput.value);
+});
+document.getElementById("langEn").addEventListener("click", ()=> setLang("en"));
+document.getElementById("langAr").addEventListener("click", ()=> setLang("ar"));
+function setSection(sec){
+  currentSection = sec;
+  document.querySelectorAll(".section-btn").forEach((el) => {
+    el.classList.toggle("active", el.dataset.section === sec);
+  });
+  render(searchInput.value);
+}
+buildSectionTabs();
+searchInput.addEventListener("input", (e)=> render(e.target.value));
+
+render();
+</script>
+</body>
+</html>
