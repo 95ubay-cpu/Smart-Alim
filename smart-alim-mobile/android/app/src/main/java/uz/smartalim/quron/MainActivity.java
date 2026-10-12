@@ -1,4 +1,4 @@
-package uz.smartalim.app;
+package uz.smartalim.quron;
 
 import android.content.Context;
 import android.os.Bundle;

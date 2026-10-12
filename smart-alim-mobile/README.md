@@ -1,42 +1,46 @@
-# Smart Ta'lim — Android ilova
+# Qur'on — Android ilova
 
-`smartalim.com` saytini ichida ochuvchi Android (WebView) ilova.
+`smartalim.store` saytini ochuvchi Android (Capacitor WebView) ilova. Ilova saytning o'zi kabi ishlaydi: bosh sahifa — Qur'on o'rganish (sura tanlash, arab alifbosi, TTS ovoz), boshqa sahifalar saytdan ko'rsatiladi.
 
-- Sayt yangilansa — ilovani yangilash shart emas (barchasi internet orqali).
-- Ro'yxatdan o'tish / tizimga kirish saytning `kirish.html` sahifasida amalga oshadi; kirmagan foydalanuvchi hech qanday sahifani ko'ra olmaydi (sayt darvozasi `auth-gate.js` orqali).
-- Kirish sessiyasi qurilmada saqlanadi — keyingi ochilishda qayta kirish shart emas.
+> **Alohida ilova:** paket nomi `uz.smartalim.quron`. Saytni ochuvchi eski "Smart Ta'lim" ilovasi (`uz.smartalim.app`) bundan alohida — ikkalasi telefonda birga turadi.
 
-## Lokal qurish (talablar)
+## Ish prinsipi
+
+- Ilova ishga tushganda `https://smartalim.store` saytini ochadi (`capacitor.config.json` → `server.url`).
+- Ovoz uchun native TTS (`MainActivity` → `SmartAlimTts`) mavjud — saytdagi `tts.js` avval undan foydalanadi, agar bo'lmasa brauzer/Google TTS zaxira bo'ladi.
+- `www/index.html` faqat zaxira (ofsayt holatida saytga yo'naltiradi). Alohida oflayn menular/suralar yo'q — ilova saytning o'zi kabi ishlaydi.
+
+## Qurish (talablar)
 
 - Node.js (16+)
 - Android Studio (JDK 17 bilan) — https://developer.android.com/studio
 
 ```bash
 npm install
-npx cap sync android   # android/ loyihasi allaqachon repo'da bor
+npx cap sync android   # www ni android/ loyihasiga nusxalaydi
 npx cap open android   # Android Studio ochiladi
 ```
 
-Android Studio'da: `Build > Generate Signed App Bundle / APK...`
+Android Studio yoki CLI orqali qurish:
 
-- **App bundle (.aab)** tanlang — Play Market aynan shuni oladi.
-- Yangi keystore yarating (buni xavfsiz saqlang, yo'qolsa ilovani yangilab bo'lmaydi).
-- ``uz.smartalim.app`` application ID. Versiya: `versionName` (masalan 1.0.0) va `versionCode`.
+```bash
+# Windows (Android Studio JBR misolida)
+$env:JAVA_HOME='C:\Program Files\Android\Android Studio\jbr'
+$env:ANDROID_HOME="$env:LOCALAPPDATA\Android\Sdk"
+.\gradlew.bat assembleRelease   # android/ papkasida
+```
+
+Imzolangan APK: `android\app\build\outputs\apk\release\app-release.apk` (imzo `android/keystore/`). Tayyor artefaktlar `release/` papkasida (`Quron-<versiya>.apk` — ushbu Qur'on ilovasi; `Smart-Alim-<versiya>-test.apk` — eski sayt-ilova uchun).
 
 ## Play Marketga joylash
 
 1. https://play.google.com/console — hisob oching (bir martalik $25).
-2. **Create app**: Nomi "Smart Ta'lim", til o'zbek.
-3. **Testing > Internal testing** bo'limiga `.aab` faylni yuklang.
-4. **Store listing**: tavsif, 512×512 ikona, 1024×500 feature graphic, skrinshotlar (kirish va o'yin sahifalari).
+2. **Create app**: Nomi "Qur'on", til o'zbek.
+3. **Testing > Internal testing** bo'limiga imzolangan `aab`/`apk` yuklang (Play App Signing uchun `bundleRelease` tavsiya etiladi).
+4. **Store listing**: tavsif, 512×512 ikona, 1024×500 feature graphic, skrinshotlar.
 5. **Privacy policy**: `https://smartalim.com/maxfiylik.html`
-6. **Data safety** anketasi: Hisob ma'lumotlari (email, ism, parol) yig'iladi; boshqa shaxslarga berilmaydi.
-7. **App signing**: Play App Signing yoqish tavsiya etiladi.
-8. Skrinshotlar uchun vaqtincha kirishni ochish kerak bo'lsa — avval `auth-gate.js`'ni vaqtincha o'chirib deploy qilishingiz, keyin qayta yoqishingiz mumkin.
+6. **App signing**: Play App Signing yoqilgan bo'lsa — upload keystore (`smartalim-upload.jks`) Play konsolga beriladi, mahalliy `release` imzosi bilan Play o'rtasida farqga e'tibor bering.
 
-Sinovdan o'tkazib, keyinchalik **Production** chiqaring.
+## Versiya
 
-## Foydali eslatma
-
-- Ilova hajmi taxminan 5–8 MB (Capacitor + Android).
-- Ilovadagi login/tizim to'liq saytdagi Supabase backend bilan ishlaydi — alohida servis kerak emas.
+`android/app/build.gradle` — `versionCode` / `versionName` (hozir 1.1.0). Har yangilanishda `versionCode` ni oshiring.

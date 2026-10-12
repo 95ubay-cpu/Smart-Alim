@@ -1,9 +1,9 @@
 {
-  "appId": "uz.smartalim.app",
-  "appName": "Smart Ta'lim",
+  "appId": "uz.smartalim.quron",
+  "appName": "Qur'on",
   "webDir": "www",
   "server": {
-    "url": "https://smartalim.com",
+    "url": "https://smartalim.store",
     "cleartext": false
   },
   "android": {
