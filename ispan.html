@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W57CJ1JB98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-W57CJ1JB98');
+</script>
+
+<script src="auth-gate.js?v=2"></script>
+<script src="tts.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Ispan tili — So'z yig'ish</title>
+
+  <link rel="icon" type="image/png" href="favicon.png?v=2">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
+  <meta name="description" content="Ispan tilini o'yin orqali o'rganing: so'z yig'ish va ovozli talaffuz (es-ES). 40 bo'lim, bepul interaktiv darslar.">
+  <meta name="robots" content="index,follow">
+  <link rel="canonical" href="https://smartalim.com/ispan.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Smart Ta'lim">
+  <meta property="og:title" content="Ispan tili — So'z yig'ish">
+  <meta property="og:description" content="Ispan tilini o'yin orqali o'rganing: so'z yig'ish va ovozli talaffuz (es-ES). 40 bo'lim, bepul interaktiv darslar.">
+  <meta property="og:url" content="https://smartalim.com/ispan.html">
+  <meta property="og:image" content="https://smartalim.com/talim.jpg">
+  <meta property="og:locale" content="uz_UZ">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Ispan tili — So'z yig'ish">
+  <meta name="twitter:description" content="Ispan tilini o'yin orqali o'rganing: so'z yig'ish va ovozli talaffuz (es-ES). 40 bo'lim, bepul interaktiv darslar.">
+  <meta name="twitter:image" content="https://smartalim.com/talim.jpg">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"LearningResource","name":"Ispan tili — So'z yig'ish","url":"https://smartalim.com/ispan.html","description":"Ispan tilini o'yin orqali o'rganing: so'z yig'ish va ovozli talaffuz (es-ES). 40 bo'lim, bepul interaktiv darslar.","inLanguage":"uz","isPartOf":{"@type":"WebSite","name":"Smart Ta'lim","url":"https://smartalim.com/"}}</script>
+<style>
+:root{
+  --amber:#F59E0B;--amber-deep:#B45309;--gold:#FFF8EC;--gold-2:#FDEBCB;
+  --white:#FFFFFF;--ink:#16241F;--muted:#5B6B65;--border:#EBDDC4;
+  --radius:18px;--radius-sm:12px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;color:var(--ink);background:var(--gold);min-height:100vh;-webkit-user-select:none;user-select:none}
+
+.app{max-width:480px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;background:var(--gold)}
+.topbar{display:flex;align-items:center;gap:10px;padding:12px 16px 10px;background:var(--gold);position:sticky;top:0;z-index:10}
+.topbar .back{width:34px;height:34px;border-radius:50%;background:var(--white);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;text-decoration:none;color:var(--ink)}
+.topbar h1{font-size:17px;font-weight:800;margin:0;flex:1;text-align:center}
+main{padding:4px 16px 24px;flex:1}
+
+.surah-header{text-align:center;background:linear-gradient(135deg,var(--amber),var(--amber-deep));border-radius:var(--radius);padding:16px 16px;margin-bottom:12px;color:#fff}
+.surah-header .kr{font-size:28px;font-weight:800;font-family:system-ui,sans-serif;letter-spacing:.5px;min-height:38px}
+.surah-header .name{font-size:14px;opacity:.85;font-weight:600;margin-top:4px}
+.surah-header .num{font-size:11px;opacity:.6;margin-top:2px}
+
+.ayah-box{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 12px;text-align:center;margin-bottom:12px}
+.ayah-box .label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.ayah-box .text{font-size:22px;line-height:1.5;font-weight:700;color:var(--amber-deep)}
+
+.slot-area{margin-bottom:12px}
+.slot-area .label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.slots{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;min-height:50px;padding:10px 8px;background:var(--white);border:2px dashed var(--border);border-radius:var(--radius-sm);transition:border-color .2s}
+.slots.flash{border-color:var(--amber)}
+.slots.shake{animation:shake .3s ease}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.slot{width:42px;height:48px;border-radius:12px;background:var(--gold-2);border:2px dashed var(--border);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;position:relative;cursor:pointer}
+.slot.filled{background:var(--amber);color:#fff;border:2px solid var(--amber);animation:pop .25s ease}
+.slot.done{background:var(--amber-deep)}
+.slot .slot-x{position:absolute;top:-6px;right:-6px;width:20px;height:20px;border-radius:50%;background:#ef4444;color:#fff;font-size:11px;font-weight:800;display:none;align-items:center;justify-content:center;cursor:pointer}
+.slot.filled .slot-x{display:flex}
+@keyframes pop{0%{transform:scale(.4);opacity:0}100%{transform:scale(1);opacity:1}}
+
+.pool-area{margin-bottom:12px}
+.pool-area .label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.pool{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;padding:10px 8px;background:var(--white);border:1px solid var(--border);border-radius:var(--radius-sm)}
+.jamo{width:42px;height:48px;border-radius:12px;background:var(--gold-2);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;cursor:pointer;transition:all .1s}
+.jamo:active{transform:scale(1.1);box-shadow:0 4px 14px rgba(0,0,0,.12)}
+.jamo.wrong{background:#fee2e2;border-color:#ef4444;animation:shake .3s ease}
+.jamo.used{opacity:.25;pointer-events:none;transform:scale(.85)}
+
+.fb{text-align:center;padding:10px;border-radius:var(--radius-sm);margin-bottom:10px;font-weight:700;font-size:13px;display:none}
+.fb.ok{display:block;background:#dcfce7;color:#15803d}
+
+.ctrls{display:flex;gap:8px}
+.btn{flex:1;padding:10px;border:none;border-radius:var(--radius-sm);font-size:13px;font-weight:700;cursor:pointer}
+.btn-g{background:var(--amber);color:#fff}.btn-g:active{background:var(--amber-deep)}
+.btn-w{background:var(--white);border:1px solid var(--border);color:var(--ink)}.btn-w:active{background:var(--gold-2)}
+.btn:disabled{opacity:.4;pointer-events:none}
+
+.sound-btn{position:fixed;bottom:56px;right:16px;width:42px;height:42px;border-radius:50%;background:var(--amber);color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 4px 12px rgba(245,158,11,.3);cursor:pointer;transition:all .2s;border:none}
+.sound-btn:active{transform:scale(.9)}
+
+.progress{display:flex;gap:5px;justify-content:center;margin-bottom:10px}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--border);transition:background .2s;cursor:pointer}
+.dot.done{background:var(--amber)}
+.dot.current{background:var(--amber-deep);box-shadow:0 0 0 3px rgba(245,158,11,.25)}
+
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:50}
+.overlay.show{display:flex}
+.overlay-card{background:var(--white);border-radius:var(--radius);padding:32px 24px;text-align:center;max-width:340px;width:90%;animation:pop .3s ease}
+.overlay-card .emoji{font-size:52px;margin-bottom:12px}
+.overlay-card h2{font-size:22px;font-weight:800;margin-bottom:6px}
+.overlay-card p{font-size:14px;color:var(--muted);margin-bottom:20px;line-height:1.5}
+
+.select-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:20px}
+.select-title{font-size:22px;font-weight:800;margin-bottom:6px;text-align:center}
+.select-sub{font-size:14px;color:var(--muted);margin-bottom:28px;text-align:center}
+.part-cards{display:flex;flex-direction:column;gap:16px;width:100%;max-width:360px}
+.part-card{background:var(--white);border:2px solid var(--border);border-radius:var(--radius);padding:24px 20px;text-align:center;cursor:pointer;transition:all .2s}
+.part-card:active{transform:scale(.97);border-color:var(--amber);background:var(--gold-2)}
+.part-card .kr{font-size:28px;font-family:system-ui,sans-serif;font-weight:800;margin-bottom:8px}
+.part-card .nm{font-size:16px;font-weight:700;color:var(--ink)}
+.part-card .info{font-size:12px;color:var(--muted);margin-top:4px}
+.hidden{display:none!important}
+
+.intro-screen{display:flex;flex-direction:column;align-items:center;min-height:100vh;padding:20px;overflow-y:auto}
+.intro-title{font-size:20px;font-weight:800;margin-bottom:16px;text-align:center}
+.intro-text{font-size:14px;color:var(--muted);line-height:1.7;text-align:center;max-width:380px;margin-bottom:20px}
+.intro-example{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;margin-bottom:12px;width:100%;max-width:380px}
+.intro-example .kr{font-size:28px;font-weight:700;text-align:center;margin-bottom:4px;letter-spacing:2px}
+.intro-example .uz{font-size:13px;color:var(--muted);text-align:center}
+.intro-example .exp{font-size:12px;color:var(--amber-deep);text-align:center;margin-top:4px;font-weight:600}
+.intro-btn{width:100%;max-width:380px;padding:14px;border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:700;cursor:pointer;margin-top:16px;background:var(--amber);color:#fff}
+.intro-btn:active{background:var(--amber-deep)}
+
+.quiz-wrap{display:none}
+.quiz-wrap.show{display:block}
+.quiz-q-box{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;text-align:center;margin-bottom:12px}
+.quiz-q-box .label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.quiz-q-box .q{font-size:20px;font-weight:800;color:var(--amber-deep)}
+#learnScreen.quiz-on .surah-header,
+#learnScreen.quiz-on .ayah-box,
+#learnScreen.quiz-on .progress,
+#learnScreen.quiz-on #fb,
+#learnScreen.quiz-on .slot-area,
+#learnScreen.quiz-on .pool-area{display:none}
+.options{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.option{background:var(--white);border:2px solid var(--border);border-radius:var(--radius-sm);padding:12px 8px;font-size:14px;font-weight:700;cursor:pointer;transition:all .1s;text-align:center}
+.option:active{transform:scale(.97)}
+.option.ok{background:#dcfce7;border-color:#22c55e;color:#15803d}
+.option.bad{background:#fee2e2;border-color:#ef4444;color:#b91c1c;animation:shake .3s ease}
+.option.reveal{background:#fde68a;border-color:var(--amber);color:var(--amber-deep)}
+.reveal-btn{position:fixed;left:16px;bottom:16px;padding:10px 18px;border:none;border-radius:50px;background:var(--white);border:1px solid var(--border);color:var(--amber-deep);font-weight:700;font-size:13px;box-shadow:0 4px 12px rgba(0,0,0,.12);cursor:pointer;transition:all .2s;z-index:30}
+.reveal-btn:active{transform:scale(.93);background:var(--gold-2)}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="select-screen" id="selectScreen">
+    <div class="surah-header" style="width:100%;max-width:360px;margin-bottom:28px">
+      <div class="kr">Español</div>
+      <div class="name">Ispan tili</div>
+    </div>
+    <div class="select-title">Bo'lim tanlang</div>
+    <div class="select-sub">O'rganmoqchi bo'lgan bo'limingizni bosing</div>
+    <div class="part-cards" id="partCards"></div>
+  </div>
+
+  <div class="hidden" id="introScreen">
+    <div class="topbar">
+      <a class="back" href="#" id="backToIntro">&larr;</a>
+      <h1 id="introTitle">1-qism</h1>
+    </div>
+    <div class="intro-screen">
+      <div class="intro-title">Ispan tilini o'rganamiz!</div>
+      <div class="intro-text">Sizga so'zning o'zbekcha ma'nosi ko'rsatiladi. Quyidagi harflar orasidan ispancha so'zni harfma-harf yig'ing. Diqqat: orasida keraksiz (chalg'ituvchi) harflar ham bor!</div>
+
+      <div class="intro-example">
+        <div class="kr">H O L A</div>
+        <div class="uz">Salom</div>
+        <div class="exp">hola — harflarni ketma-ket bosasiz</div>
+      </div>
+
+      <div class="intro-example">
+        <div class="kr">G R A C I A S</div>
+        <div class="uz">Rahmat</div>
+        <div class="exp">Qo'shimcha (chalg'ituvchi) harflar ham bo'ladi — ehtiyot bo'ling!</div>
+      </div>
+
+      <div class="intro-text" style="margin-top:8px">Ispan harflari: ñ, á, é, í, ó, ú va ü ham ishlatiladi. Xatolik bo'lsa chalg'ituvchi harf silkinadi va o'rin to'ldirilmaydi. Xohlasangiz, to'ldirmasdan ham keyingisiga o'tishingiz mumkin.</div>
+
+      <button class="intro-btn" id="startLearnBtn">Davom etish</button>
+    </div>
+  </div>
+
+  <div class="hidden" id="learnScreen">
+    <div class="topbar">
+      <a class="back" href="#" id="backToSelect">&larr;</a>
+      <h1>Ispan tili</h1>
+    </div>
+
+    <main>
+      <div class="surah-header">
+        <div class="name" id="wordName"></div>
+        <div class="num" id="wordNum"></div>
+      </div>
+
+      <div class="ayah-box">
+        <div class="label">So'zni toping</div>
+        <div class="text" id="wordHint"></div>
+      </div>
+
+      <div class="progress" id="progress"></div>
+
+      <div class="fb" id="fb"></div>
+
+      <div class="slot-area">
+        <div class="slots" id="slots"></div>
+      </div>
+
+      <div class="pool-area">
+        <div class="label">Harflarni ketma-ket bosing</div>
+        <div class="pool" id="pool"></div>
+      </div>
+
+      <div class="quiz-wrap" id="quizWrap">
+        <div class="quiz-q-box">
+          <div class="label">8 variantdan to'g'risini tanlang</div>
+          <div class="q" id="quizQuestion"></div>
+        </div>
+        <div class="options" id="quizOptions"></div>
+        <div class="fb" id="quizFb"></div>
+      </div>
+
+      <div class="ctrls">
+        <button class="btn btn-w" id="prevBtn">← Oldingi</button>
+        <button class="btn btn-w" id="resetBtn">Qayta</button>
+        <button class="btn btn-g" id="nextBtn">Keyingi so'z</button>
+      </div>
+    </main>
+  </div>
+
+  <button class="sound-btn hidden" id="soundBtn" title="Ovoz chalish">🔊</button>
+  <button class="reveal-btn hidden" id="revealBtn" title="To'g'ri javobni ko'rsatish">To'g'ri javob</button>
+
+  <div class="overlay" id="overlay">
+    <div class="overlay-card">
+      <div class="emoji">🎉</div>
+      <h2>Tabriklaymiz!</h2>
+      <p>Hamma so'zlarni<br>mukammal o'rgandingiz!</p>
+      <button class="btn btn-g" id="overlayCloseBtn" style="width:100%">Yaxshi!</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var DESC = ["Asosiy so'zlar","Asosiy so'zlar","Asosiy so'zlar","Asosiy so'zlar","Oila va odamlar","Oila va odamlar","Oila va odamlar","Oila va odamlar","Tana a'zolari","Tana a'zolari","Tana a'zolari","Tana a'zolari","Raqamlar va vaqt","Raqamlar va vaqt","Raqamlar va vaqt","Raqamlar va vaqt","Ta'lim va fan","Ta'lim va fan","Ta'lim va fan","Ta'lim va fan","Oziq-ovqat va ichimliklar","Oziq-ovqat va ichimliklar","Oziq-ovqat va ichimliklar","Oziq-ovqat va ichimliklar","Uy va jihozlar","Uy va jihozlar","Uy va jihozlar","Uy va jihozlar","Kiyim-kechak","Kiyim-kechak","Kiyim-kechak","Ranglar","Tabiat va ob-havo","Tabiat va ob-havo","Atrof-muhit","Hayvonlar","Hayvonlar","Hayvonlar","Hayvonlar","Kasb va ish"];
+
+  var WORD_LISTS = [[["hola","salom"],["adios","xayr"],["gracias","rahmat"],["si","ha"],["no","yo'q"],["yo","men"],["tu","sen"],["usted","siz"],["el","u (erkak)"],["ella","u (ayol)"],["nosotros","biz"],["ellos","ular"],["nombre","ism"],["palabra","so'z"],["libro","kitob"],["casa","uy"],["mundo","olam"],["vida","hayot"],["muerte","o'lim"],["tiempo","vaqt"],["lugar","joy"],["cosa","narsa"],["persona","shaxs"],["hombre","erkak"],["mujer","ayol"]],[["chico","yigit"],["chica","qiz"],["familia","oila"],["sociedad","jamiyat"],["decision","qaror"],["idea","g'oya"],["pregunta","savol"],["respuesta","javob"],["derecho","haq"],["deber","majburiyat"],["error","xato"],["correcto","to'g'ri"],["bondad","yaxshilik"],["maldad","yomonlik"],["amor","sevgi"],["odio","nafrat"],["felicidad","baxt"],["tristeza","qayg'u"],["alegria","quvonch"],["esperanza","umid"],["miedo","qo'rquv"],["fuerza","kuch"],["debilidad","kuchsizlik"],["conocimiento","bilim"],["trabajo","ish"]],[["cansancio","charchoq"],["sueno","uyqu"],["comida","taom"],["bebida","ichimlik"],["agua","suv"],["pan","non"],["carne","go'sht"],["fruta","meva"],["verdura","sabzavot"],["sal","tuz"],["azucar","shakar"],["aceite","yog'"],["noche","tun"],["dia","kun"],["ano","yil"],["mes","oy (vaqt)"],["hora","soat"],["sol","quyosh"],["luna","oy (osmon)"],["estrella","yulduz"],["cielo","osmon"],["tierra","yer"],["fuego","olov"],["aire","havo"],["mar","dengiz"]],[["montana","tog'"],["camino","yo'l"],["ciudad","shahar"],["pueblo","qishloq"],["mezquita","masjid"],["luz","nur"],["oscuridad","zulmat"],["amanecer","tong"],["padre","ota"],["madre","ona"],["hermano","aka"],["hermana","opa"],["abuelo","buva"],["abuela","buvi"],["tio","amaki"],["tia","amma"],["primo","amakivachcha"],["hija","qiz farzand"],["hijo","o'g'il farzand"],["esposo","er"],["esposa","xotin"],["pareja","juftlik"],["bebe","chaqaloq"],["viejo","qari odam"],["joven","yosh"]],[["nieto","nabira"],["nieta","nabira (qiz)"],["bisabuelo","katta buva"],["papa","dada"],["mama","ona (so'zlashuv)"],["cunado","qayin (erkak)"],["cunada","qayin (ayol)"],["suegro","qaynota"],["suegra","qaynona"],["yerno","kuyov"],["nuera","kelin"],["padrastro","o'gay ota"],["madrastra","o'gay ona"],["sobrino","jiyan (erkak)"],["sobrina","jiyan (ayol)"],["novio","sevishgan yigit"],["novia","sevishgan qiz"],["viudo","beva (erkak)"],["viuda","beva (ayol)"],["parientes","qarindoshlar"],["vecino","qo'shni"],["vecina","qo'shni (ayol)"],["amistad","do'stlik"],["criatura","bola"],["adulto","katta yoshli"]],[["anillo","uzuk"],["regalo","sovg'a"],["fiesta","bayram"],["cumpleanos","tug'ilgan kun"],["boda","to'y"],["alegre","quvnoq"],["gentil","xushmuomala"],["amable","mehribon"],["generoso","saxiy"],["carinoso","mehrli"],["orgulloso","mag'rur"],["celoso","rashkchi"],["educado","o'qimishli"],["sabio","dono"],["diferente","boshqacha"],["igual","bir xil"],["mismo","o'ziga xos"],["otro","boshqa"],["cada","har bir"],["algunos","ba'zilari"],["nadie","hech kim"],["alguien","kimdir"],["todos","hammasi"],["muchos","ko'pchilik"],["pocos","ozchilik"]],[["senor","janob"],["senora","xonim"],["caballero","javlon"],["dama","xonim (muloyim)"],["gentileza","muloyimlik"],["respeto","hurmat"],["honra","nomus"],["consejo","maslahat"],["apoyo","qo'llab-quvvatlash"],["promesa","va'da"],["verdad","haqiqat"],["mentira","yolg'on"],["engano","aldov"],["confianza","ishonch"],["fe","imon"],["pensamiento","fikr"],["opinion","qarash"],["experiencia","tajriba"],["recuerdo","xotira"],["memoria","eslab"],["cerebro","miya"],["mente","ong"],["alma","jon"],["sonrisa","tabassum"],["llanto","yig'lash"]],[["jefe","boshliq"],["obrero","ishchi"],["campesino","dehqon"],["artesano","hunarmand"],["vendedor","sotuvchi"],["comprador","xaridor"],["cliente","mijoz"],["viajero","sayyoh"],["extranjero","chet ellik"],["nativo","mahalliy"],["habitante","yashovchi"],["ciudadano","fuqaro"],["grupo","guruh"],["equipo","jamoa"],["multitud","olomon"],["publico","omma"],["generacion","avlod"],["descendiente","keyingi avlod"],["antepasado","ajdod"],["heredero","merosxo'r"],["historia","tarix"],["leyenda","rivoyat"],["cuento","ertak"],["dicho","maqol"],["refran","matoba"]],[["cabeza","bosh"],["cara","yuz"],["frente","peshona"],["ojo","ko'z"],["oreja","quloq"],["nariz","burun"],["boca","og'iz"],["labio","lab"],["diente","tish"],["lengua","til"],["garganta","tomoq"],["cuello","bo'yin"],["hombro","yelka"],["brazo","qo'l"],["codo","tirsak"],["muneca","bilak"],["mano","qo'l panjasi"],["dedo","barmoq"],["una","tirnoq"],["pecho","ko'krak"],["espalda","orqa"],["costilla","qovurg'a"],["cintura","bel"],["vientre","qorin"],["pierna","oyoq"]],[["rodilla","tizza"],["tobillo","to'piq"],["pie","oyoq panjasi"],["talon","tovon"],["sangre","qon"],["vena","vena"],["musculo","mushak"],["hueso","suyak"],["piel","teri"],["pelo","soch"],["cabello","soch (ingichka)"],["barba","soqol"],["bigote","mo'ylov"],["ceja","qosh"],["pestana","kiprik"],["mejilla","yonoq"],["menton","iyak"],["sien","chakka"],["nuca","ensoy"],["pulso","tomir urishi"],["corazon","yurak"],["higado","jigar"],["rinon","buyrak"],["estomago","oshqozon"],["intestino","ichak"]],[["craneo","bosh suyagi"],["columna","umurtqa"],["cadera","son (beldan past)"],["muslo","son"],["gemelo","bolpan"],["espinilla","shin (oyogning old qismi)"],["codo","tirsak (takror)"],["articulacion","bo'g'im"],["tendon","pay"],["nervio","asab"],["dolor","og'riq"],["salud","sog'liq"],["enfermedad","kasallik"],["fiebre","isitma"],["tos","yo'tal"],["resfriado","shamollash"],["gripe","gripp"],["medicina","dori"],["pastilla","tabletka"],["jarabe","sirop"],["inyeccion","ukol"],["operacion","operatsiya"],["dieta","parhez"],["peso","og'irlik"],["altura","bo'y"]],[["fuerte","kuchli"],["sano","sog'lom"],["enfermo","kasal"],["sordo","kar"],["mudo","soqov"],["ciego","ko'r"],["manco","bir qo'l (mayib)"],["cojo","oqsoq"],["calvo","taqir"],["delgado","ozg'in"],["gordo","semiz"],["alto","baland"],["bajo","past"],["fino","nazif"],["tallado","o'yilgan"],["suave","yumshoq"],["duro","qattiq"],["frio","sovuq"],["caliente","issiq"],["tibio","iliq"],["fresco","salqin"],["seco","quruq"],["humedo","nam"],["limpio","toza"],["sucio","iflos"]],[["uno","bir"],["dos","ikki"],["tres","uch"],["cuatro","to'rt"],["cinco","besh"],["seis","olti"],["siete","yetti"],["ocho","sakkiz"],["nueve","to'qqiz"],["diez","o'n"],["once","o'n bir"],["doce","o'n ikki"],["trece","o'n uch"],["catorce","o'n to'rt"],["quince","o'n besh"],["dieciseis","o'n olti"],["diecisiete","o'n yetti"],["dieciocho","o'n sakkiz"],["diecinueve","o'n to'qqiz"],["veinte","yigirma"],["treinta","o'ttiz"],["cuarenta","qirq"],["cincuenta","ellik"],["sesenta","oltmish"],["setenta","yetmish"]],[["ochenta","sakson"],["noventa","to'qson"],["cien","yuz"],["mil","ming"],["millon","million"],["mitad","yarim"],["tercio","uchdan bir"],["cuarto","chorak"],["numero","raqam"],["cero","nol"],["primero","birinchi"],["segundo","ikkinchi"],["tercero","uchinchi"],["ultimo","oxirgi"],["doble","ikki barobar"],["triple","uch barobar"],["pares","juft"],["serial","ketma-ketlik"],["total","jami"],["suma","yig'indi"],["resta","ayirma"],["multiplicacion","ko'paytirish"],["division","bo'lish"],["medida","o'lchov"],["superficie","yuza"]],[["segundo","soniya"],["minuto","daqiqa"],["hora","soat (takror)"],["mediodia","peshin"],["medianoche","yarim tun"],["manana","ertaga"],["ayer","kecha"],["hoy","bugun"],["semana","hafta"],["fin","oxir"],["principio","boshi"],["alba","subhi"],["atardecer","shom payt"],["ano","yil (takror)"],["siglo","asr"],["decada","o'n yillik"],["momento","lahza"],["instante","on"],["pasado","o'tgan"],["futuro","kelajak"],["presente","hozir"],["siempre","har doim"],["nunca","hech qachon"],["tarde","kech (vaqt)"],["temprano","erta (vaqt)"]],[["lunes","dushanba"],["martes","seshanba"],["miercoles","chorshanba"],["jueves","payshanba"],["viernes","juma"],["sabado","shanba"],["domingo","yakshanba"],["enero","yanvar"],["febrero","fevral"],["marzo","mart"],["abril","aprel"],["mayo","may"],["junio","iyun"],["julio","iyul"],["agosto","avgust"],["septiembre","sentyabr"],["octubre","oktyabr"],["noviembre","noyabr"],["diciembre","dekabr"],["primavera","bahor"],["verano","yoz"],["otono","kuz"],["invierno","qish"],["estacion","fasl"],["calendario","taqvim"]],[["escuela","maktab"],["universidad","universitet"],["clase","dars"],["leccion","sabroq"],["maestro","o'qituvchi"],["estudiante","talaba"],["alumno","o'quvchi"],["cuaderno","daftar"],["lapiz","qalam"],["boligrafo","ruchka"],["borrador","o'chirgich"],["pizarra","doska"],["tiza","bo'r"],["mochila","ryukzak"],["carpeta","papka"],["regla","chizg'ich"],["tijeras","qaychi"],["pegamento","yelim"],["billete","qog'oz (pul)"],["examen","imtihon"],["nota","baho"],["cursos","kurslar"],["tarea","uy vazifa"],["deberes","vazifalar"],["horario","dars jadvali"]],[["ciencia","fan"],["matematica","matematika"],["lengua","til (takror)"],["literatura","adabiyot"],["historia","tarix (takror)"],["geografia","geografiya"],["biologia","biologiya"],["quimica","kimyo"],["fisica","fizika"],["astronomia","astronomiya"],["filosofia","falsafa"],["logica","mantiq"],["hipotesis","faraz"],["teoria","nazariya"],["ley","qonun"],["regla","qoida (takror)"],["tema","mavzu"],["problema","masala"],["solucion","yechim"],["dato","ma'lumot"],["informacion","axborot"],["concepto","tushuncha"],["sentido","ma'no"],["razon","sabab"],["prueba","isbot"]],[["aprender","o'rganmoq"],["estudiar","o'qimoq"],["leer","o'qimoq (kitob)"],["escribir","yozmoq"],["contar","sanamoq"],["calcular","hisoblamoq"],["resolver","yechmoq"],["entender","tushunmoq"],["recordar","eslamoq"],["olvidar","unutmoq"],["pensar","o'ylamoq"],["creer","ishonmoq"],["saber","bilmoq"],["conocer","tanimoq"],["explicar","tushuntirmoq"],["preguntar","so'ramoq"],["responder","javob bermoq"],["repetir","takrorlamoq"],["traducir","tarjima qilmoq"],["practicar","mashq qilmoq"],["investigar","tadqiqot qilmoq"],["descubrir","kashf etmoq"],["hacer","qilmoq"],["decir","aytmoq"],["ver","ko'rmoq"]],[["maestria","mahorat"],["talento","iste'dod"],["habilidad","qobiliyat"],["inteligencia","aql"],["cultura","madaniyat"],["educacion","ta'lim"],["conocimientos","bilimlar"],["ignorancia","johillik"],["silencio","jimlik"],["ruido","shovqin"],["escucha","tinglash"],["lectura","mutolaa"],["escritura","yozuv"],["caligrafia","xattotlik"],["idioma","til (davlat tili)"],["diccionario","lug'at"],["enciclopedia","entsiklopediya"],["biblioteca","kutubxona"],["museo","muzey"],["exposicion","ko'rgazma"],["original","asl nusxa"],["copia","nusxa"],["version","talqin"],["traduccion","tarjima (natija)"],["interpretacion","sharh"]],[["desayuno","nonushta"],["almuerzo","tushlik"],["cena","kechki ovqat"],["sopa","sho'rva"],["ensalada","salat"],["arroz","guruch"],["pasta","makaron"],["queso","pishloq"],["huevo","tuxum"],["leche","sut"],["mantequilla","sariyog'"],["nata","qaymoq"],["yogur","qatiq"],["pescado","baliq taomi"],["pollo","tovuq go'shti"],["cerdo","cho'chqa go'shti"],["cordero","qo'zi go'shti"],["ternera","mol go'shti"],["atun","tuna balig'i"],["salmon","losos"],["gamba","krevetka"],["paella","paella taomi"],["tortilla","tortilya"],["flan","flan desert"],["natilla","qaymoqli desert"]],[["manzana","olma"],["platano","banan"],["pera","nok"],["naranja","apelsin"],["limon","limon"],["uva","uzum"],["fresa","qulupnay"],["cereza","gilos"],["melocoton","shaftoli"],["sandia","tarvuz"],["melon","qovun"],["pina","ananas"],["mango","mango"],["aguacate","avokado"],["tomate","pomidor"],["patata","kartoshka"],["cebolla","piyoz"],["ajo","sarimsoq"],["zanahoria","sabzi"],["pepino","bodring"],["col","karam"],["guisante","no'xat"],["judia","loviya"],["maiz","makkajo'xori"],["trigo","bug'doy"]],[["cafe","kofe"],["te","choy"],["zumo","sharbat"],["refresco","gazli ichimlik"],["cerveza","pivo"],["vino","vino"],["chocolate","shokolad"],["galleta","pechenye"],["pastel","tort"],["dulce","shirinlik"],["miel","asal"],["mermelada","murabbo"],["helado","muzqaymoq"],["bocadillo","sendvich"],["tostada","qovurilgan non"],["harina","un"],["pimienta","murch"],["vinagre","sirka"],["mostaza","xantal"],["salsa","sous"],["especia","ziravor"],["canela","dolchin"],["nuez","yong'oq"],["almendra","bodom"],["pasas","mayiz"]],[["hambre","ochlik"],["sed","chanqoqlik"],["apetito","ishtaha"],["sabor","ta'm"],["gusto","did"],["olor","hid"],["desayunar","nonushta qilmoq"],["almorzar","tushlik qilmoq"],["cenar","kechki ovqat qilmoq"],["cocinar","pishirmoq"],["hervir","qaynatmoq"],["asar","qovurmoq"],["freir","yog'da qovurmoq"],["picar","to'g'ramoq"],["pelar","po'stini archmoq"],["mezclar","aralashtirmoq"],["verter","quymoq"],["servir","tortmoq"],["probar","tatib ko'rmoq"],["masticar","chaynamoq"],["tragar","yutmoq"],["engordar","semirmoq"],["adelgazar","ozmoq"],["digerir","hazm qilmoq"],["saborear","maza qilmoq"]],[["apartamento","kvartira"],["piso","qavat"],["habitacion","xona"],["sala","mehmonxona"],["bano","hammom"],["dormitorio","yotoqxona"],["escalera","zinapoya"],["puerta","eshik"],["ventana","deraza"],["pared","devor"],["suelo","pol"],["techo","shift"],["tejado","tom"],["jardin","bog'"],["patio","hovli"],["garaje","garaj"],["balcon","balkon"],["llave","kalit"],["cerradura","qulf"],["timbre","qo'ng'iroq"],["interruptor","o'chirgich"],["enchufe","rozetka"],["mueble","mebel"],["sofa","divan"],["cama","karavot"]],[["mesa","stol"],["silla","stul"],["armario","shkaf"],["estanteria","javon"],["escritorio","yozuv stoli"],["estufa","isitgich"],["horno","pech"],["frigorifico","muzlatgich"],["congelador","muzxona"],["lavadora","kir yuvish mashinasi"],["lavavajillas","idish yuvish mashinasi"],["microondas","mikroto'lqinli pech"],["tostadora","toster"],["batidora","mikser"],["aspiradora","changyutgich"],["plancha","dazmol"],["lampara","chiroq"],["espejo","oyna"],["alfombra","gilam"],["cortina","parda"],["cojin","yostiqcha"],["colchon","matras"],["manta","ko'rpa"],["sabana","choyshab"],["almohada","yostiq"]],[["plato","tarelka"],["vaso","stakan"],["taza","piyola"],["cuchara","qoshiq"],["tenedor","vilka"],["cuchillo","pichoq"],["olla","qozon"],["sarten","tova"],["bandeja","patnis"],["jarra","ko'za"],["botella","shisha idish"],["tapa","qopqoq"],["salero","tuzdon"],["servilleta","salfetka"],["mantel","dasturxon"],["toalla","sochiq"],["jabon","sovun"],["champu","shampun"],["cepillo","cho'tka"],["peine","taroq"],["secador","fen"],["cubo","chelak"],["escoba","supurgi"],["trapo","latta"],["recogedor","supurgi kurakcha"]],[["televisor","televizor"],["radio","radio"],["ordenador","kompyuter"],["portatil","noutbuk"],["telefono","telefon"],["movil","mobil telefon"],["cargador","quvvatlagich"],["bateria","batareya"],["pantalla","ekran"],["teclado","klaviatura"],["raton","sichqoncha"],["impresora","printer"],["camara","kamera"],["altavoz","karnay"],["auriculares","naushnik"],["cable","sim"],["enchufar","ulamoq"],["apagar","o'chirmoq"],["encender","yoqmoq"],["abrir","ochmoq"],["cerrar","yopmoq"],["guardar","saqlamoq"],["borrar","o'chirib tashlamoq"],["descargar","yuklab olmoq"],["subir","yuklamoq"]],[["camisa","ko'ylak"],["pantalon","shim"],["falda","yubka"],["vestido","ayol ko'ylagi"],["chaqueta","kurtka"],["abrigo","palto"],["jersey","sviter"],["camiseta","futbolka"],["sudadera","ustki tolik"],["pijama","pijama"],["traje","kostyum"],["gorra","kepka"],["sombrero","shlyapa"],["bufanda","sharf"],["guantes","qo'lqop"],["calcetines","paypoq"],["zapatos","tufli"],["botas","etik"],["sandalias","sandal"],["cinturon","kamar"],["corbata","galstuk"],["bolsillo","cho'ntak"],["boton","tugma"],["cremallera","zanjir"],["cordones","bog'ich"]],[["ropa","kiyim"],["vestir","kiymoq"],["ponerse","kiyib olmoq"],["quitarse","yechmoq"],["llevar","kiyib yurmoq"],["probarse","kiyib ko'rmoq"],["talla","o'lcham"],["moda","moda"],["estilo","uslub"],["tejido","mato"],["algodon","paxta"],["lino","zig'ir"],["seda","ipak"],["lana","jun"],["cuero","charm"],["feo","xunuk"],["bonito","chiroyli"],["elegante","nafis"],["moderno","zamonaviy"],["antiguo","qadimiy"],["nuevo","yangi"],["ancho","keng"],["estrecho","tor"],["limpio","toza"],["sucio","iflos"]],[["gafas","ko'zoynak"],["reloj","qo'l soati"],["joya","taqinchoq"],["collar","marjon"],["pendiente","sirg'a"],["pulsera","bilaguzuk"],["bolso","sumka"],["cartera","hamyon"],["paraguas","soyabon"],["mochila","ryukzak"],["maleta","jomadon"],["monedero","tanga xalta"],["abanico","yelpig'ich"],["panuelo","ro'mol"],["tacon","poshna"],["zapatilla","krossovka"],["katiuska","rezina etik"],["forro","astar"],["etiqueta","yorliq"],["arreglar","tuzatmoq"],["coser","tikmoq"],["zurcir","yamamoq"],["planchar","dazmollamoq"],["lavar","yuvmoq"],["secar","quritmoq"]],[["color","rang"],["rojo","qizil"],["azul","ko'k"],["verde","yashil"],["amarillo","sariq"],["negro","qora"],["blanco","oq"],["gris","kulrang"],["marron","jigarrang"],["rosa","pushti"],["morado","binafsha"],["naranja","to'q sariq"],["dorado","oltinrang"],["plateado","kumushrang"],["claro","och rang"],["oscuro","to'q rang"],["vivo","yorqin"],["palido","oqargan"],["brillante","yaltiroq"],["mate","xira"],["transparente","shaffof"],["opaco","noshaffof"],["multicolor","rang-barang"],["intenso","quyuq"],["suave","yumshoq rang"]],[["naturaleza","tabiat"],["paisaje","manzara"],["pradera","o'tloq"],["bosque","o'rmon"],["arbol","daraxt"],["rama","shox"],["hoja","barg"],["raiz","ildiz"],["tronco","daraxt tanasi"],["corteza","po'stloq"],["flor","gul"],["tulipan","lola"],["hierba","o't"],["semilla","urug'"],["sierra","tog' tizmasi"],["valle","vodiy"],["colina","tepalik"],["rio","daryo"],["lago","ko'l"],["cascada","sharshara"],["playa","plyaj"],["arena","qum"],["roca","qoya"],["cueva","g'or"],["cienaga","botqoqlik"]],[["tiempo","ob-havo"],["clima","iqlim"],["lluvia","yomg'ir"],["nieve","qor"],["granizo","do'l"],["tormenta","bo'ron"],["rayo","chaqmoq"],["trueno","momaqaldiroq"],["viento","shamol"],["huracan","dovul"],["tornado","to'fon"],["niebla","tuman"],["escarcha","qirov"],["rocio","shabnam"],["arcoiris","kamalak"],["nube","bulut"],["nublado","bulutli"],["despejado","ochiq osmon"],["soleado","quyoshli"],["caluroso","jazirama"],["lluvioso","yomg'irli"],["nevado","qorli"],["sequia","qurg'oqchilik"],["inundacion","toshqin"],["terremoto","zilzila"]],[["contaminacion","ifloslanish"],["basura","axlat"],["reciclar","qayta ishlamoq"],["reciclaje","qayta ishlash"],["energia","energiya"],["solar","quyoshli"],["ecologia","ekologiya"],["medioambiente","atrof-muhit"],["planeta","sayyora"],["puro","toza"],["contaminado","ifloslangan"],["volcan","vulqon"],["erupcion","vulqon otilishi"],["ola","to'lqin"],["corriente","oqim"],["hielo","muz"],["glaciar","muzlik"],["desierto","cho'l"],["selva","tropik o'rmon"],["isla","orol"],["peninsula","yarim orol"],["cabo","burun"],["golfo","ko'rfaz"],["pantano","botqoq"],["acantilado","jarlik"]],[["perro","it"],["gato","mushuk"],["caballo","ot"],["vaca","sigir"],["toro","buqa"],["oveja","qo'y"],["cabra","echki"],["cerdo","cho'chqa"],["gallina","tovuq"],["gallo","xo'roz"],["pato","o'rdak"],["pavo","kurka"],["conejo","quyon"],["raton","sichqon"],["liebre","yovvoyi quyon"],["ardilla","olmaxon"],["zorro","tulki"],["lobo","bo'ri"],["oso","ayiq"],["leon","sher"],["tigre","yo'lbars"],["elefante","fil"],["jirafa","jirafa"],["mono","maymun"],["camello","tuya"]],[["vibora","zaharli ilon"],["serpiente","ilon"],["lagarto","kaltakesak"],["cocodrilo","timsoh"],["tortuga","toshbaqa"],["rana","qurbaqa"],["pez","baliq"],["tiburon","akula"],["ballena","kit"],["delfin","delfin"],["pulpo","sakkizoyoq"],["cangrejo","qisqichbaqa"],["mariposa","kapalak"],["abeja","asalari"],["hormiga","chumoli"],["mosca","pashsha"],["mosquito","chivin"],["arana","o'rgimchak"],["escarabajo","qo'ng'iz"],["gusano","qurt"],["caracol","shilliqqurt"],["aguila","burgut"],["halcon","lochin"],["buho","boyqush"],["cuervo","qarg'a"]],[["pajaro","qush"],["paloma","kaptar"],["gorrion","chumchuq"],["golondrina","qaldirg'och"],["loro","to'ti"],["pinguino","pingvin"],["avestruz","tuyaqush"],["cisne","oqqush"],["ganso","g'oz"],["corral","hayvon hovlisi"],["granja","ferma"],["establo","otxona"],["cuadra","otxona"],["redil","qo'ra"],["gallinero","tovuqxona"],["colmena","asalari uyasi"],["nido","uya"],["pico","tumshuq"],["garra","tirnoq hayvon"],["cola","dum"],["ala","qanot"],["pluma","pat"],["cuerno","shox"],["pezuna","tuyoq"],["morro","tumshuq"]],[["domestico","uy hayvoni"],["salvaje","yovvoyi"],["mascota","sevimli hayvon"],["manada","poda"],["rebano","suruv"],["enjambre","asalari to'dasi"],["madriguera","in"],["guarida","yirtqich uyasi"],["jaula","qafas"],["trampa","tuzoq"],["cazar","ovlamoq"],["pescar","baliq tutmoq"],["alimentar","boqmoq"],["domesticar","qo'lga o'rgatmoq"],["morder","tishlamoq"],["ladrar","hurmoq"],["maullar","miyovlamoq"],["cantar","sayramoq"],["volar","uchmoq"],["nadar","suzmoq"],["correr","yugurmoq"],["saltar","sakramoq"],["reptar","sudralmoq"],["picar","chaqmoq"],["invernar","qishlamoq"]],[["profesion","kasb"],["medico","shifokor"],["enfermero","hamshira"],["maestro","o'qituvchi"],["abogado","advokat"],["juez","sudya"],["policia","politsiya"],["bombero","o't o'chiruvchi"],["soldado","askar"],["ingeniero","muhandis"],["arquitecto","me'mor"],["contable","hisobchi"],["periodista","jurnalist"],["escritor","yozuvchi"],["traductor","tarjimon"],["piloto","uchuvchi"],["marino","dengizchi"],["conductor","haydovchi"],["panadero","novvoy"],["carnicero","qassob"],["cocinero","oshpaz"],["camarero","ofitsiant"],["peluquero","sartarosh"],["sastre","tikuvchi"],["zapatero","etikdo'z"]]];
+
+  var PARTS = [];
+  for (var d = 0; d < WORD_LISTS.length; d++) {
+    PARTS.push({
+      name: (d + 1) + "-qism",
+      desc: DESC[d],
+      words: WORD_LISTS[d].map(function(p) { return { text: p[0], name: p[1] }; })
+    });
+  }
+
+  var DISTRACTOR_POOL = ['b','c','d','f','g','h','j','k','l','m','n','p','q','r','s','t','v','w','x','z','a','e','i','o','u','ñ','á','é','í','ó','ú','ü'];
+
+  var selectScreen = document.getElementById('selectScreen');
+  var introScreen = document.getElementById('introScreen');
+  var learnScreen = document.getElementById('learnScreen');
+  var partCards = document.getElementById('partCards');
+  var soundBtnEl = document.getElementById('soundBtn');
+  var backToIntroBtn = document.getElementById('backToIntro');
+  var startLearnBtn = document.getElementById('startLearnBtn');
+  var backToSelectBtn = document.getElementById('backToSelect');
+  var introTitleEl = document.getElementById('introTitle');
+  var wordNameEl = document.getElementById('wordName');
+  var wordNumEl = document.getElementById('wordNum');
+  var wordHintEl = document.getElementById('wordHint');
+
+  function shuffle(arr) {
+    for (var i = arr.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = arr[i]; arr[i] = arr[j]; arr[j] = t;
+    }
+    return arr;
+  }
+
+  function normalPool() {
+    var cnt = 0;
+    return function(word) {
+      var used = {};
+      var chars = word.split('');
+      var pool = [];
+      for (var i = 0; i < chars.length; i++) { pool.push(chars[i]); used[chars[i]] = true; }
+      var n = 2 + Math.floor(Math.random() * 2);
+      var extras = shuffle(DISTRACTOR_POOL.slice());
+      for (var j = 0; j < extras.length && cnt < 100; j++) {
+        if (!used[extras[j]]) { pool.push(extras[j]); n--; if (n <= 0) break; }
+      }
+      return shuffle(pool);
+    };
+  }
+
+  var getPool = normalPool();
+
+  function buildWordPool(word) {
+    return getPool(word.text);
+  }
+
+  PARTS.forEach(function(part) {
+    part.words.forEach(function(w) {
+      w.letters = w.text.split('');
+    });
+  });
+
+  var currentPart = 0;
+  var WORDS = PARTS[0].words;
+  var wordIdx = 0;
+  var placed = [];
+  var finishedFlag = false;
+  var soundOn = true;
+  var synth = window.speechSynthesis || null;
+
+  var slotsEl = document.getElementById('slots');
+  var poolEl = document.getElementById('pool');
+  var fbEl = document.getElementById('fb');
+  var progressEl = document.getElementById('progress');
+  var nextBtn = document.getElementById('nextBtn');
+  var prevBtn = document.getElementById('prevBtn');
+  var resetBtn = document.getElementById('resetBtn');
+  var soundBtn = document.getElementById('soundBtn');
+  var overlayEl = document.getElementById('overlay');
+  var overlayCloseBtn = document.getElementById('overlayCloseBtn');
+  var revealBtn = document.getElementById('revealBtn');
+  var quizWrapEl = document.getElementById('quizWrap');
+  var quizQuestionEl = document.getElementById('quizQuestion');
+  var quizOptionsEl = document.getElementById('quizOptions');
+  var quizFbEl = document.getElementById('quizFb');
+  var quizMode = false;
+
+  PARTS.forEach(function(part, idx) {
+    var card = document.createElement('div');
+    card.className = 'part-card';
+    card.innerHTML = '<div class="kr">ES</div>' +
+                     '<div class="nm">' + part.name + '</div>' +
+                     '<div class="info">' + part.desc + ' · ' + part.words.length + ' ta so\'z</div>';
+    card.addEventListener('click', function() {
+      selectScreen.classList.add('hidden');
+      introScreen.classList.remove('hidden');
+      currentPart = idx;
+      introTitleEl.textContent = part.name;
+    });
+    partCards.appendChild(card);
+  });
+
+  backToIntroBtn.addEventListener('click', function(e) {
+    e.preventDefault();
+    introScreen.classList.add('hidden');
+    selectScreen.classList.remove('hidden');
+  });
+
+  startLearnBtn.addEventListener('click', function() {
+    introScreen.classList.add('hidden');
+    learnScreen.classList.remove('hidden');
+    soundBtnEl.classList.remove('hidden');
+    wordIdx = 0;
+    render();
+  });
+
+  backToSelectBtn.addEventListener('click', function(e) {
+    e.preventDefault();
+    learnScreen.classList.add('hidden');
+    soundBtnEl.classList.add('hidden');
+    introScreen.classList.remove('hidden');
+  });
+
+  function speak(txt) {
+    if (!soundOn || !txt || !txt.trim()) return;
+    try { smartTTS.speak(txt, 'es-ES'); } catch(e) {}
+  }
+
+  function renderProgress() {
+    var html = '';
+    for (var i = 0; i < WORDS.length; i++) {
+      var cls = 'dot';
+      if (i < wordIdx) cls += ' done';
+      else if (i === wordIdx) cls += ' current';
+      html += '<div class="' + cls + '" data-i="' + i + '"></div>';
+    }
+    progressEl.innerHTML = html;
+    var dots = progressEl.children;
+    for (var j = 0; j < dots.length; j++) {
+      if (j <= wordIdx) {
+        dots[j].style.cursor = 'pointer';
+        dots[j].addEventListener('click', function(i) { return function() { goToWord(i); }; }(j));
+      }
+    }
+  }
+
+  function goToWord(i) {
+    if (i === wordIdx) return;
+    wordIdx = i;
+    render();
+  }
+
+  function renderSlots(n) {
+    slotsEl.innerHTML = '';
+    for (var i = 0; i < n; i++) {
+      var s = document.createElement('div');
+      s.className = 'slot';
+      s.setAttribute('data-i', i);
+      slotsEl.appendChild(s);
+    }
+  }
+
+  function renderPool(lst) {
+    poolEl.innerHTML = '';
+    for (var i = 0; i < lst.length; i++) {
+      var t = document.createElement('div');
+      t.className = 'jamo';
+      t.textContent = lst[i];
+      t.setAttribute('data-ch', lst[i]);
+      t.addEventListener('click', function(tile, ch) { return function() { placeLetter(tile, ch); }; }(t, lst[i]));
+      poolEl.appendChild(t);
+    }
+  }
+
+  function render() {
+    WORDS = PARTS[currentPart].words;
+    var word = WORDS[wordIdx];
+    placed = [];
+    finishedFlag = false;
+    quizMode = false;
+    quizWrapEl.classList.remove('show');
+    learnScreen.classList.remove('quiz-on');
+    revealBtn.classList.remove('hidden');
+
+    wordNameEl.textContent = PARTS[currentPart].name + ' · ' + PARTS[currentPart].desc;
+    wordHintEl.textContent = word.name;
+    wordNumEl.textContent = (wordIdx + 1) + ' / ' + WORDS.length;
+    fbEl.className = 'fb';
+    fbEl.textContent = '';
+    nextBtn.disabled = false;
+    prevBtn.disabled = (wordIdx === 0);
+    nextBtn.textContent = 'Keyingi so\'z';
+
+    renderProgress();
+    renderSlots(word.letters.length);
+    renderPool(buildWordPool(word));
+  }
+
+  function updateSlotDisplay(idx) {
+    var word = WORDS[wordIdx];
+    var slot = slotsEl.children[idx];
+    if (!placed[idx]) {
+      slot.innerHTML = '';
+      slot.classList.remove('filled', 'done');
+      return;
+    }
+    slot.textContent = placed[idx];
+    slot.classList.add('filled');
+    if (word.letters.slice(0, idx + 1).join('') === placed.slice(0, idx + 1).join('') && placed[idx] === word.letters[idx]) {
+      slot.classList.add('done');
+    } else {
+      slot.classList.remove('done');
+    }
+    slot.innerHTML = placed[idx] + '<span class="slot-x">✕</span>';
+  }
+
+  function placeLetter(tile, ch) {
+    if (tile.classList.contains('used') || finishedFlag) return;
+    var word = WORDS[wordIdx];
+    var idx = placed.length;
+
+    if (ch !== word.letters[idx]) {
+      tile.classList.add('wrong');
+      slotsEl.classList.add('shake');
+      setTimeout(function() {
+        tile.classList.remove('wrong');
+        slotsEl.classList.remove('shake');
+      }, 300);
+      return;
+    }
+
+    placed.push(ch);
+    tile.classList.add('used');
+    updateSlotDisplay(idx);
+    flashSlots();
+    speak(placed.join(''));
+
+    if (placed.length === word.letters.length) {
+      checkAllDone();
+    }
+  }
+
+  function flashSlots() {
+    slotsEl.classList.add('flash');
+    setTimeout(function() { slotsEl.classList.remove('flash'); }, 250);
+  }
+
+  function checkAllDone() {
+    finishedFlag = true;
+    setTimeout(finishWord, 300);
+  }
+
+  function finishWord() {
+    var slots = slotsEl.children;
+    for (var i = 0; i < slots.length; i++) slots[i].classList.add('done');
+    var word = WORDS[wordIdx];
+    fbEl.className = 'fb ok';
+    fbEl.textContent = 'Mukammal! To\'g\'ri: ' + word.text;
+    nextBtn.disabled = false;
+    wordNameEl.textContent = PARTS[currentPart].name + ' · ' + word.text;
+    speak(word.text);
+  }
+
+  function removeLast() {
+    if (placed.length === 0 || finishedFlag) return;
+    var idx = placed.length - 1;
+    var word = WORDS[wordIdx];
+    placed.pop();
+    updateSlotDisplay(idx);
+    fbEl.className = 'fb';
+    fbEl.textContent = '';
+
+    var tiles = poolEl.children;
+    for (var i = 0; i < tiles.length; i++) {
+      if (tiles[i].classList.contains('jamo') &&
+          tiles[i].getAttribute('data-ch') === word.letters[idx]) {
+        tiles[i].classList.remove('used');
+        break;
+      }
+    }
+  }
+
+  function reset() { render(); }
+
+  function shuffleArr(arr) {
+    for (var i = arr.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = arr[i]; arr[i] = arr[j]; arr[j] = t;
+    }
+    return arr;
+  }
+
+  function showQuiz() {
+    quizMode = true;
+    var word = WORDS[wordIdx];
+    quizQuestionEl.textContent = word.name + ' so\'zining ispanchasi qaysi?';
+    quizWrapEl.classList.add('show');
+    learnScreen.classList.add('quiz-on');
+    quizFbEl.className = 'fb';
+    quizFbEl.textContent = '';
+    nextBtn.disabled = true;
+    revealBtn.classList.remove('hidden');
+
+    var opts = [{ t: word.text, correct: true }];
+    var pool = [];
+    for (var i = 0; i < WORDS.length; i++) {
+      if (WORDS[i].text !== word.text) pool.push(WORDS[i].text);
+    }
+    for (var k = 0; k < 7 && pool.length > 0; k++) {
+      var ri = Math.floor(Math.random() * pool.length);
+      opts.push({ t: pool[ri], correct: false });
+      pool.splice(ri, 1);
+    }
+    opts = shuffleArr(opts);
+    quizOptionsEl.innerHTML = '';
+    for (var o = 0; o < opts.length; o++) {
+      (function(txt, correct) {
+        var d = document.createElement('div');
+        d.className = 'option';
+        d.textContent = txt;
+        d.setAttribute('data-ans', txt);
+        d.addEventListener('click', function() {
+          if (d.classList.contains('ok')) return;
+          if (correct) {
+            d.classList.add('ok');
+            quizFbEl.className = 'fb ok';
+            quizFbEl.textContent = 'To\'g\'ri! Keyingi so\'zga o\'tilmoqda...';
+            speak(txt);
+            setTimeout(function() {
+              if (wordIdx < WORDS.length - 1) {
+                wordIdx++;
+                render();
+              } else {
+                overlayEl.classList.add('show');
+              }
+            }, 900);
+          } else {
+            d.classList.add('bad');
+            setTimeout(function() { d.classList.remove('bad'); }, 400);
+          }
+        });
+        quizOptionsEl.appendChild(d);
+      })(opts[o].t, opts[o].correct);
+    }
+  }
+
+  function revealAnswer() {
+    if (quizMode) {
+      var word = WORDS[wordIdx];
+      var opts = quizOptionsEl.children;
+      for (var i = 0; i < opts.length; i++) {
+        if (opts[i].getAttribute('data-ans') === word.text) {
+          opts[i].classList.add('reveal');
+          break;
+        }
+      }
+    } else if (finishedFlag) {
+      var w = WORDS[wordIdx];
+      wordHintEl.textContent = w.name;
+      fbEl.className = 'fb ok';
+      fbEl.textContent = 'To\'g\'ri javob: ' + w.text;
+    } else {
+      var w2 = WORDS[wordIdx];
+      for (var j = 0; j < w2.letters.length; j++) {
+        if (!placed[j]) placed.push(w2.letters[j]);
+      }
+      for (var m = 0; m < placed.length; m++) updateSlotDisplay(m);
+      finishedFlag = true;
+      finishWord();
+    }
+  }
+
+  function nextWord() {
+    if (quizMode) return;
+    if (finishedFlag && !quizMode) {
+      showQuiz();
+      return;
+    }
+    if (wordIdx < WORDS.length - 1) {
+      wordIdx++;
+      render();
+    } else {
+      overlayEl.classList.add('show');
+    }
+  }
+
+  function prevWord() {
+    if (quizMode) {
+      render();
+      return;
+    }
+    if (wordIdx > 0) {
+      wordIdx--;
+      render();
+    } else {
+      learnScreen.classList.add('hidden');
+      soundBtnEl.classList.add('hidden');
+      introScreen.classList.remove('hidden');
+    }
+  }
+
+  function closeOverlay() {
+    overlayEl.classList.remove('show');
+    learnScreen.classList.add('hidden');
+    soundBtnEl.classList.add('hidden');
+    introScreen.classList.remove('hidden');
+  }
+
+  resetBtn.addEventListener('click', reset);
+  prevBtn.addEventListener('click', prevWord);
+  nextBtn.addEventListener('click', nextWord);
+  revealBtn.addEventListener('click', revealAnswer);
+  soundBtn.addEventListener('click', function() {
+    if (placed.length) speak(placed.join(''));
+    else speak(WORDS[wordIdx].text);
+  });
+
+  document.getElementById('slots').addEventListener('click', function(e) {
+    e.preventDefault();
+    var t = e.target;
+    if (t.classList.contains('slot-x')) {
+      removeLast();
+      return;
+    }
+    var slotEl = t.classList.contains('slot') ? t : t.parentElement;
+    var idx = parseInt(slotEl.getAttribute('data-i'), 10);
+    if (!isNaN(idx) && placed[idx]) speak(placed[idx]);
+  });
+
+  overlayCloseBtn.addEventListener('click', closeOverlay);
+
+  history.pushState({ hRun: 1 }, document.title);
+  window.addEventListener('popstate', function() {
+    if (!learnScreen.classList.contains('hidden')) {
+      if (wordIdx > 0) {
+        prevWord();
+      } else {
+        learnScreen.classList.add('hidden');
+        soundBtnEl.classList.add('hidden');
+        introScreen.classList.remove('hidden');
+      }
+      history.pushState({ hRun: 1 }, document.title);
+      return;
+    }
+    if (!introScreen.classList.contains('hidden')) {
+      introScreen.classList.add('hidden');
+      selectScreen.classList.remove('hidden');
+      history.pushState({ hRun: 1 }, document.title);
+      return;
+    }
+  });
+
+  if (synth) {
+    if (synth) synth.onvoiceschanged = function() { synth.getVoices(); };
+  }
+
+  render();
+})();
+</script>
+</body>
+</html>
