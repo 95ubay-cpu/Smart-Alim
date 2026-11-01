@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Yapon yozuvi — Kana</title>
+<style>
+:root{
+  --blue:#2563EB;--blue-deep:#1D4ED8;--sky:#EAF1FB;--sky-2:#D9E6FA;
+  --white:#FFFFFF;--ink:#16241F;--muted:#5B6B65;--border:#DCE4EF;
+  --radius:18px;--radius-sm:12px;
+  --jp:'Hiragino Sans','Hiragino Kaku Gothic ProN','Yu Gothic','Meiryo','Noto Sans JP',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;color:var(--ink);background:var(--sky);min-height:100vh;-webkit-user-select:none;user-select:none}
+.app{max-width:480px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;background:var(--sky)}
+.topbar{display:flex;align-items:center;gap:10px;padding:12px 16px 10px;background:var(--sky);position:sticky;top:0;z-index:10}
+.topbar .back{width:34px;height:34px;border-radius:50%;background:var(--white);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;text-decoration:none;color:var(--ink)}
+.topbar h1{font-size:17px;font-weight:800;flex:1;text-align:center;padding-right:34px}
+main{padding:4px 16px 24px;flex:1}
+
+.surah-header{text-align:center;background:linear-gradient(135deg,var(--blue),var(--blue-deep));border-radius:var(--radius);padding:16px;margin-bottom:12px;color:#fff}
+.surah-header .kr{font-size:28px;font-weight:800;font-family:var(--jp)}
+.surah-header .name{font-size:14px;opacity:.85;font-weight:600;margin-top:4px}
+.surah-header .num{font-size:11px;opacity:.6;margin-top:2px}
+
+.label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.ayah-box{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;text-align:center;margin-bottom:12px}
+.ayah-box .text{font-size:26px;line-height:1.6;font-weight:700;color:var(--blue-deep);font-family:var(--jp)}
+
+.slot-area,.pool-area{margin-bottom:12px}
+.slots{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;min-height:50px;padding:10px 8px;background:var(--white);border:2px dashed var(--border);border-radius:var(--radius-sm);transition:border-color .2s}
+.slots.flash{border-color:var(--blue)}
+.slot{min-width:48px;height:48px;padding:0 8px;border-radius:12px;background:var(--sky-2);border:2px dashed var(--border);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;font-family:var(--jp);position:relative;cursor:pointer}
+.slot.filled{background:var(--blue);color:#fff;border:2px solid var(--blue);animation:pop .25s ease}
+.slot.done{background:var(--blue-deep)}
+.slot .slot-x{position:absolute;top:-6px;right:-6px;width:20px;height:20px;border-radius:50%;background:#ef4444;color:#fff;font-size:11px;font-weight:800;display:none;align-items:center;justify-content:center;cursor:pointer}
+.slot.filled .slot-x{display:flex}
+@keyframes pop{0%{transform:scale(.4);opacity:0}100%{transform:scale(1);opacity:1}}
+
+.pool{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;padding:10px 8px;background:var(--white);border:1px solid var(--border);border-radius:var(--radius-sm)}
+.jamo{width:46px;height:46px;border-radius:12px;background:var(--sky-2);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;font-family:var(--jp);cursor:pointer;transition:all .1s}
+.jamo:active{transform:scale(1.1);box-shadow:0 4px 14px rgba(0,0,0,.12)}
+.jamo.used{opacity:.25;pointer-events:none;transform:scale(.85)}
+.group-gap{width:10px}
+
+.fb{text-align:center;padding:10px;border-radius:var(--radius-sm);margin-bottom:10px;font-weight:700;font-size:13px;display:none}
+.fb.ok{display:block;background:#DCFCE7;color:#166534}
+
+.ctrls{display:flex;gap:8px}
+.btn{flex:1;padding:10px;border:none;border-radius:var(--radius-sm);font-size:13px;font-weight:700;cursor:pointer}
+.btn-g{background:var(--blue);color:#fff}.btn-g:active{background:var(--blue-deep)}
+.btn-w{background:var(--white);border:1px solid var(--border);color:var(--ink)}.btn-w:active{background:var(--sky-2)}
+.btn:disabled{opacity:.4;pointer-events:none}
+
+.sound-btn{position:fixed;bottom:16px;right:16px;width:42px;height:42px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 4px 12px rgba(37,99,235,.3);cursor:pointer;border:none}
+.sound-btn:active{transform:scale(.9)}
+
+.progress{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;margin-bottom:10px}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--border);transition:background .2s}
+.dot.done{background:var(--blue)}
+.dot.current{background:var(--blue-deep);box-shadow:0 0 0 3px rgba(37,99,235,.25)}
+
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:50}
+.overlay.show{display:flex}
+.overlay-card{background:var(--white);border-radius:var(--radius);padding:32px 24px;text-align:center;max-width:340px;width:90%;animation:pop .3s ease}
+.overlay-card .emoji{font-size:52px;margin-bottom:12px}
+.overlay-card h2{font-size:22px;font-weight:800;margin-bottom:6px}
+.overlay-card p{font-size:14px;color:var(--muted);margin-bottom:20px;line-height:1.5}
+
+.select-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:20px}
+.select-title{font-size:22px;font-weight:800;margin-bottom:6px;text-align:center}
+.select-sub{font-size:14px;color:var(--muted);margin-bottom:28px;text-align:center}
+.part-cards{display:flex;flex-direction:column;gap:16px;width:100%;max-width:360px}
+.part-card{background:var(--white);border:2px solid var(--border);border-radius:var(--radius);padding:24px 20px;text-align:center;cursor:pointer;transition:all .2s}
+.part-card:active{transform:scale(.97);border-color:var(--blue);background:var(--sky-2)}
+.part-card .nm{font-size:16px;font-weight:700}
+.part-card .info{font-size:12px;color:var(--muted);margin-top:4px}
+.hidden{display:none!important}
+
+.intro-screen{display:flex;flex-direction:column;align-items:center;padding:20px}
+.intro-title{font-size:20px;font-weight:800;margin-bottom:16px;text-align:center}
+.intro-text{font-size:14px;color:var(--muted);line-height:1.7;text-align:center;max-width:380px;margin-bottom:20px}
+.intro-example{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;margin-bottom:12px;width:100%;max-width:380px}
+.intro-example .kr{font-size:28px;font-weight:700;font-family:var(--jp);text-align:center;margin-bottom:4px}
+.intro-example .uz{font-size:13px;color:var(--muted);text-align:center}
+.intro-example .exp{font-size:12px;color:var(--blue);text-align:center;margin-top:4px;font-weight:600}
+.intro-btn{width:100%;max-width:380px;padding:14px;border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:700;cursor:pointer;margin-top:16px;background:var(--blue);color:#fff}
+.intro-btn:active{background:var(--blue-deep)}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="select-screen" id="selectScreen">
+    <div class="surah-header" style="width:100%;max-width:360px;margin-bottom:28px">
+      <div class="kr">日本語</div>
+      <div class="name">Yapon tili</div>
+    </div>
+    <div class="select-title">Bo'lim tanlang</div>
+    <div class="select-sub">O'rganmoqchi bo'lgan bo'limingizni bosing</div>
+    <div class="part-cards" id="partCards"></div>
+  </div>
+
+  <div class="hidden" id="introScreen">
+    <div class="topbar">
+      <a class="back" href="#" id="backToIntro">&larr;</a>
+      <h1 id="introTitle">1-qism</h1>
+    </div>
+    <div class="intro-screen">
+      <div class="intro-title">Yapon tilini o'rganamiz!</div>
+      <div class="intro-text">Yapon yozuvida har bir belgi (kana) bitta bo'g'inni bildiradi. Ba'zi bo'g'inlar bir nechta qismdan yig'iladi: asosiy kana + nuqtalar (゛ ゜) + kichik ゃ ゅ ょ.</div>
+
+      <div class="intro-example">
+        <div class="kr">さ</div>
+        <div class="uz">Sa</div>
+        <div class="exp">さ (sa) — oddiy kana, bitta bosish</div>
+      </div>
+
+      <div class="intro-example">
+        <div class="kr">が</div>
+        <div class="uz">Ga</div>
+        <div class="exp">か (ka) + ゛ = が (ga)</div>
+      </div>
+
+      <div class="intro-example">
+        <div class="kr">きゃ</div>
+        <div class="uz">Kya</div>
+        <div class="exp">き (ki) + ゃ (ya) = きゃ (kya)</div>
+      </div>
+
+      <div class="intro-text" style="margin-top:8px">Sizga belgilar beriladi. Ularni bosib bo'g'inni yig'asiz. Xohlasangiz, to'ldirmasdan ham keyingisiga o'tishingiz mumkin.</div>
+
+      <button class="intro-btn" id="startLearnBtn">Davom etish</button>
+    </div>
+  </div>
+
+  <div class="hidden" id="learnScreen">
+    <div class="topbar">
+      <a class="back" href="#" id="backToSelect">&larr;</a>
+      <h1>Yapon yozuvi</h1>
+    </div>
+    <main>
+      <div class="surah-header">
+        <div class="kr" id="wordKr"></div>
+        <div class="name" id="wordName"></div>
+        <div class="num" id="wordNum"></div>
+      </div>
+      <div class="progress" id="progress"></div>
+      <div class="ayah-box">
+        <div class="label">So'z</div>
+        <div class="text" id="wordText"></div>
+      </div>
+      <div class="fb" id="fb"></div>
+      <div class="slot-area"><div class="slots" id="slots"></div></div>
+      <div class="pool-area">
+        <div class="label">Belgilarni bosing</div>
+        <div class="pool" id="pool"></div>
+      </div>
+      <div class="ctrls">
+        <button class="btn btn-w" id="prevBtn">← Oldingi</button>
+        <button class="btn btn-w" id="resetBtn">Qayta</button>
+        <button class="btn btn-g" id="nextBtn">Keyingi so'z</button>
+      </div>
+    </main>
+  </div>
+
+  <button class="sound-btn hidden" id="soundBtn" title="Ovoz chalish">🔊</button>
+
+  <div class="overlay" id="overlay">
+    <div class="overlay-card">
+      <div class="emoji">🎉</div>
+      <h2>Tabriklaymiz!</h2>
+      <p>Siz so'zlarni<br>mukammal o'rgandingiz!</p>
+      <button class="btn btn-g" id="overlayCloseBtn" style="width:100%">Yaxshi!</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  // So'zlar: "kana|ma'nosi". Yangi so'z qo'shish uchun shu ro'yxatlarga qator qo'shing.
+  var PARTS = [
+    { name: "1-qism", desc: "Hiragana — oddiy so'zlar", words: [
+      "あい|Sevgi","いえ|Uy","うみ|Dengiz","そら|Osmon","はな|Gul","さくら|Sakura","ねこ|Mushuk","いぬ|It",
+      "みず|Suv","ひと|Odam","やま|Tog'","かわ|Daryo","つき|Oy","ほし|Yulduz","はる|Bahor","なつ|Yoz",
+      "あき|Kuz","ふゆ|Qish","くるま|Mashina","ほん|Kitob","めがね|Ko'zoyna","おとこ|Erkak","おんな|Ayol",
+      "こども|Bola","ふね|Kema","おちゃ|Choy","すし|Sushi","こんにちは|Salom","さようなら|Xayr","おはよう|Xayrli tong"
+    ]},
+    { name: "2-qism", desc: "Hiragana — ゛ ゜ va kichik belgilar", words: [
+      "ありがとう|Rahmat","がっこう|Maktab","でんわ|Telefon","ざっし|Jurnal","ごはん|Ovqat","かばん|Sumka",
+      "しゃしん|Surat","りょこう|Sayohat","きょう|Bugun","がくせい|O'quvchi","せんせい|O'qituvchi",
+      "じてんしゃ|Velosiped","ぎゅうにゅう|Sut","ぱん|Non","ぺん|Ruchka","えんぴつ|Qalam","ぶどう|Uzum",
+      "ぼうし|Shlyapa","げんき|Sog'lom","にほん|Yaponiya","とうきょう|Tokio","しんぶん|Gazeta",
+      "きっぷ|Chipta","きって|Marka","ちょっと|Ozgina","しゅくだい|Uy vazifasi","じしょ|Lug'at",
+      "でんしゃ|Poyezd","びょういん|Kasalxona","ひゃく|Yuz"
+    ]},
+    { name: "3-qism", desc: "Katakana — chet el so'zlari", words: [
+      "コーヒー|Kofe","ジュース|Sharbat","ケーキ|Tort","ホテル|Mehmonxona","テレビ|Televizor","ラジオ|Radio",
+      "カメラ|Kamera","バス|Avtobus","タクシー|Taksi","ビール|Pivo","ミルク|Sut","アイス|Muzqaymoq",
+      "ピザ|Pitsa","ハンバーガー|Burger","サッカー|Futbol","テニス|Tennis","パソコン|Kompyuter",
+      "スマホ|Smartfon","メール|Pochta","ニュース|Yangilik","ドア|Eshik","ノート|Daftar","ペン|Ruchka",
+      "レストラン|Restoran","トイレ|Hojatxona","アメリカ|Amerika","ロシア|Rossiya",
+      "ウズベキスタン|O'zbekiston","チケット|Chipta","シャツ|Ko'ylak","ジャケット|Kurtka"
+    ]},
+    { name: "4-qism", desc: "Hiragana — tana, oila, shahar, ovqat", words: [
+      "あたま|Bosh",
+      "かお|Yuz",
+      "め|Ko'z",
+      "みみ|Quloq",
+      "くち|Og'iz",
+      "は|Tish",
+      "て|Qo'l",
+      "あし|Oyoq",
+      "おなか|Qorin",
+      "せなか|Orqa",
+      "かみ|Soch",
+      "ゆび|Barmoq",
+      "こころ|Yurak",
+      "からだ|Tana",
+      "ちち|Otam",
+      "はは|Onam",
+      "あに|Aka",
+      "あね|Opa",
+      "おとうと|Uka",
+      "いもうと|Singil",
+      "おじいさん|Bobo",
+      "おばあさん|Buvi",
+      "かぞく|Oila",
+      "ふうふ|Er-xotin",
+      "こいびと|Sevgili",
+      "みなと|Port",
+      "まち|Shahar",
+      "むら|Qishloq",
+      "くに|Davlat",
+      "みち|Yo'l",
+      "はし|Ko'prik",
+      "えき|Bekat",
+      "みせ|Do'kon",
+      "ぎんこう|Bank",
+      "ゆうびんきょく|Pochta",
+      "びょうき|Kasallik",
+      "くすり|Dori",
+      "いしゃ|Shifokor",
+      "かいしゃ|Kompaniya",
+      "しごと|Ish",
+      "やすみ|Dam olish",
+      "あさ|Ertalab",
+      "ひる|Tush",
+      "ばん|Kech",
+      "よる|Tun",
+      "きのう|Kecha",
+      "あした|Ertaga",
+      "いま|Hozir",
+      "まいにち|Har kuni",
+      "まいあさ|Har ertalab",
+      "こんしゅう|Shu hafta",
+      "らいしゅう|Kelasi hafta",
+      "せんしゅう|O'tgan hafta",
+      "ことし|Bu yil",
+      "らいねん|Kelasi yil",
+      "きょねん|O'tgan yil",
+      "たべもの|Ovqat",
+      "のみもの|Ichimlik",
+      "くだもの|Meva",
+      "やさい|Sabzavot",
+      "にく|Go'sht",
+      "さかな|Baliq",
+      "たまご|Tuxum",
+      "こめ|Guruch",
+      "しお|Tuz",
+      "さとう|Shakar",
+      "あぶら|Yog'",
+      "りんご|Olma",
+      "みかん|Mandarin",
+      "すいか|Tarvuz",
+      "いちご|Qulupnay",
+      "もも|Shaftoli",
+      "なし|Nok",
+      "にんじん|Sabzi",
+      "じゃがいも|Kartoshka",
+      "たまねぎ|Piyoz",
+      "きゅうり|Bodring",
+      "ごま|Kunjut",
+      "とり|Qush",
+      "うま|Ot",
+      "うし|Sigir",
+      "ぶた|Cho'chqa",
+      "ひつじ|Qo'y",
+      "さる|Maymun",
+      "ねずみ|Sichqon",
+      "うさぎ|Quyon",
+      "へび|Ilon",
+      "ぞう|Fil",
+      "くま|Ayiq",
+      "とら|Yo'lbars",
+      "かめ|Toshbaqa",
+      "かに|Krab",
+      "えび|Krevetka",
+      "ちょう|Kapalak",
+      "あり|Chumoli"
+    ]},
+    { name: "5-qism", desc: "Hiragana — sifat, fe'l, rang, son", words: [
+      "おおきい|Katta",
+      "ちいさい|Kichik",
+      "たかい|Baland",
+      "ふるい|Eski",
+      "あたらしい|Yangi",
+      "ながい|Uzun",
+      "みじかい|Qisqa",
+      "はやい|Tez",
+      "おそい|Sekin",
+      "おもい|Og'ir",
+      "かるい|Yengil",
+      "つよい|Kuchli",
+      "よわい|Zaif",
+      "あかるい|Yorug'",
+      "くらい|Qorong'i",
+      "ひろい|Keng",
+      "せまい|Tor",
+      "あつい|Issiq",
+      "さむい|Sovuq",
+      "つめたい|Muzdek",
+      "すずしい|Salqin",
+      "あたたかい|Iliq",
+      "いそがしい|Band",
+      "たのしい|Quvnoq",
+      "うれしい|Xursand",
+      "かなしい|G'amgin",
+      "こわい|Qo'rqinchli",
+      "うつくしい|Go'zal",
+      "かわいい|Yoqimtoy",
+      "おもしろい|Qiziqarli",
+      "むずかしい|Qiyin",
+      "やさしい|Oson",
+      "いたい|Og'riqli",
+      "ねむい|Uyquchan",
+      "おいしい|Mazali",
+      "あまい|Shirin",
+      "からい|Achchiq",
+      "にがい|Taxir",
+      "すっぱい|Nordon",
+      "あか|Qizil",
+      "あお|Ko'k",
+      "きいろ|Sariq",
+      "みどり|Yashil",
+      "くろ|Qora",
+      "しろ|Oq",
+      "ちゃいろ|Jigarrang",
+      "むらさき|Binafsha",
+      "はいいろ|Kulrang",
+      "れい|Nol",
+      "いち|Bir",
+      "に|Ikki",
+      "さん|Uch",
+      "よん|To'rt",
+      "ご|Besh",
+      "ろく|Olti",
+      "なな|Yetti",
+      "はち|Sakkiz",
+      "きゅう|To'qqiz",
+      "じゅう|O'n",
+      "せん|Ming",
+      "まん|O'n ming",
+      "ひとつ|Bitta",
+      "ふたつ|Ikkita",
+      "みっつ|Uchta",
+      "よっつ|To'rtta",
+      "いつつ|Beshta",
+      "むっつ|Oltita",
+      "ななつ|Yettita",
+      "やっつ|Sakkizta",
+      "ここのつ|To'qqizta",
+      "とお|O'nta",
+      "にちようび|Yakshanba",
+      "げつようび|Dushanba",
+      "かようび|Seshanba",
+      "すいようび|Chorshanba",
+      "もくようび|Payshanba",
+      "きんようび|Juma",
+      "どようび|Shanba",
+      "たべる|Yemoq",
+      "のむ|Ichmoq",
+      "みる|Ko'rmoq",
+      "きく|Eshitmoq",
+      "はなす|Gapirmoq",
+      "よむ|O'qimoq",
+      "かく|Yozmoq",
+      "いく|Bormoq",
+      "くる|Kelmoq",
+      "かえる|Qaytmoq",
+      "する|Qilmoq",
+      "ある|Bor (jonsiz)",
+      "いる|Bor (jonli)",
+      "かう|Sotib olmoq",
+      "うる|Sotmoq",
+      "あう|Uchrashmoq",
+      "はたらく|Ishlamoq",
+      "あそぶ|O'ynamoq",
+      "ねる|Uxlamoq",
+      "おきる|Uyg'onmoq",
+      "あるく|Yurmoq",
+      "はしる|Yugurmoq",
+      "およぐ|Suzmoq",
+      "うたう|Qo'shiq aytmoq",
+      "わらう|Kulmoq",
+      "なく|Yig'lamoq",
+      "まつ|Kutmoq",
+      "おもう|O'ylamoq",
+      "しる|Bilmoq",
+      "わかる|Tushunmoq",
+      "つくる|Yasamoq",
+      "あける|Ochmoq",
+      "しめる|Yopmoq",
+      "はいる|Kirmoq",
+      "でる|Chiqmoq",
+      "のる|Minmoq",
+      "おりる|Tushmoq",
+      "あらう|Yuvmoq",
+      "ならう|O'rganmoq",
+      "おしえる|O'rgatmoq",
+      "かりる|Qarz olmoq",
+      "かす|Qarz bermoq",
+      "もつ|Ushlamoq",
+      "とる|Olmoq",
+      "おす|Bosmoq",
+      "ひく|Tortmoq",
+      "すむ|Yashamoq",
+      "すき|Yoqadi",
+      "きらい|Yoqmaydi"
+    ]},
+    { name: "6-qism", desc: "Hiragana — maktab, uy, ob-havo, kundalik", words: [
+      "としょかん|Kutubxona",
+      "くうこう|Aeroport",
+      "だいがく|Universitet",
+      "きょうしつ|Sinfxona",
+      "じゅぎょう|Dars",
+      "しけん|Imtihon",
+      "しつもん|Savol",
+      "こたえ|Javob",
+      "もんだい|Masala",
+      "ことば|So'z",
+      "にっき|Kundalik",
+      "てがみ|Xat",
+      "はがき|Otkritka",
+      "ちず|Xarita",
+      "じどうしゃ|Avtomobil",
+      "ひこうき|Samolyot",
+      "ちかてつ|Metro",
+      "しんかんせん|Tez poyezd",
+      "ちょうしょく|Nonushta",
+      "ちゅうしょく|Tushlik",
+      "ゆうしょく|Kechki ovqat",
+      "おべんとう|Tushlik qutisi",
+      "おかし|Shirinlik",
+      "ぎゅうにく|Mol go'shti",
+      "とりにく|Tovuq go'shti",
+      "うどん|Udon",
+      "そば|Soba",
+      "おにぎり|Onigiri",
+      "みそしる|Miso sho'rva",
+      "ちゃわん|Piyola",
+      "おさら|Likopcha",
+      "さけ|Sake",
+      "ようふく|Kiyim",
+      "きもの|Kimono",
+      "くつ|Poyabzal",
+      "てぶくろ|Qo'lqop",
+      "かさ|Soyabon",
+      "かぎ|Kalit",
+      "さいふ|Hamyon",
+      "とけい|Soat",
+      "でんき|Elektr",
+      "れいぞうこ|Muzlatgich",
+      "そうじ|Tozalash",
+      "りょうり|Pishirish",
+      "かいもの|Xarid",
+      "さんぽ|Sayr",
+      "しゅみ|Xobbi",
+      "うんどう|Mashq",
+      "じゅうしょ|Manzil",
+      "なまえ|Ism",
+      "たんじょうび|Tug'ilgan kun",
+      "けっこん|Nikoh",
+      "そつぎょう|Bitirish",
+      "りゅうがく|Chet elda o'qish",
+      "きゅうりょう|Maosh",
+      "かいぎ|Majlis",
+      "しゃちょう|Direktor",
+      "おきゃくさん|Mijoz",
+      "てんいん|Sotuvchi",
+      "けいさつ|Politsiya",
+      "はいしゃ|Tish shifokori",
+      "やっきょく|Dorixona",
+      "ねつ|Isitma",
+      "かぜ|Shamol",
+      "あめ|Yomg'ir",
+      "ゆき|Qor",
+      "くもり|Bulutli",
+      "はれ|Ochiq havo",
+      "かみなり|Momaqaldiroq",
+      "たいふう|Tayfun",
+      "じしん|Zilzila",
+      "もり|O'rmon",
+      "みずうみ|Ko'l",
+      "しま|Orol",
+      "すな|Qum",
+      "いし|Tosh",
+      "こおり|Muz",
+      "くも|Bulut",
+      "にじ|Kamalak",
+      "いちにち|Bir kun",
+      "ひとり|Bir kishi",
+      "ふたり|Ikki kishi",
+      "ちょうど|Aynan",
+      "ぜんぶ|Hammasi",
+      "すこし|Ozgina",
+      "たくさん|Ko'p",
+      "もっと|Yana",
+      "ずっと|Doim",
+      "ゆっくり|Sekin",
+      "しっかり|Mustahkam",
+      "きっと|Albatta",
+      "ぜひ|Albatta (iltimos)",
+      "はっきり|Aniq",
+      "ぴったり|Aynan mos",
+      "びっくり|Hayron",
+      "がっかり|Hafsalasi pir",
+      "ざっと|Qisqacha",
+      "ぐっすり|Tinch uxlab"
+    ]},
+    { name: "7-qism", desc: "Katakana — davlatlar, taom, texnika, sport", words: [
+      "イギリス|Angliya",
+      "フランス|Fransiya",
+      "ドイツ|Germaniya",
+      "イタリア|Italiya",
+      "スペイン|Ispaniya",
+      "インド|Hindiston",
+      "カナダ|Kanada",
+      "ブラジル|Braziliya",
+      "トルコ|Turkiya",
+      "エジプト|Misr",
+      "ロンドン|London",
+      "パリ|Parij",
+      "ニューヨーク|Nyu-York",
+      "モスクワ|Moskva",
+      "ソウル|Seul",
+      "ラーメン|Ramen",
+      "カレー|Karri",
+      "サラダ|Salat",
+      "スープ|Sho'rva",
+      "パスタ|Pasta",
+      "サンドイッチ|Sendvich",
+      "チーズ|Pishloq",
+      "バター|Saryog'",
+      "チョコレート|Shokolad",
+      "クッキー|Pechenye",
+      "ジャム|Murabbo",
+      "ソース|Sous",
+      "ステーキ|Bifshteks",
+      "ワイン|Vino",
+      "ウイスキー|Viski",
+      "コーラ|Kola",
+      "トマト|Pomidor",
+      "レモン|Limon",
+      "バナナ|Banan",
+      "メロン|Qovun",
+      "オレンジ|Apelsin",
+      "マンゴー|Mango",
+      "キウイ|Kivi",
+      "ポテト|Kartoshka",
+      "コンピューター|Kompyuter",
+      "キーボード|Klaviatura",
+      "マウス|Sichqoncha",
+      "プリンター|Printer",
+      "インターネット|Internet",
+      "ウェブ|Veb",
+      "ゲーム|O'yin",
+      "アプリ|Ilova",
+      "ビデオ|Video",
+      "カード|Karta",
+      "ファイル|Fayl",
+      "データ|Ma'lumot",
+      "システム|Tizim",
+      "プログラム|Dastur",
+      "ソフト|Dasturiy ta'minot",
+      "ネット|Tarmoq",
+      "ログイン|Kirish",
+      "パスワード|Parol",
+      "メモ|Eslatma",
+      "ボタン|Tugma",
+      "ページ|Sahifa",
+      "スポーツ|Sport",
+      "ゴルフ|Golf",
+      "バレー|Voleybol",
+      "バスケ|Basketbol",
+      "プール|Basseyn",
+      "ジム|Zal",
+      "コーチ|Murabbiy",
+      "チーム|Jamoa",
+      "ボール|To'p",
+      "ギター|Gitara",
+      "ピアノ|Pianino",
+      "ドラム|Baraban",
+      "コンサート|Konsert",
+      "ミュージック|Musiqa",
+      "ダンス|Raqs",
+      "ドラマ|Serial",
+      "アニメ|Anime",
+      "マンガ|Manga",
+      "カフェ|Kafe",
+      "バー|Bar",
+      "パーティー|Ziyofat",
+      "プレゼント|Sovg'a",
+      "カレンダー|Taqvim",
+      "クラス|Sinf",
+      "テスト|Test",
+      "レポート|Hisobot",
+      "ドクター|Doktor",
+      "ナース|Hamshira",
+      "タオル|Sochiq",
+      "ベッド|Karavot",
+      "ソファ|Divan",
+      "テーブル|Stol",
+      "カーテン|Parda",
+      "エアコン|Konditsioner",
+      "ストーブ|Pech",
+      "ガス|Gaz",
+      "ビル|Bino",
+      "エレベーター|Lift",
+      "トラック|Yuk mashinasi",
+      "バイク|Mototsikl",
+      "ガソリン|Benzin",
+      "パスポート|Pasport",
+      "ビザ|Viza"
+    ]}
+  ];
+
+  // ===== Belgilarni qismlarga ajratish =====
+  var SMALL = 'ゃゅょャュョぁぃぅぇぉァィゥェォ';
+  function parseWord(text) {
+    var chars = Array.from(text), units = [];
+    for (var i = 0; i < chars.length; i++) {
+      var c = chars[i];
+      var d = c.normalize('NFD');            // が -> か + ゙
+      var comps = [d.charAt(0)];
+      if (d.length > 1) comps.push(d.charAt(1) === '\u3099' ? '\u309B' : '\u309C');  // ゛ yoki ゜
+      var ch = c;
+      var nx = chars[i + 1];
+      if (nx && SMALL.indexOf(nx) >= 0) { comps.push(nx); ch += nx; i++; }
+      units.push({ ch: ch, comps: comps });
+    }
+    return units;
+  }
+
+  PARTS.forEach(function(part) {
+    part.words = part.words.map(function(s) {
+      var p = s.split('|');
+      return { text: p[0], name: p[1], syllables: parseWord(p[0]) };
+    });
+  });
+
+  var selectScreen = document.getElementById('selectScreen');
+  var introScreen = document.getElementById('introScreen');
+  var learnScreen = document.getElementById('learnScreen');
+  var partCards = document.getElementById('partCards');
+  var soundBtnEl = document.getElementById('soundBtn');
+  var introTitleEl = document.getElementById('introTitle');
+  var wordKrEl = document.getElementById('wordKr');
+  var wordNameEl = document.getElementById('wordName');
+  var wordNumEl = document.getElementById('wordNum');
+  var slotsEl = document.getElementById('slots');
+  var poolEl = document.getElementById('pool');
+  var fbEl = document.getElementById('fb');
+  var wordTextEl = document.getElementById('wordText');
+  var progressEl = document.getElementById('progress');
+  var nextBtn = document.getElementById('nextBtn');
+  var prevBtn = document.getElementById('prevBtn');
+  var resetBtn = document.getElementById('resetBtn');
+  var overlayEl = document.getElementById('overlay');
+
+  var currentPart = 0, WORDS = PARTS[0].words, wordIdx = 0, placedComps = [];
+  var soundOn = true;
+  var synth = window.speechSynthesis || null;
+
+  function showSelect() { introScreen.classList.add('hidden'); selectScreen.classList.remove('hidden'); }
+  function showIntro() { learnScreen.classList.add('hidden'); soundBtnEl.classList.add('hidden'); introScreen.classList.remove('hidden'); }
+
+  PARTS.forEach(function(part, idx) {
+    var card = document.createElement('div');
+    card.className = 'part-card';
+    card.innerHTML = '<div class="nm">' + part.name + '</div>' +
+      '<div class="info">' + part.desc + ' · ' + part.words.length + ' ta so\'z</div>';
+    card.addEventListener('click', function() {
+      selectScreen.classList.add('hidden');
+      introScreen.classList.remove('hidden');
+      currentPart = idx;
+      introTitleEl.textContent = part.name;
+    });
+    partCards.appendChild(card);
+  });
+
+  document.getElementById('backToIntro').addEventListener('click', function(e) { e.preventDefault(); showSelect(); });
+  document.getElementById('backToSelect').addEventListener('click', function(e) { e.preventDefault(); showIntro(); });
+  document.getElementById('startLearnBtn').addEventListener('click', function() {
+    introScreen.classList.add('hidden');
+    learnScreen.classList.remove('hidden');
+    soundBtnEl.classList.remove('hidden');
+    wordIdx = 0;
+    render();
+  });
+
+  // ===== Ovoz (yapon tili) =====
+  function speak(txt) {
+    if (!soundOn || !synth || !txt) return;
+    if (/^[\u309B\u309C\u30FC\s]+$/.test(txt)) return; // yolg'iz ゛ ゜ ー ni o'qimaymiz
+    try {
+      synth.cancel();
+      setTimeout(function() {
+        var u = new SpeechSynthesisUtterance(txt);
+        u.lang = 'ja-JP'; u.rate = 0.75; u.pitch = 1;
+        var voices = synth.getVoices();
+        for (var i = 0; i < voices.length; i++) {
+          if (voices[i].lang && voices[i].lang.indexOf('ja') === 0) { u.voice = voices[i]; break; }
+        }
+        synth.speak(u);
+      }, 50);
+    } catch (e) {}
+  }
+
+  function renderProgress() {
+    var html = '';
+    for (var i = 0; i < WORDS.length; i++) {
+      html += '<div class="dot' + (i < wordIdx ? ' done' : i === wordIdx ? ' current' : '') + '"></div>';
+    }
+    progressEl.innerHTML = html;
+    for (var j = 0; j <= wordIdx && j < progressEl.children.length; j++) {
+      progressEl.children[j].style.cursor = 'pointer';
+      progressEl.children[j].addEventListener('click', (function(k) { return function() { goToWord(k); }; })(j));
+    }
+  }
+
+  function goToWord(i) { if (i !== wordIdx) { wordIdx = i; render(); } }
+
+  function render() {
+    WORDS = PARTS[currentPart].words;
+    var word = WORDS[wordIdx];
+    placedComps = word.syllables.map(function() { return []; });
+
+    wordKrEl.textContent = word.text;
+    wordNameEl.textContent = PARTS[currentPart].name + ' · ' + word.name;
+    wordNumEl.textContent = (wordIdx + 1) + ' / ' + WORDS.length;
+    wordTextEl.textContent = word.text + ' — ' + word.name;
+    fbEl.className = 'fb';
+    fbEl.textContent = '';
+    nextBtn.disabled = false;
+    prevBtn.disabled = (wordIdx === 0);
+
+    renderProgress();
+    renderSlots(word.syllables.length);
+    renderPool(word.syllables);
+  }
+
+  function renderSlots(n) {
+    slotsEl.innerHTML = '';
+    for (var i = 0; i < n; i++) {
+      var s = document.createElement('div');
+      s.className = 'slot';
+      s.addEventListener('click', createSlotClick(i));
+      slotsEl.appendChild(s);
+    }
+  }
+
+  function createSlotClick(idx) {
+    return function(e) {
+      if (e.target && e.target.classList && e.target.classList.contains('slot-x')) {
+        e.stopPropagation();
+        removeSyllable(idx);
+        return;
+      }
+      var syl = WORDS[wordIdx].syllables[idx];
+      if (placedComps[idx].length === syl.comps.length) speak(syl.ch);
+      else if (placedComps[idx].length) speak(placedComps[idx].join(''));
+    };
+  }
+
+  // Har bir bo'g'inning qismlari alohida plitka; bo'g'inlar orasida bo'shliq
+  function renderPool(syllables) {
+    poolEl.innerHTML = '';
+    for (var s = 0; s < syllables.length; s++) {
+      if (s > 0) { var gap = document.createElement('div'); gap.className = 'group-gap'; poolEl.appendChild(gap); }
+      var comps = syllables[s].comps;
+      for (var c = 0; c < comps.length; c++) {
+        var t = document.createElement('div');
+        t.className = 'jamo';
+        t.textContent = comps[c];
+        t.setAttribute('data-si', s);
+        t.setAttribute('data-ci', c);
+        t.addEventListener('click', (function(tile) { return function() { placeJamo(tile); }; })(t));
+        poolEl.appendChild(t);
+      }
+    }
+  }
+
+  function updateSlotDisplay(idx) {
+    var syl = WORDS[wordIdx].syllables[idx];
+    var slot = slotsEl.children[idx];
+    var placed = placedComps[idx];
+    if (placed.length === 0) { slot.innerHTML = ''; slot.classList.remove('filled', 'done'); return; }
+    var complete = placed.length === syl.comps.length;
+    slot.innerHTML = (complete ? syl.ch : placed.join('')) + '<span class="slot-x">\u2715</span>';
+    slot.classList.add('filled');
+    slot.classList.toggle('done', complete);
+  }
+
+  function placeJamo(tile) {
+    if (tile.classList.contains('used')) return;
+    var si = parseInt(tile.getAttribute('data-si'), 10);
+    var ci = parseInt(tile.getAttribute('data-ci'), 10);
+    var syl = WORDS[wordIdx].syllables[si];
+
+    if (placedComps[si].length !== ci) return; // faqat navbatdagi qism joylanadi (avval か, keyin ゛)
+
+    placedComps[si].push(syl.comps[ci]);
+    tile.classList.add('used');
+    updateSlotDisplay(si);
+    flashSlots();
+
+    speak(placedComps[si].length === syl.comps.length ? syl.ch : syl.comps[ci]);
+    checkAllDone();
+  }
+
+  function flashSlots() {
+    slotsEl.classList.add('flash');
+    setTimeout(function() { slotsEl.classList.remove('flash'); }, 250);
+  }
+
+  function checkAllDone() {
+    var syls = WORDS[wordIdx].syllables;
+    for (var i = 0; i < syls.length; i++) if (placedComps[i].length !== syls[i].comps.length) return;
+    setTimeout(finishWord, 400);
+  }
+
+  function finishWord() {
+    for (var i = 0; i < slotsEl.children.length; i++) slotsEl.children[i].classList.add('done');
+    fbEl.className = 'fb ok';
+    fbEl.textContent = 'Mukammal! To\'g\'ri!';
+    nextBtn.disabled = false;
+    speak(WORDS[wordIdx].text);
+  }
+
+  function removeSyllable(idx) {
+    if (placedComps[idx].length === 0) return;
+    placedComps[idx] = [];
+    updateSlotDisplay(idx);
+    var tiles = poolEl.children;
+    for (var i = 0; i < tiles.length; i++) {
+      if (tiles[i].classList.contains('jamo') && parseInt(tiles[i].getAttribute('data-si'), 10) === idx) {
+        tiles[i].classList.remove('used');
+      }
+    }
+  }
+
+  function getSlotsText() {
+    var syls = WORDS[wordIdx].syllables, result = '';
+    for (var i = 0; i < syls.length; i++) {
+      result += placedComps[i].length === syls[i].comps.length ? syls[i].ch : placedComps[i].join('');
+    }
+    return result;
+  }
+
+  function nextWord() {
+    if (wordIdx < WORDS.length - 1) { wordIdx++; render(); }
+    else overlayEl.classList.add('show');
+  }
+
+  function prevWord() {
+    if (wordIdx > 0) { wordIdx--; render(); }
+    else showIntro();
+  }
+
+  resetBtn.addEventListener('click', render);
+  prevBtn.addEventListener('click', prevWord);
+  nextBtn.addEventListener('click', nextWord);
+  soundBtnEl.addEventListener('click', function() {
+    var txt = getSlotsText().trim();
+    if (txt) speak(txt);
+  });
+  document.getElementById('overlayCloseBtn').addEventListener('click', function() {
+    overlayEl.classList.remove('show');
+    showIntro();
+  });
+
+  // ===== Telefonning orqa tugmasi =====
+  history.pushState({ kana: 1 }, document.title);
+  window.addEventListener('popstate', function() {
+    if (!learnScreen.classList.contains('hidden')) {
+      prevWord();
+      history.pushState({ kana: 1 }, document.title);
+      return;
+    }
+    if (!introScreen.classList.contains('hidden')) {
+      showSelect();
+      history.pushState({ kana: 1 }, document.title);
+    }
+  });
+
+  if (synth) synth.onvoiceschanged = function() { synth.getVoices(); };
+
+  render();
+})();
+</script>
+</body>
+</html>
