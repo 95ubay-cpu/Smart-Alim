@@ -1,5 +1,6 @@
 /* Smart Ta'lim — ovoz yordamchisi.
-   Ketma-ketlik: ilova native TTS -> brauzer speechSynthesis (tekshirilgan) -> Google ovoz fayli (zaxira). */
+   Ketma-ketlik: ilova native TTS -> brauzer speechSynthesis (tegishli ovoz bo'lsa) ->
+   xitoy uchun Youdao -> Google ovoz fayli (zaxira). */
 window.smartTTS = (function() {
   var native = (typeof window.SmartAlimTts !== 'undefined') ? window.SmartAlimTts : null;
   var audioEl = null;
@@ -8,38 +9,110 @@ window.smartTTS = (function() {
     try { return !!native && !!native.isReady && native.isReady(); } catch (e) { return false; }
   }
 
-  function gtts(text, lang) {
-    try {
-      var l = (lang || 'en').split('-')[0];
-      var q = text.length > 180 ? text.slice(0, 180) : text;
-      var url = 'https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=' +
-                encodeURIComponent(l) + '&q=' + encodeURIComponent(q);
-      if (!audioEl) {
-        audioEl = document.createElement('audio');
-        document.body.appendChild(audioEl);
-      }
-      audioEl.src = url;
-      audioEl.volume = 1;
-      var p = audioEl.play();
-      if (p && p.catch) p.catch(function() {});
-      return true;
-    } catch (e) {
-      return false;
+  function normLang(lang) {
+    var l = (lang || 'en').trim();
+    var lower = l.toLowerCase();
+    if (lower === 'zh' || lower === 'zh-cn' || lower === 'zh-hans') return 'zh-CN';
+    if (lower === 'zh-tw' || lower === 'zh-hant') return 'zh-TW';
+    return l;
+  }
+
+  function getAudio() {
+    if (!audioEl) {
+      audioEl = document.createElement('audio');
+      audioEl.setAttribute('playsinline', '');
+      audioEl.preload = 'auto';
+      document.body.appendChild(audioEl);
     }
+    return audioEl;
+  }
+
+  function urlsFor(text, lang) {
+    var full = normLang(lang);
+    var base = full.split('-')[0].toLowerCase();
+    var q = text.length > 180 ? text.slice(0, 180) : text;
+    var urls = [];
+    if (base === 'zh') {
+      urls.push('https://dict.youdao.com/dictvoice?le=zh&audio=' + encodeURIComponent(q));
+    }
+    urls.push('https://translate.googleapis.com/translate_tts?client=gtx&ie=UTF-8&tl=' +
+              encodeURIComponent(full) + '&q=' + encodeURIComponent(q));
+    urls.push('https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=' +
+              encodeURIComponent(full) + '&q=' + encodeURIComponent(q));
+    return urls;
+  }
+
+  function playOne(url, onFail) {
+    var a = getAudio();
+    var settled = false;
+    function cleanup() {
+      a.removeEventListener('error', onError);
+      a.removeEventListener('playing', onOk);
+    }
+    function onError() {
+      if (settled) return;
+      settled = true; cleanup(); onFail();
+    }
+    function onOk() {
+      if (settled) return;
+      settled = true; cleanup();
+    }
+    a.addEventListener('error', onError);
+    a.addEventListener('playing', onOk);
+    try {
+      a.src = url;
+      a.volume = 1;
+      var p = a.play();
+      if (p && p.catch) p.catch(onError);
+    } catch (e) { onError(); }
+  }
+
+  function gtts(text, lang) {
+    var urls = urlsFor(text, lang);
+    var i = 0;
+    function next() {
+      if (i >= urls.length) return;
+      playOne(urls[i++], next);
+    }
+    next();
+    return true;
+  }
+
+  /* null = ovozlar hali yuklanmagan (davom etamiz),
+     undefined = mos ovoz yo'q (darhol zaxiraga o'tamiz), voice = mos ovoz */
+  function voiceFor(lang) {
+    try {
+      if (!window.speechSynthesis) return undefined;
+      var voices = window.speechSynthesis.getVoices() || [];
+      if (!voices.length) return null;
+      var want = (lang || 'en').toLowerCase();
+      var base = want.split('-')[0];
+      var i;
+      for (i = 0; i < voices.length; i++) {
+        if ((voices[i].lang || '').toLowerCase() === want) return voices[i];
+      }
+      for (i = 0; i < voices.length; i++) {
+        if ((voices[i].lang || '').toLowerCase().split('-')[0] === base) return voices[i];
+      }
+      return undefined;
+    } catch (e) { return null; }
   }
 
   function synthSpeak(text, lang) {
-    if (!window.speechSynthesis) return false;
+    if (!window.speechSynthesis || typeof SpeechSynthesisUtterance === 'undefined') return false;
     try {
+      var v = voiceFor(lang);
+      /* Xitoy ovozi ko'pincha o'rnatilmagan: kutmasdan ishonchli manbaga o'tamiz.
+         Boshqa tillarda esa mos ovoz bo'lmasa ham sinab ko'ramiz (regressiya bo'lmasin). */
+      if (v === undefined && (lang || '').toLowerCase().indexOf('zh') === 0) return false;
       var u = new SpeechSynthesisUtterance(text);
-      if (lang) u.lang = lang;
+      if (v) { u.voice = v; u.lang = v.lang; }
+      else if (lang) { u.lang = normLang(lang); }
       var played = false;
-      var done = false;
       u.onstart = function() { played = true; };
       u.onerror = function() {
-        if (!played) { if (audioEl) { try { audioEl.pause(); } catch (e) {} } gtts(text, lang); }
+        if (!played) { gtts(text, lang); }
       };
-      u.onend = function() {};
       window.speechSynthesis.cancel();
       window.speechSynthesis.speak(u);
       setTimeout(function() {
@@ -47,7 +120,7 @@ window.smartTTS = (function() {
           try { window.speechSynthesis.cancel(); } catch (e) {}
           gtts(text, lang);
         }
-      }, 1800);
+      }, 1000);
       return true;
     } catch (e) {
       return false;
@@ -71,9 +144,7 @@ window.smartTTS = (function() {
   function stop() {
     if (native) { try { native.stop(); } catch (e) {} }
     if (window.speechSynthesis) { try { window.speechSynthesis.cancel(); } catch (e) {} }
-    if (audioEl) {
-      try { audioEl.pause(); } catch (e) {}
-    }
+    if (audioEl) { try { audioEl.pause(); } catch (e) {} }
   }
 
   return {
