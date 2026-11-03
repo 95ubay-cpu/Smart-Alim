@@ -176,6 +176,7 @@ main{padding:4px 16px 24px;flex:1}
   </div>
 </div>
 
+<script src="tts.js?v=6"></script>
 <script>
 (function(){
   // So'zlar: "kana|ma'nosi". Yangi so'z qo'shish uchun shu ro'yxatlarga qator qo'shing.
@@ -711,8 +712,12 @@ main{padding:4px 16px 24px;flex:1}
 
   // ===== Ovoz (yapon tili) =====
   function speak(txt) {
-    if (!soundOn || !synth || !txt) return;
+    if (!soundOn || !txt) return;
     if (/^[\u309B\u309C\u30FC\s]+$/.test(txt)) return; // yolg'iz ゛ ゜ ー ni o'qimaymiz
+    if (window.smartTTS) {
+      try { window.smartTTS.speak(txt, 'ja-JP'); return; } catch (e) {}
+    }
+    if (!synth) return;
     try {
       synth.cancel();
       setTimeout(function() {

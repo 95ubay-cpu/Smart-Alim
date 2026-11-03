@@ -32,8 +32,8 @@ window.smartTTS = (function() {
     var base = full.split('-')[0].toLowerCase();
     var q = text.length > 180 ? text.slice(0, 180) : text;
     var urls = [];
-    if (base === 'zh') {
-      urls.push('https://dict.youdao.com/dictvoice?le=zh&audio=' + encodeURIComponent(q));
+    if (base === 'zh' || base === 'ja') {
+      urls.push('https://dict.youdao.com/dictvoice?le=' + base + '&audio=' + encodeURIComponent(q));
     }
     urls.push('https://translate.googleapis.com/translate_tts?client=gtx&ie=UTF-8&tl=' +
               encodeURIComponent(full) + '&q=' + encodeURIComponent(q));
@@ -104,7 +104,7 @@ window.smartTTS = (function() {
       var v = voiceFor(lang);
       /* Xitoy ovozi ko'pincha o'rnatilmagan: kutmasdan ishonchli manbaga o'tamiz.
          Boshqa tillarda esa mos ovoz bo'lmasa ham sinab ko'ramiz (regressiya bo'lmasin). */
-      if (v === undefined && (lang || '').toLowerCase().indexOf('zh') === 0) return false;
+      if (v === undefined && /^(zh|ja)/.test((lang || '').toLowerCase())) return false;
       var u = new SpeechSynthesisUtterance(text);
       if (v) { u.voice = v; u.lang = v.lang; }
       else if (lang) { u.lang = normLang(lang); }
