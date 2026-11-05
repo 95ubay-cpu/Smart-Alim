@@ -5,6 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Smart Ta'lim — Android ilovasi</title>
 <meta name="description" content="Smart Ta'lim ilovasi — ingliz, arab, nemis, fransuz, ispan tillari va koreys, xitoy, yapon yozuvlari. Android uchun bepul yuklab oling.">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W57CJ1JB98"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-W57CJ1JB98');
+</script>
 <style>
   :root{
     --green:#0E9F6E;--green-deep:#0B7A54;--mint:#EAFBF4;--mint-2:#D8F5E9;
@@ -111,5 +118,21 @@
     <div>Savollar bo'lsa: smartalim.com</div>
   </footer>
 </div>
+<script>
+  (function () {
+    var btn = document.querySelector('.btn');
+    if (!btn) return;
+    btn.addEventListener('click', function () {
+      try {
+        gtag('event', 'app_download', {
+          app_name: "Smart Ta'lim",
+          app_version: '1.1.0',
+          file_name: 'smart-talim.apk',
+          transport_type: 'beacon'
+        });
+      } catch (e) {}
+    });
+  })();
+</script>
 </body>
 </html>
