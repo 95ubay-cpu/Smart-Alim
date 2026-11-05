@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Ta'lim — Android ilovasi</title>
+<meta name="description" content="Smart Ta'lim ilovasi — ingliz, arab, nemis, fransuz, ispan tillari va koreys, xitoy, yapon yozuvlari. Android uchun bepul yuklab oling.">
+<style>
+  :root{
+    --green:#0E9F6E;--green-deep:#0B7A54;--mint:#EAFBF4;--mint-2:#D8F5E9;
+    --white:#FFFFFF;--ink:#16241F;--muted:#5B6B65;--border:#DCEFE6;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+    color:var(--ink);background:var(--mint);min-height:100vh;line-height:1.55;
+    display:flex;justify-content:center;padding:24px 16px 48px;
+  }
+  .wrap{width:100%;max-width:520px}
+  .brand{display:flex;align-items:center;gap:10px;margin-bottom:22px;text-decoration:none;color:var(--ink)}
+  .brand .logo{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--green),var(--green-deep));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:16px}
+  .brand b{font-size:15px;font-weight:800}
+  .hero{background:var(--white);border:1px solid var(--border);border-radius:22px;padding:26px 22px;text-align:center;box-shadow:0 10px 30px rgba(11,122,84,.08)}
+  .hero img{width:96px;height:96px;border-radius:22px;display:block;margin:0 auto 16px;box-shadow:0 6px 18px rgba(0,0,0,.12)}
+  .hero h1{font-size:22px;font-weight:800;letter-spacing:-.01em}
+  .hero .sub{font-size:13px;color:var(--muted);margin-top:6px}
+  .meta{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:16px 0 20px}
+  .meta span{font-size:11px;font-weight:700;color:var(--green-deep);background:var(--mint-2);border-radius:999px;padding:5px 11px}
+  .btn{
+    display:flex;align-items:center;justify-content:center;gap:9px;
+    width:100%;padding:15px 18px;border-radius:14px;border:none;cursor:pointer;
+    background:var(--green);color:#fff;font-size:16px;font-weight:800;
+    text-decoration:none;transition:transform .12s ease, box-shadow .12s ease;
+    box-shadow:0 8px 20px rgba(14,159,110,.28);
+  }
+  .btn:active{transform:scale(.98)}
+  .btn .ico{font-size:19px;line-height:1}
+  .btn-note{font-size:11px;color:var(--muted);text-align:center;margin-top:9px}
+  .card{background:var(--white);border:1px solid var(--border);border-radius:18px;padding:20px;margin-top:16px}
+  .card h2{font-size:14px;font-weight:800;margin-bottom:12px}
+  .features{list-style:none;display:grid;gap:10px}
+  .features li{display:flex;gap:10px;font-size:13px;color:var(--ink)}
+  .features li i{font-style:normal;width:22px;flex-shrink:0;text-align:center}
+  .steps{list-style:none;counter-reset:step;display:grid;gap:14px}
+  .steps li{position:relative;padding-left:40px;font-size:13px;color:var(--ink)}
+  .steps li::before{
+    counter-increment:step;content:counter(step);
+    position:absolute;left:0;top:-1px;width:26px;height:26px;border-radius:50%;
+    background:var(--mint-2);color:var(--green-deep);
+    font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;
+  }
+  .steps b{font-weight:800}
+  .note{font-size:12px;color:var(--muted);background:#FFF7E0;border:1px solid #F3E3AD;border-radius:12px;padding:12px 14px;margin-top:14px}
+  .note b{color:#8A6D1D}
+  footer{text-align:center;font-size:11px;color:var(--muted);margin-top:22px;line-height:1.7}
+  footer a{color:var(--green-deep);font-weight:700;text-decoration:none}
+  @media (max-width:380px){ .hero{padding:22px 16px} .hero h1{font-size:20px} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="brand" href="./">
+    <span class="logo">S</span>
+    <b>Smart Ta'lim</b>
+  </a>
+
+  <section class="hero">
+    <img src="ilova-icon.png" alt="Smart Ta'lim ilovasi ikonkasi" width="96" height="96">
+    <h1>Smart Ta'lim</h1>
+    <p class="sub">Tillar va yozuvlarni interaktiv o'rganing — Android uchun bepul ilova</p>
+
+    <div class="meta">
+      <span>Versiya 1.1.0</span>
+      <span>42.3 MB</span>
+      <span>Android 7.0+</span>
+      <span>Bepul</span>
+    </div>
+
+    <a class="btn" href="smart-talim.apk" download="SmartTalim-1.1.0.apk">
+      <span class="ico">⬇</span>
+      <span>Ilovani yuklab olish</span>
+    </a>
+    <p class="btn-note">APK fayl · to'g'ridan-to'g'ri o'rnatiladi · Google Play shart emas</p>
+  </section>
+
+  <section class="card">
+    <h2>Ilova imkoniyatlari</h2>
+    <ul class="features">
+      <li><i>🌍</i><span><b>9 ta bo'lim</b>: ingliz, arab, nemis, fransuz, ispan tillari hamda koreys, xitoy, yapon yozuvlari</span></li>
+      <li><i>🔤</i><span><b>Lug'at</b> — inglizcha ↔ o'zbekcha so'zlar</span></li>
+      <li><i>🔊</i><span>So'z va harflarning <b>ovozli talaffuzi</b></span></li>
+      <li><i>🎮</i><span>Harflarni o'yin tarzida yig'ib o'rganish mashqlari</span></li>
+      <li><i>🔄</i><span>Sayt bilan bir xil — barcha bo'limlar va yangilanishlar ilova ichida</span></li>
+    </ul>
+    <div class="note"><b>Eslatma:</b> ilova saytdagi materiallardan foydalanadi, shuning uchun unga <b>internet aloqasi kerak</b>.</div>
+  </section>
+
+  <section class="card">
+    <h2>Qanday o'rnatiladi?</h2>
+    <ol class="steps">
+      <li><b>Yuklab oling.</b> Yuqoridagi yashil tugmani bosing. Telefonda "Faylni yuklab olish" oynasi chiqadi.</li>
+      <li><b>Faylni oching.</b> Yuklab olingan <b>.apk</b> faylni "Yuklab olinganlar" papkasidan yoki bildirishnomadan bosing.</li>
+      <li><b>Ruxsat bering.</b> Android "Noma'lum manbalardan o'rnatish" so'rasa — <b>Sozlamalar → Ruxsat berish</b> ni tanlang, so'ng <b>O'rnatish</b> ni bosing.</li>
+      <li><b>Oching.</b> Google Play Protect "ilova tekshirilmagan" desa, <b>"Baribir o'rnatish"</b> ni tanlang — bu saytdan o'rnatilgan har qanday ilova uchun chiqadigan odatiy ogohlantirish.</li>
+    </ol>
+    <div class="note"><b>Eslatma:</b> ilova Play Store'dan emas, saytdan o'rnatiladi. Shuning uchun Android bir marta ruxsat so'rashi mumkin. Ilova reklama ko'rsatmaydi.</div>
+  </section>
+
+  <footer>
+    <div>© Smart Ta'lim · <a href="./">Bosh sahifaga qaytish</a></div>
+    <div>Savollar bo'lsa: smartalim.com</div>
+  </footer>
+</div>
+</body>
+</html>
