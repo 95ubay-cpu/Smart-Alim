@@ -30,8 +30,8 @@ Tayyor fayllar:
 
 Reliz nusxalari `release/` papkasiga ko'chiriladi:
 
-- `release/SmartTalim-1.1.0.apk` — imzolangan (tarqatish uchun)
-- `release/SmartTalim-1.1.0-test.apk` — debug (telefonga tez o'rnatish uchun)
+- `release/SmartTalim-1.2.0.apk` — imzolangan (tarqatish uchun)
+- `release/SmartTalim-<versiya>-test.apk` — debug (telefonga tez o'rnatish uchun, faqat kerak bo'lsa)
 
 ## Imzolash
 
@@ -39,7 +39,8 @@ Reliz nusxalari `release/` papkasiga ko'chiriladi:
 
 ## Versiya
 
-`pubspec.yaml` → `version: 1.1.0+2` (nom+versiya). Har yangilanishda `+` dan keyingi raqamni (versionCode) oshiring.
+`pubspec.yaml` → `version: 1.2.0+3` (nom+versiya). Har yangilanishda `+` dan keyingi raqamni (versionCode) oshiring.
+
 ## Saytga joylashtirish (yuklab olish sahifasi)
 
 Ilova smartalim.com saytidan yuklab olinadi. Sayt ildizida (repo ildizida) quyidagi fayllar turadi:

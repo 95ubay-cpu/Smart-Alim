@@ -31,14 +31,19 @@ window.smartTTS = (function() {
     var full = normLang(lang);
     var base = full.split('-')[0].toLowerCase();
     var q = text.length > 180 ? text.slice(0, 180) : text;
+    var extra = '&total=1&idx=0&textlen=' + q.length;
     var urls = [];
     if (base === 'zh' || base === 'ja') {
       urls.push('https://dict.youdao.com/dictvoice?le=' + base + '&audio=' + encodeURIComponent(q));
     }
-    urls.push('https://translate.googleapis.com/translate_tts?client=gtx&ie=UTF-8&tl=' +
-              encodeURIComponent(full) + '&q=' + encodeURIComponent(q));
+    urls.push('https://translate.googleapis.com/translate_tts?ie=UTF-8&client=gtx&tl=' +
+              encodeURIComponent(full) + '&q=' + encodeURIComponent(q) + extra);
     urls.push('https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=' +
-              encodeURIComponent(full) + '&q=' + encodeURIComponent(q));
+              encodeURIComponent(full) + '&q=' + encodeURIComponent(q) + extra);
+    // Nemis/fransuz uchun qo'shimcha manba — Google javob bermasa ham ovoz chiqadi.
+    if (base === 'de' || base === 'fr') {
+      urls.push('https://dict.youdao.com/dictvoice?le=' + base + '&audio=' + encodeURIComponent(q));
+    }
     return urls;
   }
 

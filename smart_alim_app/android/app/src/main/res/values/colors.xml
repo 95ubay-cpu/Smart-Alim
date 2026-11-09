@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- smartalim.com sahifalarining fon rangi -->
+    <color name="launch_background">#EAFBF4</color>
+</resources>
